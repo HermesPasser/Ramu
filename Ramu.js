@@ -3,7 +3,7 @@
 // --------------------------------- //
 
 var FRAME 	   = 1000/60;
-var DEBUG_MODE = true;
+var DEBUG_MODE = false;
 
 var objsToDraw 	  = [];
 var objsToCollide = [];
@@ -26,11 +26,11 @@ class GameObj{
 class Drawble extends GameObj{
 	constructor(x, y, width, height){
 		super();
-		this.canDraw = true;
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
+		this.canDraw = true;
 		
 		objsToDraw.push(this);
 	}
@@ -42,10 +42,10 @@ class Drawble extends GameObj{
 	draw(){ } // Virtual
 }
 
-// WORKING
 class Collisor extends Drawble{
 	constructor(x, y, width, height){
 		super(x,y, width, height);
+		this.canCollide = true;
 		this.isInCollision = false;
 		objsToCollide.push(this);
 	}
@@ -57,8 +57,10 @@ class Collisor extends Drawble{
 	onCollision(){ } // Virtual
 
 	checkCollision(){
+		if(!this.canCollide) return;
+		
 		for (var i = 0; i < objsToCollide.length; i++){
-			if (objsToCollide[i] === this) // Para não testar consigo mesmo
+			if (objsToCollide[i] === this || !objsToCollide[i].canCollide) // Para não testar consigo mesmo
 				continue;
 			
 			if (this.x < objsToCollide[i].x + objsToCollide[i].width &&
@@ -71,29 +73,22 @@ class Collisor extends Drawble{
 			} else this.isInCollision = false;
 		}
 	}
-	
 }
 
 class RectCollisor extends Collisor{
 	constructor(x, y, width, height){
-		super(x,y, width, height);
+		super(x, y, width, height);
 	}
 	
 	draw(){
-		if (!this.isInCollision){
+		if (!this.isInCollision)
 			ctx.strokeStyle = "blue";
-			ctx.strokeRect(this.x, this.y, this.width, this.height);
-		}
-		else{
-			ctx.strokeStyle = "red";
-			ctx.strokeRect(this.x, this.y, this.width, this.height);
-		}
+		else ctx.strokeStyle = "red";
 
+		ctx.strokeRect(this.x, this.y, this.width, this.height);
 		ctx.strokeStyle = "#000000"; // reset default value
 	}
 }
-
-// END - WORKING 
 
 class Ramu{
 	 

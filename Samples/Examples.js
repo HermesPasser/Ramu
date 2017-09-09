@@ -24,6 +24,11 @@ class AnimatedRect extends RectCollisor{
 		this.forceX = -(this.forceX + (Math.random() * 3));
 		this.forceY = -(this.forceY + (Math.random() * 3));
 		
+		if (this.forceX < -10 || this.forceX > 10)
+			this.forceX = 1;
+		
+		if (this.forceY < -10 || this.forceY > 10)
+			this.forceY = 1;
 	}
 }
 
@@ -60,7 +65,9 @@ class MovingChar extends RectCollisor{
 			this.height--;
 		}	
 		
-		if (this.width == 0 && this.height == 0)
+		if (this.width == 0 && this.height == 0){
 			this.die = true;
+			this.canCollide = false;
+		}
 	}
 }
