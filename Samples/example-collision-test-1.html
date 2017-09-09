@@ -1,0 +1,22 @@
+<canvas id="canvas" width="500" height="500" style="border:1px solid #000000;"></canvas>
+<script type="text/javascript" src="../Ramu.js"></script>
+<script type="text/javascript" src="Examples.js"></script>
+
+<script>
+
+class MyGame extends Drawble{
+	constructor(x,y,w,h){
+		super(x,y,w,h)
+	}
+	
+	onStart(){
+		var c = new MovingChar(100,110, 50, 50);
+		var c = new AnimatedRect(100,50, 50, 50);
+	}
+}
+
+var f = new MyGame(0,0,0,0);
+
+Ramu.init();
+
+</script>
