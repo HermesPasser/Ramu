@@ -5,6 +5,7 @@
 var FRAME 	   = 1000/60;
 var DEBUG_MODE = false;
 
+var gameObjs	  = [];
 var objsToDraw 	  = [];
 var objsToCollide = [];
 
@@ -16,6 +17,7 @@ var inLoop = true;
 class GameObj{
 	constructor(){
 		this.tag = "";
+		gameObjs.push(this);
 	}
 	
 	onStart() { } // Virtual
@@ -33,6 +35,10 @@ class Drawble extends GameObj{
 		this.canDraw = true;
 		
 		objsToDraw.push(this);
+		
+		Object.defineProperty(Drawble, 'drawInCanvas', {
+		  writeable: false,
+		});
 	}
 	
 	drawInCanvas(){
@@ -46,6 +52,7 @@ class Collisor extends Drawble{
 	constructor(x, y, width, height){
 		super(x,y, width, height);
 		this.canCollide = true;
+		this.collisor = null;
 		this.isInCollision = false;
 		objsToCollide.push(this);
 	}
@@ -69,13 +76,17 @@ class Collisor extends Drawble{
 				   this.height + this.y > objsToCollide[i].y){
 			
 				this.isInCollision = true;
+				this.collisor = objsToCollide[i];
 				this.onCollision();
-			} else this.isInCollision = false;
+			} else {
+				this.isInCollision = false;
+				this.collisor = null;
+			}
 		}
 	}
 }
 
-class RectCollisor extends Collisor{
+class SimpleRectCollisor extends Collisor{
 	constructor(x, y, width, height){
 		super(x, y, width, height);
 	}
@@ -87,6 +98,20 @@ class RectCollisor extends Collisor{
 
 		ctx.strokeRect(this.x, this.y, this.width, this.height);
 		ctx.strokeStyle = "#000000"; // reset default value
+	}
+}
+
+class GameSprite extends Drawble{
+	constructor(x, y, url){ //  
+		super(x, y, 0, 0);
+		this.sprite = new Image();
+		this.sprite.src = url;
+		this.width = this.sprite.width;
+		this.height = this.sprite.height;
+	}
+	
+	draw(){
+		ctx.drawImage(this.sprite, 100, 100);
 	}
 }
 
@@ -104,8 +129,8 @@ class Ramu{
 			Ramu.onUpdate();
 			Ramu.checkCollision();
 			Ramu.draw();
-		}
-
+		} //else onStopLoop();
+		
 		window.requestAnimationFrame(Ramu.loop, FRAME);
 	}
 	
@@ -124,13 +149,13 @@ class Ramu{
 	}
 	
 	static onStart(){
-		for (var i = 0; i < objsToDraw.length; i++)
-			objsToDraw[i].onStart();	
+		for (var i = 0; i < gameObjs.length; i++)
+			gameObjs[i].onStart();	
 	}
 	
 	static onUpdate(){
-		for (var i = 0; i < objsToDraw.length; i++)
-			objsToDraw[i].onUpdate();	
+		for (var i = 0; i < gameObjs.length; i++)
+			gameObjs[i].onUpdate();	
 		lastKeyPressed = null;
 	}
 	

@@ -1,4 +1,4 @@
-class AnimatedRect extends RectCollisor{
+class AnimatedRect extends SimpleRectCollisor{
 	constructor(x,y,width,height){
 		super(x,y, width, height);
 		this.forceX = 3;
@@ -32,7 +32,7 @@ class AnimatedRect extends RectCollisor{
 	}
 }
 
-class MovingChar extends RectCollisor{
+class MovingChar extends SimpleRectCollisor{
 	constructor(x,y,width,height){
 		super(x,y, width, height);
 		this.die = false;
