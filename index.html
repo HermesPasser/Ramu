@@ -1,29 +1,7 @@
 <canvas id="canvas" width="500" height="500" style="border:1px solid #000000;"></canvas>
 <script type="text/javascript" src="Ramu.js"></script>
-<script type="text/javascript" src="samples/Examples.js"></script>
 
 <script>
-//https://imasters.com.br/front-end/html/criando-um-game-loop-em-html5/?trace=1519021197&source=single
-//https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Drawing_shapes
-
-
-class GameSprite extends Drawble{
-	constructor(x, y, url){ //  
-		super(x, y, 0, 0);
-		this.sprite = new Image();
-		this.sprite.src = url;
-		this.width = this.sprite.width;
-		this.height = this.sprite.height;
-	}
-	
-	drawInCanvas(){
-		
-	}
-	
-	draw(){
-		ctx.drawImage(this.sprite, 100, 100);
-	}
-}
 
 class MyGame extends Drawble{
 	constructor(x,y,w,h){
@@ -34,27 +12,23 @@ class MyGame extends Drawble{
 
 	}
 	
-	onStart(){
-		new GameSprite(10,10, "https://www.google.com.br/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png")
-		
-		
+	start(){
+		this.f =new GameSprite(0,0, "paralax.jpg")
+
 	}
 	
-	onUpdate(){
-		// não funciona pois essa func não sera chamada no onUpdate
-		// e o onUpdate para de ser chamado
+	update(){
 		
+		// não funciona pois essa func não sera chamada no update
+		// e o update para de ser chamado
 		//tentar passar funcao como parametro
 		// ou algo assim
 		
-		// criar delta time, sistema de colição simples e paralax
-		
-		//criar destrutores para drawbles e collisors
-		
+		// criar  paralax		
 	}
 }
 
-var f = new MyGame(0,0,0,0);
+new MyGame(0,0,0,0);
 
 Ramu.init(); 
 
