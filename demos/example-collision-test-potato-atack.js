@@ -1,7 +1,3 @@
-<canvas id="canvas" width="500" height="500" style="border:1px solid #000000;"></canvas>
-<script type="text/javascript" src="../Ramu.js"></script>
-
-<script>
 // Potato Atack by Hermes Passer in 09-12-27 using Ramu 0.2
 
 class AnimatedCollisor extends SimpleRectCollisor{
@@ -26,7 +22,7 @@ class StaticRect extends GameObj{
 	}
 }
 
-class AnimatedRect extends Drawble{
+class AnimatedRect extends Drawable{
 	constructor(x,y,w,h){
 		super(x, y, w, h, false);	
 		this.collider = new AnimatedCollisor(x, y, w, h);
@@ -73,7 +69,7 @@ class MovingChar extends SimpleRectCollisor{
 		this.canDraw = true;
 		var value = 2 * Ramu.delta.time;
 		
-		if (Ramu.lastKeyPressed == 97){ 
+		if (Ramu.lastKeyPressed == 97){ 		// A
 			this.x -= 2 * Ramu.delta.time;
 		} else if (Ramu.lastKeyPressed == 100){ // D
 			this.x += 2	* Ramu.delta.time;
@@ -115,7 +111,7 @@ class MovingChar extends SimpleRectCollisor{
 	}
 }
 
-class MyGame extends Drawble{
+class MyGame extends Drawable{
 	start(){
 		Ramu.inLoop = false;
 		
@@ -236,5 +232,3 @@ class MyGame extends Drawble{
 new MyGame(0,0,0,0);
 
 Ramu.init();
-
-</script>

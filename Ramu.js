@@ -1,5 +1,7 @@
 // --------------------------------- //
 // Ramu 0.2 - Hermes Passer in 08/09 //
+//      hermespasser.github.io       //
+// blog: gladiocitrico.blogspot.com  //
 // --------------------------------- //
 
 var gameObjs	   = [];
@@ -102,7 +104,7 @@ class GameObj{
 	// onKeypress() { } // Virtual
 }
 
-class Drawble extends GameObj{
+class Drawable extends GameObj{
 	constructor(x, y, width, height, canDraw = false){
 		super();
 		this.x = x;
@@ -131,7 +133,7 @@ class Drawble extends GameObj{
 	draw(){ } // Virtual
 }
 
-class Collisor extends Drawble{
+class Collisor extends Drawable{
 	constructor(x, y, width, height){
 		super(x,y, width, height);
 		this.canCollide = true;
@@ -180,9 +182,7 @@ class Collisor extends Drawble{
 }
 
 class SimpleRectCollisor extends Collisor{
-	constructor(x, y, width, height){
-		super(x, y, width, height);
-	}
+	// constructor(x, y, width, height){ super(x, y, width, height); }
 	
 	draw(){
 		if (Ramu.debugMode){
@@ -197,7 +197,7 @@ class SimpleRectCollisor extends Collisor{
 	}
 }
 
-class GameSprite extends Drawble{
+class GameSprite extends Drawable{
 	constructor(url, x, y, w, h, canDraw = true){
 		super(x, y, w, h);
 		this.img = new Image();
