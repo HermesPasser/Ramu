@@ -67,16 +67,16 @@ class MovingChar extends SimpleRectCollisor{
 		super.update();
 		
 		this.canDraw = true;
-		var value = 2 * Ramu.delta.time;
+		var value = 2 * Ramu.time.delta;
 		
 		if (Ramu.lastKeyPressed == 97){ 		// A
-			this.x -= 2 * Ramu.delta.time;
+			this.x -= 2 * Ramu.time.delta;
 		} else if (Ramu.lastKeyPressed == 100){ // D
-			this.x += 2	* Ramu.delta.time;
+			this.x += 2	* Ramu.time.delta;
 		}else if (Ramu.lastKeyPressed == 115){ // S
-			this.y += 2 * Ramu.delta.time;
+			this.y += 2 * Ramu.time.delta;
 		} else if (Ramu.lastKeyPressed == 119){ // W
-			this.y -= 2 * Ramu.delta.time;
+			this.y -= 2 * Ramu.time.delta;
 		}
 		
 		if (this.x <= 0)
@@ -94,8 +94,8 @@ class MovingChar extends SimpleRectCollisor{
 	
 	onCollision(){
 		if (this.collision != null && this.collision.tag == "wall"){
-			this.x += (Ramu.delta.time);
-			this.y += (Ramu.delta.time);
+			this.x += (Ramu.time.delta);
+			this.y += (Ramu.time.delta);
 			return;
 		}
 		

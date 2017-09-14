@@ -1,5 +1,5 @@
 // --------------------------------- //
-// Ramu 0.2 - Hermes Passer in 08/09 //
+// Ramu 0.3 - Hermes Passer in 08/09 //
 //      hermespasser.github.io       //
 // blog: gladiocitrico.blogspot.com  //
 // --------------------------------- //
@@ -7,6 +7,7 @@
 var gameObjs	   = [];
 var objsToDraw 	   = [];
 var objsToCollide  = [];
+var drawLastPriority = 0;
 
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
@@ -19,8 +20,9 @@ class Ramu{
 	static init(){
 		Ramu.debugMode = false;
 		Ramu.inLoop = true;
-		Ramu.delta = { last: 0, time: 0 };
+		Ramu.time = { last: 0, delta: 0 };
 		Ramu.lastKeyPressed = null;
+		// Ramu.size = {x: 0, y: 0, w: 0, h: 0};
 		
 		Ramu.input();
 		Ramu.start();
@@ -36,14 +38,14 @@ class Ramu{
 	static loop(){
 		// Calcule delta time
 		var t = Date.now();
-		Ramu.delta.time = t - Ramu.delta.last;
-		Ramu.delta.last = t;
+		Ramu.time.delta = t - Ramu.time.last;
+		Ramu.time.last = t;
 		
 		if (Ramu.inLoop){
 			Ramu.update();
 			Ramu.checkCollision();
 		}
-				
+		
 		Ramu.draw();
 		
 		// To the input work even with update disbled
@@ -112,8 +114,21 @@ class Drawable extends GameObj{
 		this.width = width;
 		this.height = height;
 		this.canDraw = true;
+		this.drawPriority = drawLastPriority++;
 		
-		objsToDraw.push(this);
+		Drawable.addObjt(this)
+	}
+	
+	static addObjt(drawableObj){
+		objsToDraw.push(drawableObj);
+		
+		for (var i = 0; i < objsToDraw.length; i++){
+			if (objsToDraw[i] > objsToDraw[i + 1]){
+				var temp = objsToDraw[i];
+				objsToDraw[i] = objsToDraw[i + 1];
+				objsToDraw[i + 1] = temp;
+			}
+		}
 	}
 	
 	destroy(){
@@ -202,11 +217,40 @@ class GameSprite extends Drawable{
 		super(x, y, w, h);
 		this.img = new Image();
 		this.img.src = url;
-		this.canDraw = canDraw;
+		this.canDraw = canDraw;	
 	}
 	
 	draw(){
 		if (this.canDraw)
 			ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+	}
+}
+
+class SpriteAnimation extends Drawable{
+	constructor(x, y, width, height){
+		super(x, y, width, height);
+		this.frames 		= [];
+		this.animationIndex = 0;
+		this.currentTime 	= 0;
+		this.animationTime 	= 500;
+	}
+	
+	addFrame(src){
+		var img = new Image();
+		img.src = src;
+		this.frames.push(img);
+	}
+	
+	update(){
+		this.currentTime += Ramu.time.delta;
+		if (this.frames.length > 0 && this.currentTime > this.animationTime){ 
+			this.animationIndex = (this.animationIndex + 1) % this.frames.length;
+			this.currentTime = 0;
+		} 
+	}
+	
+	draw(){
+		if (this.frames.length > 0)
+			ctx.drawImage(this.frames[this.animationIndex], this.x, this.y, this.width, this.height);
 	}
 }
