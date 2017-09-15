@@ -1,0 +1,19 @@
+<canvas id="canvas" width="500" height="500" style="border:1px solid #000000;"></canvas>
+<script type="text/javascript" src="../Ramu.js"></script>
+
+<script>
+// Parallax Test by Hermes Passer in 09-15-27 using Ramu 0.3
+
+class MyGame extends GameObj{
+	start(){
+		var c = new Parallax("img/clouds.png", 1, 1, 500, 500, -2);
+		var sky = new Parallax("img/sky.png", 1, 1, 500, 500);
+		c.setDrawPriority(0)
+	}
+}
+
+new MyGame(0,0,0,0);
+
+Ramu.init(); 
+
+</script>

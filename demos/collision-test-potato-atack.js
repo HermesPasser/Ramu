@@ -17,7 +17,7 @@ class StaticRect extends GameObj{
 	constructor(x,y,w,h){
 		super(x,y, w, h);	
 		this.collider = new AnimatedCollisor(x, y, w, h);
-		this.sprite = new GameSprite("potato.png", x, y, w, h);
+		this.sprite = new GameSprite("img/potato.png", x, y, w, h);
 		this.sprite.canDraw = false;
 	}
 }
@@ -26,7 +26,7 @@ class AnimatedRect extends Drawable{
 	constructor(x,y,w,h){
 		super(x, y, w, h, false);	
 		this.collider = new AnimatedCollisor(x, y, w, h);
-		this.sprite = new GameSprite("potato.png", x, y, w, h);
+		this.sprite = new GameSprite("img/potato.png", x, y, w, h);
 		this.sprite.forceX = Math.floor(Math.random() * 10) - 5
 		this.sprite.forceY = Math.floor(Math.random() * 10) - 5;
 		this.sprite.canDraw = false;
@@ -61,6 +61,7 @@ class MovingChar extends SimpleRectCollisor{
 	}
 	
 	update(){
+		console.log(Ramu.lastKeyPressed)
 		if (this.die) 
 			return;
 		
@@ -69,9 +70,9 @@ class MovingChar extends SimpleRectCollisor{
 		this.canDraw = true;
 		var value = 2 * Ramu.time.delta;
 		
-		if (Ramu.lastKeyPressed == 97){ 		// A
+		if (Ramu.lastKeyPressed == 97 || Ramu.lastKeyPressed == keyCode.a){ 		// A
 			this.x -= 2 * Ramu.time.delta;
-		} else if (Ramu.lastKeyPressed == 100){ // D
+		} else if (Ramu.lastKeyPressed == 100 || Ramu.lastKeyPressed == keyCode.d){ // D
 			this.x += 2	* Ramu.time.delta;
 		}else if (Ramu.lastKeyPressed == 115){ // S
 			this.y += 2 * Ramu.time.delta;
@@ -93,12 +94,6 @@ class MovingChar extends SimpleRectCollisor{
 	}
 	
 	onCollision(){
-		if (this.collision != null && this.collision.tag == "wall"){
-			this.x += (Ramu.time.delta);
-			this.y += (Ramu.time.delta);
-			return;
-		}
-		
 		if (!this.die){
 			this.width--;
 			this.height--;
@@ -187,7 +182,7 @@ class MyGame extends Drawable{
 		switch(this.currState){
 			case this.state.menu:			
 				ctx.font="30px Verdana";
-				ctx.fillText("Potato Attack", this.w - 65, this.h - 50);
+				ctx.fillText("img/potato Attack", this.w - 65, this.h - 50);
 			
 				ctx.font="13px Arial";
 				ctx.strokeStyle = this.currOp == 0 ? "red" : "black";

@@ -1,6 +1,6 @@
 // Animation Exemple by Hermes Passer in 09-14-27
 
-class AnimTest extends Drawable{
+class AnimTest extends GameObj{
 	start(){
 		this.t = new SpriteAnimation(10, 10, 50, 50);
 		this.t.addFrame("anim/1.png");

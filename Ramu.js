@@ -4,6 +4,9 @@
 // blog: gladiocitrico.blogspot.com  //
 // --------------------------------- //
 
+// criar scenario com plataformas que se mechem
+// e parallax
+
 var gameObjs	   = [];
 var objsToDraw 	   = [];
 var objsToCollide  = [];
@@ -11,6 +14,29 @@ var drawLastPriority = 0;
 
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
+
+// Diferencia minuscula e maiuscula
+const keyCode = {
+	a:    65, b:    66, c:    67, d:    68, e:    69, f:    70, g:    71, h:    72, i:    73, j:    74, 
+	k:    75, l:    76, m:    77, n:    78, o:    79, p:    80, q:	  81, r:    82, s:    83, t:    84,
+	u:    85, v:    86, w:    87, x:    88, y:    89, z:    90, 
+	num0: 48, num1: 49, num2: 50, num3: 51, num4: 52, num5: 53, num6: 54, num7: 55, num8: 56, num9: 57, 
+	
+	numpad0: 96,  numpad1: 97,  numpad2: 98,  numpad3: 99,  numpad4: 100, numpad5: 101, numpad6: 102, numpad7: 103, 
+	numpad8: 104, numpad9: 105,
+
+	f1: 112, f2: 113, f3: 114, f4: 115, f5: 116, f6: 117, f7: 118, f8: 119, f9: 120, f10: 121, f11: 122, f12: 123,
+	
+	left_arrow: 37, up_arrow: 38, right_arrow: 39, down_arrow: 40, backspace: 8, tab: 9, enter: 13, shift: 16, 
+	
+	capslock: 20, numlock: 144, scrolllock: 145, left_window_key: 91, right_window_key: 92, 
+	
+	open_bracket: 219, close_braket: 221, ctrl: 17, alt: 18, end: 35, home: 36, insert: 45, delete: 46, select: 93, pause_break: 19, 
+	
+	escape: 27, page_up: 33, page_down: 34, multiply: 106, add: 107, subtract: 109, decimal_point: 110, divide: 111, semi_colon: 186, 
+
+	equal_sign: 187, comma: 188, dash: 189, period: 190, forward_slash: 191, back_slash: 220, grave_accent: 192, single_quote: 222
+};
 
 class Ramu{	
 	constructor() {
@@ -121,12 +147,17 @@ class Drawable extends GameObj{
 	
 	static addObjt(drawableObj){
 		objsToDraw.push(drawableObj);
-		
-		for (var i = 0; i < objsToDraw.length; i++){
-			if (objsToDraw[i] > objsToDraw[i + 1]){
-				var temp = objsToDraw[i];
-				objsToDraw[i] = objsToDraw[i + 1];
-				objsToDraw[i + 1] = temp;
+		Drawable.sortPriority();
+	}
+	
+	static sortPriority(){
+		for (var i = 0; i < objsToDraw.length; ++i){
+			for (var j = i + 1; j < objsToDraw.length; ++j){
+				if (objsToDraw[i].drawPriority > objsToDraw[j].drawPriority){
+					var temp =  objsToDraw[i];
+					objsToDraw[i] = objsToDraw[j];
+					objsToDraw[j] = temp;
+				}
 			}
 		}
 	}
@@ -213,10 +244,10 @@ class SimpleRectCollisor extends Collisor{
 }
 
 class GameSprite extends Drawable{
-	constructor(url, x, y, w, h, canDraw = true){
+	constructor(src, x, y, w, h, canDraw = true){
 		super(x, y, w, h);
 		this.img = new Image();
-		this.img.src = url;
+		this.img.src = src;
 		this.canDraw = canDraw;	
 	}
 	
@@ -230,9 +261,10 @@ class SpriteAnimation extends Drawable{
 	constructor(x, y, width, height){
 		super(x, y, width, height);
 		this.frames 		= [];
-		this.animationIndex = 0;
+		this.currentFrame 	= 0;
 		this.currentTime 	= 0;
 		this.animationTime 	= 500;
+		this.animationPause = false;
 	}
 	
 	addFrame(src){
@@ -242,15 +274,63 @@ class SpriteAnimation extends Drawable{
 	}
 	
 	update(){
+		if (this.animationPause)
+			return;
+		
 		this.currentTime += Ramu.time.delta;
 		if (this.frames.length > 0 && this.currentTime > this.animationTime){ 
-			this.animationIndex = (this.animationIndex + 1) % this.frames.length;
+			this.currentFrame = (this.currentFrame + 1) % this.frames.length;
 			this.currentTime = 0;
 		} 
 	}
 	
 	draw(){
 		if (this.frames.length > 0)
-			ctx.drawImage(this.frames[this.animationIndex], this.x, this.y, this.width, this.height);
+			ctx.drawImage(this.frames[this.currentFrame], this.x, this.y, this.width, this.height);
 	}
 }
+
+class Parallax extends GameObj{
+	constructor(src, x, y, w, h, velocity = 2){
+		super(x, y);
+		this.left   = new GameSprite(src, x - w, y, w, h);
+		this.center = new GameSprite(src, x  + w  , y, w, h);
+		this.right  = new GameSprite(src, x + w, y, w, h);
+		this.velocity = velocity;
+		this.setDrawPriority(-1);
+	}
+	
+	canDraw(bool){
+		this.left.canDraw   = bool;
+		this.center.canDraw = bool;
+		this.right.canDraw  = bool;
+	}
+	
+	setDrawPriority(num){
+		this.left.drawPriority   = num;
+		this.center.drawPriority = num;
+		this.right.drawPriority  = num;
+		Drawable.sortPriority();
+	}
+	
+	update(){
+		this.left.x   += this.velocity;
+		this.center.x += this.velocity;
+		this.right.x  += this.velocity;
+		
+		// Left
+		if (this.center.x >= canvas.width)
+			this.center.x = this.right.x - this.right.width;
+		
+		if (this.right.x >= canvas.width)
+			this.right.x = this.center.x - this.center.width;
+		
+		// Right
+		if (this.center.x + this.center.width <= 0)
+			this.center.x = this.right.width;
+		
+		if (this.right.x + this.right.width <= 0)
+			this.right.x = this.center.width;
+	}
+}
+
