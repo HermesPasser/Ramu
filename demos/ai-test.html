@@ -1,0 +1,100 @@
+<canvas id="canvas" width="500" height="500" style="border:1px solid #000000;"></canvas>
+<script type="text/javascript" src="../Ramu.js"></script>
+
+<script>
+// A.I Test by Hermes Passer in 09-19-17 using Ramu 0.4
+
+FORCE = 3;
+
+class EnemyBase extends SimpleRectCollisor{
+	constructor(x, y, width, height){
+		super(x,y, width, height);
+		this.anim = new SpriteAnimation(this.x, this.y, this.width, this.height);
+		this.inGround = false;
+	}
+		
+	setX(x){
+		this.anim.x = x;
+		this.x = x;
+	}
+	
+	setY(y){
+		this.anim.y = y;
+		this.y = y;
+	}	
+	
+	addX(x){
+		this.anim.x += x;
+		this.x += x;
+	}
+	
+	addY(y){
+		this.anim.y += y;
+		this.y += y;
+	}
+}
+
+class SimpleEnemy extends EnemyBase{
+	start(){
+		super.start();
+	}
+	
+	onCollision(){
+		if (this.collision.tag == "ground")
+			this.inGround = true;
+	}
+	
+	update(){
+		super.update();
+		
+		if (!this.isInCollision)
+			if (!this.inGround)
+				this.addY(FORCE * Ramu.time.delta);
+		else this.inGround = false;
+		
+		// Condição para mudar de lado é parecido com isso:
+		// if (boxPos >= limit || boxPos <= 0) boxVelocity = -boxVelocity;
+		
+		
+		// Adicionando uma força usando o delta time
+		
+		// var distance = APP.bullet.speed * APP.core.delta;
+		// APP.bullet.x = APP.bullet.x - distance;
+		// update: function() {
+		 // var distance = 100 * APP.core.delta;
+		 // APP.thing.x += distance;
+		 // }
+		
+		if (this.x > canvas.width)
+			this.setX(-this.width - 1);
+		else if (this.x < -this.width)
+			this.setX(canvas.width);
+	}
+}
+
+class MyGame extends GameObj{
+	start(){
+		Ramu.debugMode = true;
+		
+		this.g1 = new EnemyBase(1,450,200,50);
+		this.g2 = new EnemyBase(250,450,500,50);
+		this.g1.anim.addFrame("img/ground.png");
+		this.g2.anim.addFrame("img/ground.png");
+		this.g1.tag = "ground";
+		this.g2.tag = "ground";
+		
+		this.e = new SimpleEnemy(300,300,50,50);
+		this.e.anim.addFrame("img/ground.png");
+		this.e.anim.addFrame("img/flying_ground.png");
+	}
+	
+	update(){
+	
+	}
+}
+
+new MyGame(0,0,0,0);
+
+Ramu.init(); 
+
+</script>

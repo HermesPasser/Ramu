@@ -1,4 +1,4 @@
-// Potato Atack by Hermes Passer in 09-12-27 using Ramu 0.2
+// Potato Atack by Hermes Passer in 09-12-17 using Ramu 0.2
 
 class AnimatedCollisor extends SimpleRectCollisor{
 	constructor(x,y,w,h){
@@ -56,7 +56,7 @@ class MovingChar extends SimpleRectCollisor{
 	}
 	draw(){
 		super.draw();
-		if (this.die) ctx.fillText("*Died*",this.x, this.y);
+		if (this.die) ctx.fillText("*died*",this.x, this.y);
 		else ctx.strokeRect(this.x, this.y, this.width, this.height);
 	}
 	
@@ -68,16 +68,16 @@ class MovingChar extends SimpleRectCollisor{
 		super.update();
 		
 		this.canDraw = true;
-		var value = 2 * Ramu.time.delta;
+		var value = 100 * Ramu.time.delta;
 		
 		if (Ramu.lastKeyPressed == 97 || Ramu.lastKeyPressed == keyCode.a){ 		// A
-			this.x -= 2 * Ramu.time.delta;
+			this.x -= value;
 		} else if (Ramu.lastKeyPressed == 100 || Ramu.lastKeyPressed == keyCode.d){ // D
-			this.x += 2	* Ramu.time.delta;
+			this.x += value;
 		}else if (Ramu.lastKeyPressed == 115){ // S
-			this.y += 2 * Ramu.time.delta;
+			this.y += value;
 		} else if (Ramu.lastKeyPressed == 119){ // W
-			this.y -= 2 * Ramu.time.delta;
+			this.y -= value;
 		}
 		
 		if (this.x <= 0)
@@ -182,7 +182,7 @@ class MyGame extends Drawable{
 		switch(this.currState){
 			case this.state.menu:			
 				ctx.font="30px Verdana";
-				ctx.fillText("img/potato Attack", this.w - 65, this.h - 50);
+				ctx.fillText("Potato Attack", this.w - 65, this.h - 50);
 			
 				ctx.font="13px Arial";
 				ctx.strokeStyle = this.currOp == 0 ? "red" : "black";

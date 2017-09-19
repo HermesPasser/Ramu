@@ -1,4 +1,4 @@
-// Animation Exemple by Hermes Passer in 09-14-27
+// Animation Exemple by Hermes Passer in 09-14-17
 
 class AnimTest extends GameObj{
 	start(){
@@ -13,7 +13,7 @@ class AnimTest extends GameObj{
 		this.t.addFrame("anim/8.png");
 		this.t.addFrame("anim/9.png");
 		this.t.addFrame("anim/10.png");
-		this.t.animationTime = 100;
+		this.t.animationTime = 1;	
 	}
 }
 

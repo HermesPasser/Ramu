@@ -1,5 +1,5 @@
 // --------------------------------- //
-// Ramu 0.3 - Hermes Passer in 08/09 //
+// Ramu 0.4 - Hermes Passer in 08/09 //
 //      hermespasser.github.io       //
 // blog: gladiocitrico.blogspot.com  //
 // --------------------------------- //
@@ -7,15 +7,15 @@
 // criar scenario com plataformas que se mechem
 // e parallax
 
-var gameObjs	   = [];
-var objsToDraw 	   = [];
-var objsToCollide  = [];
-var drawLastPriority = 0;
+var gameObjs	   = [],
+    objsToDraw 	   = [],
+    objsToCollide  = [],
+    drawLastPriority = 0;
 
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 
-// Diferencia minuscula e maiuscula
+// adc letras em maiusculo
 const keyCode = {
 	a:    65, b:    66, c:    67, d:    68, e:    69, f:    70, g:    71, h:    72, i:    73, j:    74, 
 	k:    75, l:    76, m:    77, n:    78, o:    79, p:    80, q:	  81, r:    82, s:    83, t:    84,
@@ -38,21 +38,23 @@ const keyCode = {
 	equal_sign: 187, comma: 188, dash: 189, period: 190, forward_slash: 191, back_slash: 220, grave_accent: 192, single_quote: 222
 };
 
-class Ramu{	
-	constructor() {
+class Ramu{
+	/// Prevents creating an instance of this class.
+	constructor(){
 		throw new Error('This is a static class');
 	}
 	
+	/// Init the Ramu and Ramu main loop.
 	static init(){
 		Ramu.debugMode = false;
 		Ramu.inLoop = true;
-		Ramu.time = { last: 0, delta: 0 };
+		Ramu.time = { last: Date.now(), delta: 0 };
 		Ramu.lastKeyPressed = null;
-		// Ramu.size = {x: 0, y: 0, w: 0, h: 0};
+		// Ramu.rect = {x: 0, y: 0, w: 0, h: 0};
 		
 		Ramu.input();
 		Ramu.start();
-		window.requestAnimationFrame(Ramu.loop);
+		FrameID = window.requestAnimationFrame(Ramu.loop);
 	}
 	
 	static input(){
@@ -61,11 +63,11 @@ class Ramu{
 		}
 	}
 
+	/// Main loop of Ramu.
 	static loop(){
-		// Calcule delta time
-		var t = Date.now();
-		Ramu.time.delta = t - Ramu.time.last;
-		Ramu.time.last = t;
+		// Calculate the delta time
+		var now = Date.now();
+		Ramu.time.delta = (now - Ramu.time.last) / 1000;
 		
 		if (Ramu.inLoop){
 			Ramu.update();
@@ -73,27 +75,30 @@ class Ramu{
 		}
 		
 		Ramu.draw();
-		
-		// To the input work even with update disbled
-		Ramu.lastKeyPressed = null;
+		Ramu.lastKeyPressed = null; // To the input work even with update disbled
+		Ramu.time.last = now;
 		window.requestAnimationFrame(Ramu.loop);
 	}
 	
+	/// Executes all start methods of all gameObjs in the game.
 	static start(){
 		for (var i = 0; i < gameObjs.length; i++)
 			gameObjs[i].start();	
 	}
 	
+	/// Update all gameObjs in the game.
 	static update(){
 		for (var i = 0; i < gameObjs.length; i++)
 			gameObjs[i].update();	
 	}
 	
+	/// Check all collisions in the game.
 	static checkCollision(){
 		for (var i = 0; i < objsToCollide.length; i++)
 			objsToCollide[i].checkCollision();
 	}
 	
+	/// Executes all draw methods of all gameObjs in the game.
 	static draw(){	
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		
@@ -118,18 +123,18 @@ class GameObj{
 	
 	destroy(){
 		for (var i = 0; i < gameObjs.length; i++){
-			if (gameObjs[i] == this){
+			if (gameObjs[i] === this){
 				gameObjs.splice(i);
 				break;
 			}
 		}
 	} 
 	
-	start() { } // Virtual
+	/// Virtual start to be inherited.
+	start() { }
 	
-	update() { } // Virtual
-	
-	// onKeypress() { } // Virtual
+	/// Virtual update to be inherited.
+	update() { }
 }
 
 class Drawable extends GameObj{
@@ -165,7 +170,7 @@ class Drawable extends GameObj{
 	destroy(){
 		super.destroy();
 		for (var i = 0; i < objsToDraw.length; i++){
-			if (objsToDraw[i] == this){
+			if (objsToDraw[i] === this){
 				objsToDraw.splice(i);
 				break;
 			}
@@ -176,7 +181,8 @@ class Drawable extends GameObj{
 		if (this.canDraw) this.draw();
 	}
 	
-	draw(){ } // Virtual
+	/// Virtual draw to be inherited.
+	draw(){ }
 }
 
 class Collisor extends Drawable{
@@ -191,7 +197,7 @@ class Collisor extends Drawable{
 	destroy(){
 		super.destroy();
 		for (var i = 0; i < objsToCollide.length; i++){
-			if (objsToCollide[i] == this){
+			if (objsToCollide[i] === this){
 				objsToCollide.splice(i);
 				break;
 			}
@@ -202,7 +208,8 @@ class Collisor extends Drawable{
 		this.canDraw = Ramu.debugMode;
 	}
 	
-	onCollision(){ } // Virtual
+	/// Virtual onCollision to be inherited.
+	onCollision(){ }
 
 	checkCollision(){
 		if(!this.canCollide) return;
@@ -263,7 +270,7 @@ class SpriteAnimation extends Drawable{
 		this.frames 		= [];
 		this.currentFrame 	= 0;
 		this.currentTime 	= 0;
-		this.animationTime 	= 500;
+		this.animationTime 	= 2;
 		this.animationPause = false;
 	}
 	

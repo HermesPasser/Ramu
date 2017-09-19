@@ -1,4 +1,4 @@
-// Mapping Test by Hermes Passer in 09-13-27 using Ramu 0.2
+// Mapping Test by Hermes Passer in 09-13-17 using Ramu 0.2
 
 class MyGame extends Drawable{
 	start(){
