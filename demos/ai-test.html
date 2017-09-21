@@ -1,4 +1,4 @@
-<canvas id="canvas" width="500" height="500" style="border:1px solid #000000;"></canvas>
+<canvas id="canvas" width="512" height="480" style="border:1px solid #000000;"></canvas>
 <script type="text/javascript" src="../Ramu.js"></script>
 
 <script>
@@ -64,6 +64,8 @@ class SimpleEnemy extends EnemyBase{
 		 // var distance = 100 * APP.core.delta;
 		 // APP.thing.x += distance;
 		 // }
+		
+		// create a collider to check if the ground is above the npc
 		
 		if (this.x > canvas.width)
 			this.setX(-this.width - 1);

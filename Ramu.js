@@ -5,7 +5,6 @@
 // --------------------------------- //
 
 // criar scenario com plataformas que se mechem
-// e parallax
 
 var gameObjs	   = [],
     objsToDraw 	   = [],
@@ -38,6 +37,15 @@ const keyCode = {
 	equal_sign: 187, comma: 188, dash: 189, period: 190, forward_slash: 191, back_slash: 220, grave_accent: 192, single_quote: 222
 };
 
+class Rect{	
+	constructor(x, y, w, h){
+		this.x = x;
+		this.y = y;
+		this.width = w;
+		this.height = h;
+	}
+}
+
 class Ramu{
 	/// Prevents creating an instance of this class.
 	constructor(){
@@ -50,11 +58,10 @@ class Ramu{
 		Ramu.inLoop = true;
 		Ramu.time = { last: Date.now(), delta: 0 };
 		Ramu.lastKeyPressed = null;
-		// Ramu.rect = {x: 0, y: 0, w: 0, h: 0};
 		
 		Ramu.input();
 		Ramu.start();
-		FrameID = window.requestAnimationFrame(Ramu.loop);
+		window.requestAnimationFrame(Ramu.loop);
 	}
 	
 	static input(){
@@ -294,6 +301,36 @@ class SpriteAnimation extends Drawable{
 	draw(){
 		if (this.frames.length > 0)
 			ctx.drawImage(this.frames[this.currentFrame], this.x, this.y, this.width, this.height);
+	}
+}
+
+class SpritesheetAnimation extends SpriteAnimation{
+	constructor(src, x, y, width, height){
+		super(x, y, width, height);
+		this.img = new Image();
+		this.img.src = src;
+	}
+	
+	addFrame(rect){
+		this.frames.push(rect);
+	}
+	
+	update(){
+		if (this.animationPause)
+			return;
+		
+		this.currentTime += Ramu.time.delta;
+		if (this.frames.length > 0 && this.currentTime > this.animationTime){ 
+			this.currentFrame = (this.currentFrame + 1) % this.frames.length;
+			this.currentTime = 0;
+		} 
+	}
+	
+	draw(){
+		if (this.frames.length > 0)
+			ctx.drawImage(this.img, this.frames[this.currentFrame].x, this.frames[this.currentFrame].y, 
+						  this.frames[this.currentFrame].width, this.frames[this.currentFrame].height, 
+						  this.x, this.y, this.width, this.height);
 	}
 }
 
