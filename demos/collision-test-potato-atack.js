@@ -61,7 +61,6 @@ class MovingChar extends SimpleRectCollisor{
 	}
 	
 	update(){
-		console.log(Ramu.lastKeyPressed)
 		if (this.die) 
 			return;
 		
@@ -70,15 +69,10 @@ class MovingChar extends SimpleRectCollisor{
 		this.canDraw = true;
 		var value = 100 * Ramu.time.delta;
 		
-		if (Ramu.lastKeyPressed == 97 || Ramu.lastKeyPressed == keyCode.a){ 		// A
-			this.x -= value;
-		} else if (Ramu.lastKeyPressed == 100 || Ramu.lastKeyPressed == keyCode.d){ // D
-			this.x += value;
-		}else if (Ramu.lastKeyPressed == 115){ // S
-			this.y += value;
-		} else if (Ramu.lastKeyPressed == 119){ // W
-			this.y -= value;
-		}
+		if (keyCode.a in Ramu.pressedKeys) this.x -= value;
+		if (keyCode.d in Ramu.pressedKeys) this.x += value;
+		if (keyCode.s in Ramu.pressedKeys) this.y += value;
+		if (keyCode.w in Ramu.pressedKeys) this.y -= value;
 		
 		if (this.x <= 0)
 			this.x = canvas.width - this.width;
@@ -127,11 +121,12 @@ class MyGame extends Drawable{
 	}
 		
 	readInput(){
-		if (Ramu.lastKeyPressed == 115) // S
+		if (keyCode.s in Ramu.lastKeysPressed)
 			this.currOp = (this.currOp + 1) % this.option.length
-		else if (Ramu.lastKeyPressed == 119) // W
+		else if (keyCode.w in Ramu.lastKeysPressed) 
 			this.currOp = this.currOp - 1 <= -1 ? this.option.length - 1 : this.currOp - 1;
-		else if (Ramu.lastKeyPressed == 13){ // Enter
+		
+		if (keyCode.enter in Ramu.lastKeysPressed){
 			if (this.currState == this.state.gameOver){
 				this.character.destroy();
 				this.currState = this.state.menu;

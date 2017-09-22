@@ -1,11 +1,10 @@
 // --------------------------------- //
-// Ramu 0.4 - Hermes Passer in 08/09 //
+// Ramu 0.4 - Hermes Passer in 09/21 //
 //      hermespasser.github.io       //
 // blog: gladiocitrico.blogspot.com  //
 // --------------------------------- //
 
 // criar scenario com plataformas que se mechem
-
 var gameObjs	   = [],
     objsToDraw 	   = [],
     objsToCollide  = [],
@@ -14,7 +13,8 @@ var gameObjs	   = [],
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 
-// adc letras em maiusculo
+// A diferença entre keydown() e keypress() está que o segundo não 
+// é capturado quando as teclas ctrl, alt ou shift são pressionadas.
 const keyCode = {
 	a:    65, b:    66, c:    67, d:    68, e:    69, f:    70, g:    71, h:    72, i:    73, j:    74, 
 	k:    75, l:    76, m:    77, n:    78, o:    79, p:    80, q:	  81, r:    82, s:    83, t:    84,
@@ -57,19 +57,26 @@ class Ramu{
 		Ramu.debugMode = false;
 		Ramu.inLoop = true;
 		Ramu.time = { last: Date.now(), delta: 0 };
-		Ramu.lastKeyPressed = null;
-		
 		Ramu.input();
 		Ramu.start();
 		window.requestAnimationFrame(Ramu.loop);
 	}
 	
+	/// Start all input events listeners
 	static input(){
-		document.body.onkeypress = function(e) {
-			Ramu.lastKeyPressed = (e.keyCode || e.which);
-		}
+		Ramu.pressedKeys	 = {}; // The key continues on this list until the key up.
+		Ramu.lastKeysPressed = {}; // The key continues on this list until the end of frame.
+		
+		document.body.addEventListener("keydown", function(e){	
+			Ramu.pressedKeys[e.keyCode] = e.keyCode;
+			Ramu.lastKeysPressed[e.keyCode] = e.keyCode; //= e.keyCode;
+		}, false);
+		
+		document.body.addEventListener("keyup", function(e){
+			delete Ramu.pressedKeys[e.keyCode];
+		}, false);
 	}
-
+	
 	/// Main loop of Ramu.
 	static loop(){
 		// Calculate the delta time
@@ -82,7 +89,7 @@ class Ramu{
 		}
 		
 		Ramu.draw();
-		Ramu.lastKeyPressed = null; // To the input work even with update disbled
+		Ramu.lastKeysPressed = {};
 		Ramu.time.last = now;
 		window.requestAnimationFrame(Ramu.loop);
 	}
@@ -334,7 +341,7 @@ class SpritesheetAnimation extends SpriteAnimation{
 	}
 }
 
-class Parallax extends GameObj{
+class Parallax extends GameObj{ // Not use time delta yet
 	constructor(src, x, y, w, h, velocity = 2){
 		super(x, y);
 		this.left   = new GameSprite(src, x - w, y, w, h);

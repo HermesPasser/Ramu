@@ -19,7 +19,7 @@ class AnimTest extends Drawable{
 		this.sheet.addFrame(new Rect(0,0,133,135));
 		this.sheet.addFrame(new Rect(134,0,133,135));
 		this.sheet.addFrame(new Rect(270,0,133,135));
-		this.sheet.animationTime = 0.5;
+		this.sheet.animationTime = 0.2;
 	}
 	
 	draw(){
