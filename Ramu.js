@@ -13,8 +13,6 @@ var gameObjs	   = [],
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 
-// A diferença entre keydown() e keypress() está que o segundo não 
-// é capturado quando as teclas ctrl, alt ou shift são pressionadas.
 const keyCode = {
 	a:    65, b:    66, c:    67, d:    68, e:    69, f:    70, g:    71, h:    72, i:    73, j:    74, 
 	k:    75, l:    76, m:    77, n:    78, o:    79, p:    80, q:	  81, r:    82, s:    83, t:    84,
@@ -142,7 +140,7 @@ class GameObj{
 				break;
 			}
 		}
-	} 
+	}
 	
 	/// Virtual start to be inherited.
 	start() { }
@@ -185,7 +183,7 @@ class Drawable extends GameObj{
 		super.destroy();
 		for (var i = 0; i < objsToDraw.length; i++){
 			if (objsToDraw[i] === this){
-				objsToDraw.splice(i);
+				objsToDraw.splice(i, 1);
 				break;
 			}
 		}
@@ -382,6 +380,13 @@ class Parallax extends GameObj{ // Not use time delta yet
 		
 		if (this.right.x + this.right.width <= 0)
 			this.right.x = this.center.width;
+	}
+	
+	destroy(){
+		this.left.destroy();
+		this.center.destroy();
+		this.right.destroy();
+		super.destroy();
 	}
 }
 

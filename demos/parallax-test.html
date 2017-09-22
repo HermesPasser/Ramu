@@ -6,14 +6,13 @@
 
 class MyGame extends GameObj{
 	start(){
-		var c = new Parallax("img/clouds.png", 1, 1, 500, 500, -2);
-		var sky = new Parallax("img/sky.png", 1, 1, 500, 500);
-		c.setDrawPriority(0)
+		var sky = new Parallax("img/clouds.png", 1, 1, 500, 500, -2);
+		var montains = new Parallax("img/montains.png", 1, 1, 500, 500);
+		sky.setDrawPriority(0)
 	}
 }
 
 new MyGame(0,0,0,0);
-
 Ramu.init(); 
 
 </script>

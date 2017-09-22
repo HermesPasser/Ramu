@@ -4,53 +4,105 @@
 <script>
 // A.I Test by Hermes Passer in 09-19-17 using Ramu 0.4
 
-FORCE = 3;
+FORCE = 100;
+RANGE = 50;
 
-class EnemyBase extends SimpleRectCollisor{
+// Essa classe deve conter um collider que representa o personagem, um map
+//de animations para representar suas animações, e um ou dois colliders
+//que fiquem em baixo na frente e/ou tras para verificar se o proximo passo
+//que o npc der é válido.
+// Fazer que enemybase não seja mais um simplerectcollisor para poder controlar ambos os colliders
+//mais facilmente.
+class EnemyBase extends GameObj{
 	constructor(x, y, width, height){
 		super(x,y, width, height);
-		this.anim = new SpriteAnimation(this.x, this.y, this.width, this.height);
+		
+		// Create because GameObj doesn't contains width and height
+		this.width  = width;
+		this.height = height;
+		
+		// Colliders to detect collision
+		this.mainCol   = new SimpleRectCollisor(x, y, width, height);
+		this.leftCol   = new SimpleRectCollisor(x - width + 15 , y + height, 10, 10);
+		// this.rightCol  = new SimpleRectCollisor(x + width , y + height, 10, 10);
+		
+		this.anim = {};
 		this.inGround = false;
 	}
+	
+	addAnimation(nameID, animation){
+		animation.x = this.x;
+		animation.y = this.y;
+		animation.canDraw = false;
+		this.anim[nameID] = animation;
+	}
+	
+	setCurrentAnimation(nameID){
+		for (var key in this.anim)
+			this.anim[key].canDraw = false;
 		
+		if (this.anim[key] != null)
+			this.anim[nameID].canDraw = true;
+	}
+	
 	setX(x){
-		this.anim.x = x;
+		for (var key in this.anim)
+			this.anim[key].x = x;
+		this.mainCol.x 	= x;
+		this.leftCol.x 	= x - this.width + 15;
+		// this.rightCol.x = x;
 		this.x = x;
 	}
 	
 	setY(y){
-		this.anim.y = y;
+		for (var key in this.anim)
+			this.anim[key].y = y;
+		this.mainCol.y  = y;
+		this.leftCol.y 	= y;
+		// this.rightCol.y = y;
 		this.y = y;
 	}	
 	
 	addX(x){
-		this.anim.x += x;
+		for (var key in this.anim)
+			this.anim[key].x += x;
+		this.mainCol.x  += x;
+		this.leftCol.x 	+= x;
+		// this.rightCol.x += x;
 		this.x += x;
 	}
 	
 	addY(y){
-		this.anim.y += y;
+		for (var key in this.anim)
+			this.anim[key].y += y;
+		this.mainCol.y  += y;
+		this.leftCol.y 	+= y;
+		// this.rightCol.y += y;
 		this.y += y;
+	}
+	
+	update(){
+		if (this.mainCol.collision != null && this.mainCol.collision.tag == "ground")
+			this.inGround = true;
+		
+		if (this.leftCol.isInCollision) //!= null && this.leftCol.collision.tag != "ground")
+			console.log(this.leftCol.collision)
 	}
 }
 
 class SimpleEnemy extends EnemyBase{
-	start(){
-		super.start();
-	}
-	
-	onCollision(){
-		if (this.collision.tag == "ground")
-			this.inGround = true;
-	}
+
 	
 	update(){
 		super.update();
 		
-		if (!this.isInCollision)
-			if (!this.inGround)
-				this.addY(FORCE * Ramu.time.delta);
-		else this.inGround = false;
+		// Gravity system
+		// if (!this.mainCol.isInCollision) this.inGround = false;
+		if (!this.inGround) this.addY(FORCE * Ramu.time.delta);
+		
+		// Move System		
+		if (this.inGround) this.addX(-(FORCE * Ramu.time.delta));
+		
 		
 		// Condição para mudar de lado é parecido com isso:
 		// if (boxPos >= limit || boxPos <= 0) boxVelocity = -boxVelocity;
@@ -64,9 +116,7 @@ class SimpleEnemy extends EnemyBase{
 		 // var distance = 100 * APP.core.delta;
 		 // APP.thing.x += distance;
 		 // }
-		
-		// create a collider to check if the ground is above the npc
-		
+				
 		if (this.x > canvas.width)
 			this.setX(-this.width - 1);
 		else if (this.x < -this.width)
@@ -78,16 +128,49 @@ class MyGame extends GameObj{
 	start(){
 		Ramu.debugMode = true;
 		
-		this.g1 = new EnemyBase(1,450,200,50);
-		this.g2 = new EnemyBase(250,450,500,50);
-		this.g1.anim.addFrame("img/ground.png");
-		this.g2.anim.addFrame("img/ground.png");
+		// Ground
+		
+		new GameSprite("img/ground.png",1,450,200,50);
+		this.g1 = new SimpleRectCollisor(1,450,200,50);
 		this.g1.tag = "ground";
+		
+		new GameSprite("img/ground.png",250,450,500,50);
+		this.g2 = new SimpleRectCollisor(250,450,500,50);
 		this.g2.tag = "ground";
 		
-		this.e = new SimpleEnemy(300,300,50,50);
-		this.e.anim.addFrame("img/ground.png");
-		this.e.anim.addFrame("img/flying_ground.png");
+		// Animation
+		
+		var lum_idle = new SpritesheetAnimation("lum-rip-by-rojimenez.png", 40, 40, 25, 50);
+		lum_idle.addFrame(new Rect(0,0,25,50));
+		
+		var lum_run = new SpritesheetAnimation("lum-rip-by-rojimenez.png", 80, 40, 25, 50);
+		lum_run.addFrame(new Rect(0,0,25,50));
+		lum_run.addFrame(new Rect(25,0,25,50));
+		lum_run.addFrame(new Rect(50,0,25,50));
+		lum_run.animationTime = 0.2;
+		
+		/*
+		this.lum_jump = new SpritesheetAnimation("lum-rip-by-rojimenez.png", 140, 40, 25, 50);
+		this.lum_jump.addFrame(new Rect(75,0,25,50));
+		this.lum_jump.addFrame(new Rect(101,0,25,50));
+		this.lum_jump.animationTime = 0.2;
+		
+		// add a climb idle?
+		this.lum_climb = new SpritesheetAnimation("lum-rip-by-rojimenez.png", 180, 40, 25, 50);
+		this.lum_climb.addFrame(new Rect(125,0,25,50));
+		this.lum_climb.addFrame(new Rect(151,0,25,50));
+		this.lum_climb.animationTime = 0.2;
+		
+		this.lum_crouch = new SpritesheetAnimation("lum-rip-by-rojimenez.png", 200, 40, 25, 50);
+		this.lum_crouch.addFrame(new Rect(175,0,25,50));
+		*/
+		
+		// Enemy
+		
+		this.lum = new SimpleEnemy(300,300,25,50);
+		this.lum.addAnimation("idle", lum_idle);
+		this.lum.addAnimation("run", lum_run);
+		this.lum.setCurrentAnimation("idle");
 	}
 	
 	update(){
