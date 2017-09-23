@@ -34,14 +34,14 @@
 
 class Player extends GameObj{
 	constructor(x, y, width, height){
-		super(x,y, width, height);
+		super(x,y);
 		
 		// Create because GameObj doesn't contains width and height
 		this.width  = width;
 		this.height = height;
 		
 		// Colliders to detect collision
-		this.mainCol   = new SimpleRectCollisor(x, y, width, height);
+		this.mainCol = new SimpleRectCollisor(x, y, width, height);
 		
 		this.anim = {};
 		this.inGround = false;
@@ -108,15 +108,46 @@ class Player extends GameObj{
 	}
 }
 
+class Lightning extends GameObj{
+	constructor(x, y){
+		super(x,y);	
+		this.width  = 23;
+		this.height = 14;
+		this.coll = new SimpleRectCollisor(x, y, this.width, this.height);
+		this.sprite = new GameSprite("lightning.png", x, y, this.width, this.height);
+		this.directionIsRight = true;
+	}
+	
+	start(){
+		
+	}
+	
+	update(){
+		var force = 50 * Ramu.time.delta;
+		if (this.directionIsRight)
+			force = -force;
+		this.x += force;
+		this.sprite.x += force;
+		this.coll.x += force; 
+		
+		if (this.x < -this.width || this.x > canvas.width){
+			this.sprite.destroy();
+			this.coll.destroy();
+			this.destroy();
+		}
+	}
+}
 
 var state = { idle: 0, run: 1, jump: 2, rouch: 3, climb_idle: 4, climb: 4 }
 var current = state.idle;
-var vel = 50;
-	var  x = 200;
-	var  y = 300;
-class MyGame extends Drawable{
+var vel = 50
+var trueHeight = 50;
+
+class MyGame extends GameObj{
 	start(){
 		Ramu.debugMode = true;
+		
+		// new Lightning(40, 40);
 		
 		// Animation
 		
@@ -149,7 +180,7 @@ class MyGame extends Drawable{
 		
 		// Player
 		
-		this.lum = new Player(300,300,25,50);
+		this.lum = new Player(300,300,25,trueHeight);
 		this.lum.addAnimation("idle", lum_idle);
 		this.lum.addAnimation("run", lum_run);
 		this.lum.addAnimation("jump", lum_jump);
@@ -229,35 +260,20 @@ class MyGame extends Drawable{
 		// Rouch
 		else if (keyCode.s in Ramu.pressedKeys){
 			current = state.rouch;
+			this.lum.mainCol.height = trueHeight/2;
+			// move de main col
 		}
 		
 		// Jump
 		else if (keyCode.space in Ramu.pressedKeys){
 			current = state.jump;
-		} else current = state.idle;
+		} else {
+			current = state.idle;
+			this.lum.mainCol.height = trueHeight;
+		}
 		
-		
-	}
-	
-
-	draw(){
-		ctx.save();
-
-		//The scale will flip the whole canvas, and will move the image 
-		//to the left (by the image width size)
-
-		
-		var img = new Image()
-		img.src = "img/flying_ground.png"
-		
-		// ctx.drawImage(img,200,300);
-		// ctx.strokeRect(x,y, img.width, img.height);
-		// ctx.drawImage(img,x,y)
-
-
 	}
 }
-
 
 new MyGame(0,0,0,0);
 

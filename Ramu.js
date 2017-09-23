@@ -152,7 +152,7 @@ class GameObj{
 	destroy(){
 		for (var i = 0; i < gameObjs.length; i++){
 			if (gameObjs[i] === this){
-				gameObjs.splice(i);
+				gameObjs.splice(i, 1);
 				break;
 			}
 		}
@@ -259,7 +259,7 @@ class Collisor extends Drawable{
 		super.destroy();
 		for (var i = 0; i < objsToCollide.length; i++){
 			if (objsToCollide[i] === this){
-				objsToCollide.splice(i);
+				objsToCollide.splice(i, 1);
 				break;
 			}
 		}
