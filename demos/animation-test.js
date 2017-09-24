@@ -2,24 +2,34 @@
 
 class AnimTest extends Drawable{
 	start(){
-		this.spriteAnim = new SpriteAnimation(canvas.width/2 - 25, 115, 50, 50);
-		this.spriteAnim.addFrame("img/anim/1.png");
-		this.spriteAnim.addFrame("img/anim/2.png");
-		this.spriteAnim.addFrame("img/anim/3.png");
-		this.spriteAnim.addFrame("img/anim/4.png");
-		this.spriteAnim.addFrame("img/anim/5.png");
-		this.spriteAnim.addFrame("img/anim/6.png");
-		this.spriteAnim.addFrame("img/anim/7.png");
-		this.spriteAnim.addFrame("img/anim/8.png");
-		this.spriteAnim.addFrame("img/anim/9.png");
-		this.spriteAnim.addFrame("img/anim/10.png");
-		this.spriteAnim.animationTime = 0.5;
 		
-		this.sheet = new SpritesheetAnimation("img/gear.png", canvas.width/2 - 67, 255, 134, 136);
+		// Separate sprite animation without loop
+		this.spriteAnimW = new SpriteAnimation(100, 115, 50, 50);
+		this.spriteAnimW.animationTime = 0.5;
+		this.spriteAnimW.playInLoop = false;
+		for (var i = 1; i < 11; i++)
+			this.spriteAnimW.addFrame("img/anim/" + i + ".png");
+		
+		// Separate sprite animation
+		this.spriteAnim = new SpriteAnimation(canvas.width/2 + 35, 115, 50, 50);
+		this.spriteAnim.animationTime = 0.5;
+		for (var i = 1; i < 11; i++)
+			this.spriteAnim.addFrame("img/anim/" + i + ".png");
+		
+		// One sprite (sheet) animation without loop
+		this.sheetW = new SpritesheetAnimation("img/gear.png", 50, 255, 134, 136);
+		this.sheetW.animationTime = 0.2;
+		this.sheetW.playInLoop = false;
+		this.sheetW.addFrame(new Rect(0,0,133,135));
+		this.sheetW.addFrame(new Rect(134,0,133,135));
+		this.sheetW.addFrame(new Rect(270,0,133,135));
+		
+		// One sprite (sheet) animation
+		this.sheet = new SpritesheetAnimation("img/gear.png", canvas.width/2, 255, 134, 136);
+		this.sheet.animationTime = 0.2;
 		this.sheet.addFrame(new Rect(0,0,133,135));
 		this.sheet.addFrame(new Rect(134,0,133,135));
-		this.sheet.addFrame(new Rect(270,0,133,135));
-		this.sheet.animationTime = 0.2;
+		this.sheet.addFrame(new Rect(270,0,133,135));	
 	}
 	
 	draw(){

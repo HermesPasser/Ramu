@@ -1,5 +1,5 @@
 // --------------------------------- //
-// Ramu 0.4 - Hermes Passer in 09/21 //
+// Ramu 0.5 - Hermes Passer in 09/21 //
 //      hermespasser.github.io       //
 // blog: gladiocitrico.blogspot.com  //
 // --------------------------------- //
@@ -331,11 +331,13 @@ class GameSprite extends Drawable{
 class SpriteAnimation extends Drawable{
 	constructor(x, y, width, height){
 		super(x, y, width, height);
-		this.frames 		= [];
-		this.currentFrame 	= 0;
-		this.currentTime 	= 0;
-		this.animationTime 	= 2;
-		this.animationPause = false;
+		this.frames 		 = [];
+		this.currentFrame 	 = 0;
+		this.currentTime 	 = 0;
+		this.animationTime 	 = 2;
+		this.animationPause  = false;
+		this.animationIsOver = false;
+		this.playInLoop 	 = true;
 	}
 	
 	addFrame(src){
@@ -344,9 +346,21 @@ class SpriteAnimation extends Drawable{
 		this.frames.push(img);
 	}
 	
+	reset(){
+		this.animationIsOver = false;
+		this.currentFrame = 0;
+		this.currentTime  = 0;
+	}
+	
 	update(){
 		if (this.animationPause)
 			return;
+		
+		if (this.currentFrame == this.frames.length - 1){
+			this.animationIsOver = true;
+			if (!this.playInLoop) return;
+			
+		} else this.animationIsOver = false;
 		
 		this.currentTime += Ramu.time.delta;
 		if (this.frames.length > 0 && this.currentTime > this.animationTime){ 
@@ -374,17 +388,6 @@ class SpritesheetAnimation extends SpriteAnimation{
 	
 	addFrame(rect){
 		this.frames.push(rect);
-	}
-	
-	update(){
-		if (this.animationPause)
-			return;
-		
-		this.currentTime += Ramu.time.delta;
-		if (this.frames.length > 0 && this.currentTime > this.animationTime){ 
-			this.currentFrame = (this.currentFrame + 1) % this.frames.length;
-			this.currentTime = 0;
-		} 
 	}
 	
 	draw(){		
