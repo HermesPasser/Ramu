@@ -1,4 +1,5 @@
 // Potato Atack by Hermes Passer in 09-12-17 using Ramu 0.2
+var dirPotato = "img/potato.png";
 
 class AnimatedCollisor extends SimpleRectCollisor{
 	constructor(x,y,w,h){
@@ -17,7 +18,7 @@ class StaticRect extends GameObj{
 	constructor(x,y,w,h){
 		super(x,y, w, h);	
 		this.collider = new AnimatedCollisor(x, y, w, h);
-		this.sprite = new GameSprite("img/potato.png", x, y, w, h);
+		this.sprite = new GameSprite(dirPotato, x, y, w, h);
 		this.sprite.canDraw = false;
 	}
 }
@@ -26,7 +27,7 @@ class AnimatedRect extends Drawable{
 	constructor(x,y,w,h){
 		super(x, y, w, h, false);	
 		this.collider = new AnimatedCollisor(x, y, w, h);
-		this.sprite = new GameSprite("img/potato.png", x, y, w, h);
+		this.sprite = new GameSprite(dirPotato, x, y, w, h);
 		this.sprite.forceX = Math.floor(Math.random() * 10) - 5
 		this.sprite.forceY = Math.floor(Math.random() * 10) - 5;
 		this.sprite.canDraw = false;
@@ -220,5 +221,4 @@ class MyGame extends Drawable{
 }
 	
 new MyGame(0,0,0,0);
-
 Ramu.init();

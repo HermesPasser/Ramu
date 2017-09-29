@@ -319,6 +319,7 @@ class SimpleRectCollisor extends Collisor{
 	}
 }
 
+// create version of gamesprite using sheets of an image instead of full images
 class GameSprite extends Drawable{
 	constructor(src, x, y, w, h, canDraw = true){
 		super(x, y, w, h);
@@ -332,10 +333,8 @@ class GameSprite extends Drawable{
 		let originY = this.flipVertically   ? -this.height - this.y : this.y;
 		
 		if (!RamuUtils.imageIsLoaded(this.img)){
-			ctx.strokeStyle = "black";
-			ctx.strokeRect(originX, originY, this.width, this.height); // Draw a black rect instead of image
-			ctx.strokeStyle = "#000000"; // reset default value
-			return false;
+			ctx.fillRect(originX, originY, this.width, this.height); // Draw a black rect instead of image
+			return;
 		}
 		
 		//if (this.canDraw)
@@ -389,10 +388,8 @@ class SpriteAnimation extends Drawable{
 		let originY = this.flipVertically   ? -this.height - this.y : this.y;
 		
 		if (!RamuUtils.imageIsLoaded(this.img)){
-			ctx.strokeStyle = "black";
-			ctx.strokeRect(originX, originY, this.width, this.height); // Draw a black rect when the image is not loaded
-			ctx.strokeStyle = "#000000"; // reset default value
-			return false;
+			ctx.fillRect(originX, originY, this.width, this.height); // Draw a black rect instead of image
+			return;
 		}
 		
 		if (this.frames.length > 0)
@@ -418,10 +415,8 @@ class SpritesheetAnimation extends SpriteAnimation{
 		let originY = this.flipVertically   ? -this.height - this.y : this.y;
 		
 		if (!RamuUtils.imageIsLoaded(this.img)){
-			ctx.strokeStyle = "black";
-			ctx.strokeRect(originX, originY, this.width, this.height); // Draw a black rect instead of image
-			ctx.strokeStyle = "#000000"; // reset default value
-			return false;
+			ctx.fillRect(originX, originY, this.width, this.height); // Draw a black rect instead of image
+			return;
 		}
 		
 		//Draw
