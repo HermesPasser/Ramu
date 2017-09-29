@@ -1,5 +1,5 @@
 // ---------------------------------- //
-// Ramu 0.5.1 - Hermes Passer in 09/21//
+// Ramu 0.5.2 - Hermes Passer in 09/21//
 //      hermespasser.github.io        //
 // blog: gladiocitrico.blogspot.com   //
 // ---------------------------------- //
@@ -333,7 +333,7 @@ class GameSprite extends Drawable{
 		
 		if (!RamuUtils.imageIsLoaded(this.img)){
 			ctx.strokeStyle = "black";
-			ctx.strokeRect(this.x, originX, originY, this.height); // Draw a black rect instead of image
+			ctx.strokeRect(originX, originY, this.width, this.height); // Draw a black rect instead of image
 			ctx.strokeStyle = "#000000"; // reset default value
 			return false;
 		}
@@ -390,7 +390,7 @@ class SpriteAnimation extends Drawable{
 		
 		if (!RamuUtils.imageIsLoaded(this.img)){
 			ctx.strokeStyle = "black";
-			ctx.strokeRect(this.x, originX, originY, this.height); // Draw a black rect when the image is not loaded
+			ctx.strokeRect(originX, originY, this.width, this.height); // Draw a black rect when the image is not loaded
 			ctx.strokeStyle = "#000000"; // reset default value
 			return false;
 		}
@@ -419,7 +419,7 @@ class SpritesheetAnimation extends SpriteAnimation{
 		
 		if (!RamuUtils.imageIsLoaded(this.img)){
 			ctx.strokeStyle = "black";
-			ctx.strokeRect(this.x, originX, originY, this.height); // Draw a black rect instead of image
+			ctx.strokeRect(originX, originY, this.width, this.height); // Draw a black rect instead of image
 			ctx.strokeStyle = "#000000"; // reset default value
 			return false;
 		}
