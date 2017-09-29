@@ -387,13 +387,14 @@ class SpriteAnimation extends Drawable{
 		let originX = this.flipHorizontally ? -this.width - this.x : this.x;
 		let originY = this.flipVertically   ? -this.height - this.y : this.y;
 		
-		if (!RamuUtils.imageIsLoaded(this.img)){
-			ctx.fillRect(originX, originY, this.width, this.height); // Draw a black rect instead of image
-			return;
-		}
-		
-		if (this.frames.length > 0)
+		if (this.frames.length > 0){
+			if (!RamuUtils.imageIsLoaded(this.frames[this.currentFrame])){
+				ctx.fillRect(originX, originY, this.width, this.height); // Draw a black rect instead of image
+				return;
+			}
+			
 			ctx.drawImage(this.frames[this.currentFrame], originX, originY, this.width, this.height);
+		}
 	}
 
 }
@@ -414,16 +415,17 @@ class SpritesheetAnimation extends SpriteAnimation{
 		let originX = this.flipHorizontally ? -this.width - this.x : this.x;
 		let originY = this.flipVertically   ? -this.height - this.y : this.y;
 		
-		if (!RamuUtils.imageIsLoaded(this.img)){
-			ctx.fillRect(originX, originY, this.width, this.height); // Draw a black rect instead of image
-			return;
-		}
-		
 		//Draw
-		if (this.frames.length > 0)
+		if (this.frames.length > 0){
+			if (!RamuUtils.imageIsLoaded(this.img)){
+				ctx.fillRect(originX, originY, this.width, this.height); // Draw a black rect instead of image
+				return;
+			}	
+			
 			ctx.drawImage(this.img, this.frames[this.currentFrame].x, this.frames[this.currentFrame].y, 
 						this.frames[this.currentFrame].width, this.frames[this.currentFrame].height, 
 						originX, originY, this.width, this.height);
+		}
 	}
 }
 

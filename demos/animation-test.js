@@ -1,6 +1,7 @@
 // Animation Exemple by Hermes Passer in 09-21-17
 var dirGear = "img/gear.png",
-	dirOther = "img/anim/"
+	dirOther = "img/anim/";
+	
 class AnimTest extends Drawable{
 	start(){
 		
@@ -16,7 +17,7 @@ class AnimTest extends Drawable{
 		this.spriteAnim.animationTime = 0.5;
 		for (var i = 1; i < 11; i++)
 			this.spriteAnim.addFrame(dirOther + i + ".png");
-		
+
 		// One sprite (sheet) animation without loop
 		this.sheetW = new SpritesheetAnimation(dirGear, 50, 255, 134, 136);
 		this.sheetW.animationTime = 0.2;
