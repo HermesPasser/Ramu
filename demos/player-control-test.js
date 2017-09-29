@@ -1,13 +1,14 @@
 // Player Control by Hermes Passer in 09-19-17 using Ramu 0.5
 var state = { idle: 0, run: 1, jump: 2, rouch: 3, climb_idle: 4, climb: 4 },
-	current = state.idle,
-	vel = 60,
-	trueHeight = 50,
-	timeToShot = 0.2,
-	currentTimeToShot = 0,
-	pixelsToJump = 100;
-	currentPixelToJump = 0;
-	inJump = false;
+	current 		   = state.idle,
+	vel 			   = 60,
+	trueHeight 		   = 50,
+	timeToShot 		   = 0.2,
+	currentTimeToShot  = 0,
+	currentPixelToJump = 0,
+	pixelsToJump 	   = 100;
+	gravityVel 		   = 15,
+	inJump 			   = false;
 	
 class Player extends GameObj{
 	constructor(x, y, width, height){
@@ -19,7 +20,7 @@ class Player extends GameObj{
 		
 		// Colliders to detect collision
 		this.mainCol = new SimpleRectCollisor(x, y, width, height);
-		
+
 		this.anim = {};
 		this.inGround = false;
 	}
@@ -82,6 +83,16 @@ class Player extends GameObj{
 			this.setX(-this.width - 1);
 		else if (this.x < -this.width)
 			this.setX(canvas.width);
+		
+		// Gravity
+			
+		var g = gravityVel * Ramu.time.delta;
+		this.addY(g);
+		
+		for (var i = 0; i < this.mainCol.collision.length; i++){
+			if (this.mainCol.collision[i].tag == "ground")
+				this.addY(-g);
+		}
 	}
 }
 
@@ -93,6 +104,7 @@ class Lightning extends GameObj{
 		this.coll = new SimpleRectCollisor(x, y, this.width, this.height);
 		this.sprite = new GameSprite("lightning.png", x, y, this.width, this.height);
 		this.directionIsRight = true;
+		this.tag = "shot";
 	}
 	
 	destroy(){
@@ -115,9 +127,11 @@ class Lightning extends GameObj{
 		this.coll.x += force; 
 
 		// Kill the enemy if collide // implementar inimigo
-		if (this.coll.collision != null && this.coll.collision.tag == "enemy"){
-			this.coll.collision.applyDamage(10);
-			this.destroy();
+		for (var i = 0; i < this.coll.collision.length; i++){
+			if (this.coll.collision[i].tag == "enemy"){
+				this.coll.collision[i].applyDamage(10);
+				this.destroy();					
+			}
 		}
 		
 		// Destroy when is out of the canvas
@@ -144,6 +158,25 @@ class Enemy extends SimpleRectCollisor{
 		this.health -= damage;
 		if (this.health < 1)
 			this.destroy();
+	}
+	
+	onCollision(){
+		for (var i = 0; i < this.collision.length; i++){
+			if (this.collision[i].tag == "ground"){
+				let g = gravityVel * Ramu.time.delta;
+				g = -g;
+				this.y += g;
+				this.sprite.y += g;			
+			}
+		}
+	}
+	
+	update(){
+		var g = gravityVel * Ramu.time.delta;
+		
+		this.y += g;
+		this.sprite.y += g;
+
 	}
 }
 
@@ -184,6 +217,11 @@ class MyGame extends GameObj{
 	
 		new Enemy(100, 300, 55, 55);
 	
+		// Ground
+		
+		var ground = new SimpleRectCollisor(1,400, 400, 100);
+		ground.tag = "ground"; 
+		
 		// Player
 		
 		this.lum = new Player(300,300,25,trueHeight);
@@ -202,6 +240,15 @@ class MyGame extends GameObj{
 		
 		currentTimeToShot += Ramu.time.delta;
 		
+		// --- Collision problems
+		
+		// quando pular anular o efeito da gravidade para que ele possa sair do chão
+		
+		// talvez retirando do gravity force o valor que ele pulou (e para isso zerar o valor de pulo)
+		// apos o pulo acabar.
+		
+		// --- END
+		
 		if (inJump){
 			currentPixelToJump++;
 			
@@ -212,32 +259,34 @@ class MyGame extends GameObj{
 		}
 		
 		switch(current){
-			case state.idle:
-				this.lum.setCurrentAnimation("idle");
+			case state.idle:  this.lum.setCurrentAnimation("idle");
 				break;
-			case state.run:
-				this.lum.setCurrentAnimation("run");
+			case state.run:   this.lum.setCurrentAnimation("run");
 				break;
-			case state.rouch:
-				this.lum.setCurrentAnimation("rouch");
+			case state.rouch: this.lum.setCurrentAnimation("rouch");
 				break;
-			case state.climb_idle:
-				this.lum.setCurrentAnimation("climb_idle");	
+			case state.climb_idle: this.lum.setCurrentAnimation("climb_idle");	
 				break;
 		}
 			
 		// Shot
-		if (keyCode.e in Ramu.lastKeysPressed){
-			if (currentTimeToShot >= timeToShot){
+		if (keyCode.e in Ramu.lastKeysPressed && currentTimeToShot >= timeToShot){	
+			if (this.lum.anim["idle"].flipHorizontally){
+				var l = new Lightning(this.lum.x + 27, this.lum.y + 15);
+				l.directionIsRight = false;
 				
-				if (this.lum.anim["idle"].flipHorizontally){
-					var l = new Lightning(this.lum.x + 27, this.lum.y + 15);
-					l.directionIsRight = false;
-					
-				} else new Lightning(this.lum.x - 17, this.lum.y + 15);
-				
-				currentTimeToShot = 0;
-			}
+			} else new Lightning(this.lum.x - 17, this.lum.y + 15);
+			
+			currentTimeToShot = 0;
+		}
+
+		// Jump
+		if (keyCode.space in Ramu.pressedKeys && !inJump){
+			this.lum.setCurrentAnimation("jump");
+			current = state.jump;
+			inJump = true;
+			if (this.lum.anim["jump"].animationIsOver)
+				this.lum.anim["jump"].reset();
 		}
 		
 		// Climb idle
@@ -276,26 +325,18 @@ class MyGame extends GameObj{
 		}
 		
 		// Rouch
-		else if (keyCode.s in Ramu.pressedKeys && !inJump){
+		else if (keyCode.s in Ramu.pressedKeys && !inJump){			
 			current = state.rouch;
 			this.lum.mainCol.height = trueHeight/2 + 10;
 			this.lum.mainCol.y = this.lum.y + 15;
-		}
-		
-		// Jump
-		else if (keyCode.space in Ramu.pressedKeys && !inJump){
-			this.lum.setCurrentAnimation("jump");
-			current = state.jump;
-			inJump = true;
-			if (this.lum.anim["jump"].animationIsOver)
-				this.lum.anim["jump"].reset();
 		} else {
 			if (!inJump){
 				current = state.idle;
-				this.lum.mainCol.height = trueHeight;
-				this.lum.mainCol.y = this.lum.y;
 			}
 		}
+		
+		this.lum.mainCol.height = trueHeight;
+		this.lum.mainCol.y = this.lum.y;
 	}
 }
 

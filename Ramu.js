@@ -1,10 +1,10 @@
-// --------------------------------- //
-// Ramu 0.5 - Hermes Passer in 09/21 //
-//      hermespasser.github.io       //
-// blog: gladiocitrico.blogspot.com  //
-// --------------------------------- //
+// ---------------------------------- //
+// Ramu 0.5.1 - Hermes Passer in 09/21//
+//      hermespasser.github.io        //
+// blog: gladiocitrico.blogspot.com   //
+// --------------------------------0- //
 
-// criar scenario com plataformas que se mechem
+// criar cenario com plataformas que se mechem
 // não ta checando colisão se estiver fora da tela?
 
 var gameObjs	   = [],
@@ -95,7 +95,7 @@ class Ramu{
 	/// Main loop of Ramu.
 	static loop(){
 		// Calculate the delta time
-		var now = Date.now();
+		let now = Date.now();
 		Ramu.time.delta = (now - Ramu.time.last) / 1000;
 		
 		if (Ramu.inLoop){
@@ -131,8 +131,8 @@ class Ramu{
 	static draw(){	
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		for (var i = 0; i < objsToDraw.length; i++){
-			var positionWidth = objsToDraw[i].x + objsToDraw[i].width;		
-			var positionHeigh = objsToDraw[i].y + objsToDraw[i].height;
+			let positionWidth = objsToDraw[i].x + objsToDraw[i].width;		
+			let positionHeigh = objsToDraw[i].y + objsToDraw[i].height;
 			
 			if (positionWidth >= 0 && objsToDraw[i].x <= canvas.width && // Renderiza somente o que esta no canvas
 					positionHeigh>= 0 && objsToDraw[i].y <= canvas.height)
@@ -189,7 +189,7 @@ class Drawable extends GameObj{
 		for (var i = 0; i < objsToDraw.length; ++i){
 			for (var j = i + 1; j < objsToDraw.length; ++j){
 				if (objsToDraw[i].drawPriority > objsToDraw[j].drawPriority){
-					var temp =  objsToDraw[i];
+					let temp =  objsToDraw[i];
 					objsToDraw[i] = objsToDraw[j];
 					objsToDraw[j] = temp;
 				}
@@ -231,8 +231,8 @@ class Collisor extends Drawable{
 	constructor(x, y, width, height){
 		super(x,y, width, height);
 		this.canCollide = true;
-		this.collision = null;
 		this.isInCollision = false;
+		this.collision = [];
 		this.collisionPriority = collisionLastPriority++;
 
 		Collisor.addObjt(this);
@@ -247,7 +247,7 @@ class Collisor extends Drawable{
 		for (var i = 0; i < objsToCollide.length; ++i){
 			for (var j = i + 1; j < objsToCollide.length; ++j){
 				if (objsToCollide[i].collisionPriority > objsToCollide[j].collisionPriority){
-					var temp =  objsToCollide[i];
+					let temp =  objsToCollide[i];
 					objsToCollide[i] = objsToCollide[j];
 					objsToCollide[j] = temp;
 				}
@@ -272,8 +272,11 @@ class Collisor extends Drawable{
 	/// Virtual onCollision to be inherited.
 	onCollision(){ }
 
-	checkCollision(){
+	checkCollision(){		
 		if(!this.canCollide) return;
+		
+		this.collision = [];
+		this.isInCollision = false;
 		
 		for (var i = 0; i < objsToCollide.length; i++){
 			if (objsToCollide[i] === this || !objsToCollide[i].canCollide)
@@ -285,11 +288,8 @@ class Collisor extends Drawable{
 				   this.height + this.y > objsToCollide[i].y){
 			
 				this.isInCollision = true;
-				this.collision = objsToCollide[i];
+				this.collision.push(objsToCollide[i]);
 				this.onCollision();
-			} else {
-				this.isInCollision = false;
-				this.collisor = null;
 			}
 		}
 	}
@@ -320,8 +320,8 @@ class GameSprite extends Drawable{
 	}
 	
 	draw(){		
-		var originX = this.flipHorizontally ? -this.width - this.x : this.x;
-		var originY = this.flipVertically   ? -this.height - this.y : this.y;
+		let originX = this.flipHorizontally ? -this.width - this.x : this.x;
+		let originY = this.flipVertically   ? -this.height - this.y : this.y;
 		
 		if (this.canDraw)
 			ctx.drawImage(this.img, originX, originY, this.width, this.height);
@@ -341,7 +341,7 @@ class SpriteAnimation extends Drawable{
 	}
 	
 	addFrame(src){
-		var img = new Image();
+		let img = new Image();
 		img.src = src;
 		this.frames.push(img);
 	}
@@ -370,8 +370,8 @@ class SpriteAnimation extends Drawable{
 	}
 	
 	draw(){		
-		var originX = this.flipHorizontally ? -this.width - this.x : this.x;
-		var originY = this.flipVertically   ? -this.height - this.y : this.y;
+		let originX = this.flipHorizontally ? -this.width - this.x : this.x;
+		let originY = this.flipVertically   ? -this.height - this.y : this.y;
 		
 		if (this.frames.length > 0)
 			ctx.drawImage(this.frames[this.currentFrame], originX, originY, this.width, this.height);
@@ -391,8 +391,8 @@ class SpritesheetAnimation extends SpriteAnimation{
 	}
 	
 	draw(){		
-		var originX = this.flipHorizontally ? -this.width - this.x : this.x;
-		var originY = this.flipVertically   ? -this.height - this.y : this.y;
+		let originX = this.flipHorizontally ? -this.width - this.x : this.x;
+		let originY = this.flipVertically   ? -this.height - this.y : this.y;
 		
 		//Draw
 		if (this.frames.length > 0)

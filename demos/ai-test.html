@@ -89,10 +89,12 @@ class EnemyBase extends GameObj{
 			this.setX(canvas.width);
 		
 		if (this.mainCol.isInCollision) {
-			if (this.mainCol.collision.tag == "ground")
-				this.inGround = true;
+			for (var i = 0; i < this.mainCol.collision.length; i++){
+				if (this.mainCol.collision[i].tag == "ground")
+					this.inGround = true;
+			}
 		}
-		
+	
 		if (!this.leftCol.isInCollision) {	
 			// if (!(this.x > canvas.width) && !(this.x < -this.width))
 				FORCEX = -FORCEX
@@ -138,22 +140,6 @@ class MyGame extends GameObj{
 		lum_run.addFrame(new Rect(25,0,25,50));
 		lum_run.addFrame(new Rect(50,0,25,50));
 		lum_run.animationTime = 0.2;
-		
-		/*
-		this.lum_jump = new SpritesheetAnimation("lum-rip-by-rojimenez.png", 140, 40, 25, 50);
-		this.lum_jump.addFrame(new Rect(75,0,25,50));
-		this.lum_jump.addFrame(new Rect(101,0,25,50));
-		this.lum_jump.animationTime = 0.2;
-		
-		// add a climb idle?
-		this.lum_climb = new SpritesheetAnimation("lum-rip-by-rojimenez.png", 180, 40, 25, 50);
-		this.lum_climb.addFrame(new Rect(125,0,25,50));
-		this.lum_climb.addFrame(new Rect(151,0,25,50));
-		this.lum_climb.animationTime = 0.2;
-		
-		this.lum_crouch = new SpritesheetAnimation("lum-rip-by-rojimenez.png", 200, 40, 25, 50);
-		this.lum_crouch.addFrame(new Rect(175,0,25,50));
-		*/
 		
 		// Enemy
 		
