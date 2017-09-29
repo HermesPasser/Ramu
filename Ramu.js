@@ -4,9 +4,6 @@
 // blog: gladiocitrico.blogspot.com   //
 // ---------------------------------- //
 
-// criar cenario com plataformas que se mechem
-// não ta checando colisão se estiver fora da tela?
-
 var gameObjs	   = [],
     objsToDraw 	   = [],
     objsToCollide  = [],
@@ -330,12 +327,16 @@ class GameSprite extends Drawable{
 		this.canDraw = canDraw;	
 	}
 	
-	draw(){		
-		if (!RamuUtils.imageIsLoaded(this.img))
-			return false;
-			
+	draw(){					
 		let originX = this.flipHorizontally ? -this.width - this.x : this.x;
 		let originY = this.flipVertically   ? -this.height - this.y : this.y;
+		
+		if (!RamuUtils.imageIsLoaded(this.img)){
+			ctx.strokeStyle = "black";
+			ctx.strokeRect(this.x, originX, originY, this.height); // Draw a black rect instead of image
+			ctx.strokeStyle = "#000000"; // reset default value
+			return false;
+		}
 		
 		//if (this.canDraw)
 			ctx.drawImage(this.img, originX, originY, this.width, this.height);
@@ -384,11 +385,15 @@ class SpriteAnimation extends Drawable{
 	}
 	
 	draw(){
-		if (!RamuUtils.imageIsLoaded(this.frames[this.currentFrame]))
-			return false;
-		
 		let originX = this.flipHorizontally ? -this.width - this.x : this.x;
 		let originY = this.flipVertically   ? -this.height - this.y : this.y;
+		
+		if (!RamuUtils.imageIsLoaded(this.img)){
+			ctx.strokeStyle = "black";
+			ctx.strokeRect(this.x, originX, originY, this.height); // Draw a black rect when the image is not loaded
+			ctx.strokeStyle = "#000000"; // reset default value
+			return false;
+		}
 		
 		if (this.frames.length > 0)
 			ctx.drawImage(this.frames[this.currentFrame], originX, originY, this.width, this.height);
@@ -409,11 +414,15 @@ class SpritesheetAnimation extends SpriteAnimation{
 	}
 	
 	draw(){
-		if (!RamuUtils.imageIsLoaded(this.img))
-			return;
-		
 		let originX = this.flipHorizontally ? -this.width - this.x : this.x;
 		let originY = this.flipVertically   ? -this.height - this.y : this.y;
+		
+		if (!RamuUtils.imageIsLoaded(this.img)){
+			ctx.strokeStyle = "black";
+			ctx.strokeRect(this.x, originX, originY, this.height); // Draw a black rect instead of image
+			ctx.strokeStyle = "#000000"; // reset default value
+			return false;
+		}
 		
 		//Draw
 		if (this.frames.length > 0)
