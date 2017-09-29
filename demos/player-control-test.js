@@ -1,4 +1,4 @@
-// Player Control by Hermes Passer in 09-19-17 using Ramu 0.5
+// Player Control by Hermes Passer in 09-19-17 using Ramu 0.5.1
 var state = { idle: 0, run: 1, jump: 2, rouch: 3, climb_idle: 4, climb: 4 },
 	current 		   = state.idle,
 	vel 			   = 60,
@@ -8,7 +8,10 @@ var state = { idle: 0, run: 1, jump: 2, rouch: 3, climb_idle: 4, climb: 4 },
 	currentPixelToJump = 0,
 	pixelsToJump 	   = 100;
 	gravityVel 		   = 15,
-	inJump 			   = false;
+	inJump 			   = false,
+	potatoDir		   = "img/potato.png",
+	lightningDir	   = "lightning.png",
+	lumDir	   		   = "lum-rip-by-rojimenez.png";
 	
 class Player extends GameObj{
 	constructor(x, y, width, height){
@@ -90,8 +93,9 @@ class Player extends GameObj{
 		this.addY(g);
 		
 		for (var i = 0; i < this.mainCol.collision.length; i++){
-			if (this.mainCol.collision[i].tag == "ground")
+			if (this.mainCol.collision[i].tag == "ground"){
 				this.addY(-g);
+			}
 		}
 	}
 }
@@ -102,7 +106,7 @@ class Lightning extends GameObj{
 		this.width  = 16;
 		this.height = 6;
 		this.coll = new SimpleRectCollisor(x, y, this.width, this.height);
-		this.sprite = new GameSprite("lightning.png", x, y, this.width, this.height);
+		this.sprite = new GameSprite(lightningDir, x, y, this.width, this.height);
 		this.directionIsRight = true;
 		this.tag = "shot";
 	}
@@ -144,7 +148,7 @@ class Lightning extends GameObj{
 class Enemy extends SimpleRectCollisor{
 	constructor(x, y){
 		super(x,y,61,61);	
-		this.sprite = new GameSprite("img/potato.png", x, y, this.width, this.height);
+		this.sprite = new GameSprite(potatoDir, x, y, this.width, this.height);
 		this.health = 100;
 		this.tag = "enemy";
 	}
@@ -187,30 +191,30 @@ class MyGame extends GameObj{
 
 		// Animation
 		
-		var lum_idle = new SpritesheetAnimation("lum-rip-by-rojimenez.png", 40, 40, 25, 50);
+		var lum_idle = new SpritesheetAnimation(lumDir, 40, 40, 25, 50);
 		lum_idle.addFrame(new Rect(0,0,25,50));
 		
-		var lum_run = new SpritesheetAnimation("lum-rip-by-rojimenez.png", 80, 40, 25, 50);
+		var lum_run = new SpritesheetAnimation(lumDir, 80, 40, 25, 50);
 		lum_run.addFrame(new Rect(0,0,25,50));
 		lum_run.addFrame(new Rect(25,0,25,50));
 		lum_run.addFrame(new Rect(50,0,25,50));
 		lum_run.animationTime = 0.2;
 		
-		var lum_jump = new SpritesheetAnimation("lum-rip-by-rojimenez.png", 140, 40, 25, 50);
+		var lum_jump = new SpritesheetAnimation(lumDir, 140, 40, 25, 50);
 		lum_jump.addFrame(new Rect(75,0,25,50));
 		lum_jump.addFrame(new Rect(101,0,25,50));
 		lum_jump.animationTime = 1;
 		lum_jump.playInLoop = false;
 		
-		var lum_climb_idle = new SpritesheetAnimation("lum-rip-by-rojimenez.png", 180, 40, 25, 50);
+		var lum_climb_idle = new SpritesheetAnimation(lumDir, 180, 40, 25, 50);
 		lum_climb_idle.addFrame(new Rect(125,0,25,50));
 		
-		var lum_climb = new SpritesheetAnimation("lum-rip-by-rojimenez.png", 180, 40, 25, 50);
+		var lum_climb = new SpritesheetAnimation(lumDir, 180, 40, 25, 50);
 		lum_climb.addFrame(new Rect(125,0,25,50));
 		lum_climb.addFrame(new Rect(151,0,25,50));
 		lum_climb.animationTime = 0.2;
 		
-		var lum_crouch = new SpritesheetAnimation("lum-rip-by-rojimenez.png", 200, 40, 25, 50);
+		var lum_crouch = new SpritesheetAnimation(lumDir, 200, 40, 25, 50);
 		lum_crouch.addFrame(new Rect(175,0,25,50));
 		
 		// Enemy
@@ -219,7 +223,7 @@ class MyGame extends GameObj{
 	
 		// Ground
 		
-		var ground = new SimpleRectCollisor(1,400, 400, 100);
+		var ground = new SimpleRectCollisor(1,400, 400, 1);
 		ground.tag = "ground"; 
 		
 		// Player
@@ -240,22 +244,13 @@ class MyGame extends GameObj{
 		
 		currentTimeToShot += Ramu.time.delta;
 		
-		// --- Collision problems
-		
-		// quando pular anular o efeito da gravidade para que ele possa sair do chão
-		
-		// talvez retirando do gravity force o valor que ele pulou (e para isso zerar o valor de pulo)
-		// apos o pulo acabar.
-		
-		// --- END
-		
 		if (inJump){
 			currentPixelToJump++;
 			
 			if (currentPixelToJump >= pixelsToJump){
 				inJump = false;
 				currentPixelToJump = 0;
-			} else  this.lum.addY(-(7 * Ramu.time.delta));		
+			} else  this.lum.addY(-(30 * Ramu.time.delta));		
 		}
 		
 		switch(current){
@@ -282,11 +277,16 @@ class MyGame extends GameObj{
 
 		// Jump
 		if (keyCode.space in Ramu.pressedKeys && !inJump){
-			this.lum.setCurrentAnimation("jump");
-			current = state.jump;
-			inJump = true;
-			if (this.lum.anim["jump"].animationIsOver)
-				this.lum.anim["jump"].reset();
+			for (var i = 0; i < this.lum.mainCol.collision.length; i++){
+				if (this.lum.mainCol.collision[i].tag == "ground"){ // To not do double jump
+					this.lum.setCurrentAnimation("jump");
+					current = state.jump;
+					inJump = true;
+					
+					if (this.lum.anim["jump"].animationIsOver)
+						this.lum.anim["jump"].reset();	
+				}
+			}	
 		}
 		
 		// Climb idle
@@ -312,16 +312,24 @@ class MyGame extends GameObj{
 			this.lum.addX(-(vel * Ramu.time.delta));
 			this.lum.setFlipHorizontally(false);
 			
-			if (!inJump)
-				current = state.run;
+			if (!inJump){
+				for (var i = 0; i < this.lum.mainCol.collision.length; i++){
+					if (this.lum.mainCol.collision[i].tag == "ground") // To not run in the air
+						current = state.run;
+				}
+			}
 		}
 			
 		else if (keyCode.d in Ramu.pressedKeys){
 			this.lum.addX(vel * Ramu.time.delta);
 			this.lum.setFlipHorizontally(true);
 			
-			if (!inJump)
-				current = state.run;
+			if (!inJump){
+				for (var i = 0; i < this.lum.mainCol.collision.length; i++){
+					if (this.lum.mainCol.collision[i].tag == "ground") // To not run in the air
+						current = state.run;
+				}
+			}
 		}
 		
 		// Rouch

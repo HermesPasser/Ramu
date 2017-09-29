@@ -2,7 +2,7 @@
 // Ramu 0.5.1 - Hermes Passer in 09/21//
 //      hermespasser.github.io        //
 // blog: gladiocitrico.blogspot.com   //
-// --------------------------------0- //
+// ---------------------------------- //
 
 // criar cenario com plataformas que se mechem
 // não ta checando colisão se estiver fora da tela?
@@ -141,6 +141,17 @@ class Ramu{
 	}
 }
 
+class RamuUtils{
+	constructor(){
+		throw new Error('This is a static class');
+	}
+	
+	/// Check if image is loaded
+	static imageIsLoaded(img){
+		return img.complete && img.naturalWidth !== 0 && img.naturalHeight !== 0;
+	}
+}
+
 class GameObj{
 	constructor(x = 0, y = 0){
 		this.x = x;
@@ -272,7 +283,7 @@ class Collisor extends Drawable{
 	/// Virtual onCollision to be inherited.
 	onCollision(){ }
 
-	checkCollision(){		
+	checkCollision(){
 		if(!this.canCollide) return;
 		
 		this.collision = [];
@@ -320,10 +331,13 @@ class GameSprite extends Drawable{
 	}
 	
 	draw(){		
+		if (!RamuUtils.imageIsLoaded(this.img))
+			return false;
+			
 		let originX = this.flipHorizontally ? -this.width - this.x : this.x;
 		let originY = this.flipVertically   ? -this.height - this.y : this.y;
 		
-		if (this.canDraw)
+		//if (this.canDraw)
 			ctx.drawImage(this.img, originX, originY, this.width, this.height);
 	}
 }
@@ -369,7 +383,10 @@ class SpriteAnimation extends Drawable{
 		} 
 	}
 	
-	draw(){		
+	draw(){
+		if (!RamuUtils.imageIsLoaded(this.frames[this.currentFrame]))
+			return false;
+		
 		let originX = this.flipHorizontally ? -this.width - this.x : this.x;
 		let originY = this.flipVertically   ? -this.height - this.y : this.y;
 		
@@ -379,6 +396,7 @@ class SpriteAnimation extends Drawable{
 
 }
 
+// check if rect is grather than or less than de image size
 class SpritesheetAnimation extends SpriteAnimation{
 	constructor(src, x, y, width, height){
 		super(x, y, width, height);
@@ -390,7 +408,10 @@ class SpritesheetAnimation extends SpriteAnimation{
 		this.frames.push(rect);
 	}
 	
-	draw(){		
+	draw(){
+		if (!RamuUtils.imageIsLoaded(this.img))
+			return;
+		
 		let originX = this.flipHorizontally ? -this.width - this.x : this.x;
 		let originY = this.flipVertically   ? -this.height - this.y : this.y;
 		
