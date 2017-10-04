@@ -1,4 +1,4 @@
-// Player Control by Hermes Passer in 09-19-17 using Ramu 0.5.1
+// Spritesheet Animator, Player Control by Hermes Passer in 09-19-17 using Ramu 0.5.1
 var state = { idle: 0, run: 1, jump: 2, rouch: 3, climb_idle: 4, climb: 4 },
 	current 		   = state.idle,
 	vel 			   = 60,
@@ -10,73 +10,38 @@ var state = { idle: 0, run: 1, jump: 2, rouch: 3, climb_idle: 4, climb: 4 },
 	gravityVel 		   = 15,
 	inJump 			   = false,
 	potatoDir		   = "img/potato.png",
-	lightningDir	   = "lightning.png",
-	lumDir	   		   = "lum-rip-by-rojimenez.png";
-	
-class Player extends GameObj{
-	constructor(x, y, width, height){
-		super(x,y);
-		
-		// Create because GameObj doesn't contains width and height
-		this.width  = width;
-		this.height = height;
-		
-		// Colliders to detect collision
-		this.mainCol = new SimpleRectCollisor(x, y, width, height);
+	groundDir    	   = "img/ground.png",
+	lightningDir	   = "img/lightning.png",
+	lumDir	   		   = "img/lum-rip-by-rojimenez.png";
+// diminuir collider no pulo
 
-		this.anim = {};
+class Player extends SpritesheetAnimator{
+	constructor(x, y, width, height){
+		super(x, y, width, height);
+		this.mainCol = new SimpleRectCollisor(x, y, width, height);
 		this.inGround = false;
 	}
-	
-	addAnimation(nameID, animation){
-		animation.x = this.x;
-		animation.y = this.y;
-		animation.canDraw = false;
-		this.anim[nameID] = animation;
-	}
-	
-	setCurrentAnimation(nameID){
-		for (var key in this.anim)
-			this.anim[key].canDraw = false;
-		
-		if (this.anim[key] != null)
-			this.anim[nameID].canDraw = true;
-	}
-	
-	setFlipHorizontally(bool){
-		for (var key in this.anim)
-			this.anim[key].flipHorizontally = bool;
-	}
-	
-	setFlipVertically(bool){
-		for (var key in this.anim)
-			this.anim[key].flipVertically = bool;
-	}
-	
+
 	setX(x){
-		for (var key in this.anim)
-			this.anim[key].x = x;
+		super.setX(x);
 		this.mainCol.x 	= x;
 		this.x = x;
 	}
 	
 	setY(y){
-		for (var key in this.anim)
-			this.anim[key].y = y;
+		super.setY(y);
 		this.mainCol.y  = y;
 		this.y = y;
 	}	
 	
 	addX(x){
-		for (var key in this.anim)
-			this.anim[key].x += x;
+		super.addX(x);
 		this.mainCol.x  += x;
 		this.x += x;
 	}
 	
 	addY(y){
-		for (var key in this.anim)
-			this.anim[key].y += y;
+		super.addY(y);
 		this.mainCol.y  += y;
 		this.y += y;
 	}
@@ -86,6 +51,8 @@ class Player extends GameObj{
 			this.setX(-this.width - 1);
 		else if (this.x < -this.width)
 			this.setX(canvas.width);
+		
+		if (this.y > canvas.height) this.setY(canvas.height)
 		
 		// Gravity
 			
@@ -97,6 +64,11 @@ class Player extends GameObj{
 				this.addY(-g);
 			}
 		}
+	}
+	
+	destroy(){
+		super.destroy();
+		this.mainCol.destroy();
 	}
 }
 
@@ -164,6 +136,7 @@ class Enemy extends SimpleRectCollisor{
 			this.destroy();
 	}
 	
+	//add
 	onCollision(){
 		for (var i = 0; i < this.collision.length; i++){
 			if (this.collision[i].tag == "ground"){
@@ -175,6 +148,7 @@ class Enemy extends SimpleRectCollisor{
 		}
 	}
 	
+	//add
 	update(){
 		var g = gravityVel * Ramu.time.delta;
 		
@@ -219,16 +193,34 @@ class MyGame extends GameObj{
 		
 		// Enemy
 	
-		new Enemy(100, 300, 55, 55);
+		new Enemy(300, 300, 55, 55);
+		
+		// uma lum interfere noutra bugando tudo.
+		// talvez porque seja a mesma referencia, tentar 
+		// copiar a animação e ver se vai
+		// se for add no metodo de que ele faça uma copia e
+		// nao passe diretamente	
+		// aparentemente é isso mesmo
+		// this.lumenemy = new EnemyBase(300,300,25,50);
+		// this.lumenemy.addAnimation("idle", lum_idle);
+		// this.lumenemy.addAnimation("run", lum_run);
+		// this.lumenemy.setCurrentAnimation("idle");
 	
 		// Ground
 		
-		var ground = new SimpleRectCollisor(1,400, 400, 1);
-		ground.tag = "ground"; 
+		this.g0 = new GameSprite(groundDir,1,450,200,50);
+		this.g1 = new SimpleRectCollisor(-50,450,250,50);
+		this.g0.drawPriority = 0;
+		this.g1.tag = "ground";
+		
+		this.g0 = new GameSprite(groundDir,250,450,500,50);
+		this.g0.drawPriority = 0;
+		this.g2 = new SimpleRectCollisor(250,450,5000,50);
+		this.g2.tag = "ground";
 		
 		// Player
 		
-		this.lum = new Player(300,300,25,trueHeight);
+		this.lum = new Player(100,300,25,trueHeight);
 		this.lum.addAnimation("idle", lum_idle);
 		this.lum.addAnimation("run", lum_run);
 		this.lum.addAnimation("jump", lum_jump);
@@ -243,6 +235,9 @@ class MyGame extends GameObj{
 		// ===== Player Control ===== //
 		
 		currentTimeToShot += Ramu.time.delta;
+		
+		// impedir que se abaixe fora do chao
+		// para isso é so fazer que injump seja true se ele nao estiver no chao
 		
 		if (inJump){
 			currentPixelToJump++;
@@ -340,13 +335,18 @@ class MyGame extends GameObj{
 		} else {
 			if (!inJump){
 				current = state.idle;
+			} else {
 			}
 		}
 		
-		this.lum.mainCol.height = trueHeight;
-		this.lum.mainCol.y = this.lum.y;
+		//dentro do else ele diminui, ele não retorna ao normal se outra tecla for apertada
+		// então deve ficar aqui fora.
+		// isso seria resolvido setando para abaixar em keydown
+		// e botar no lugar novamene em keyup
+				this.lum.mainCol.height = trueHeight;
+				this.lum.mainCol.y = this.lum.y;
 	}
 }
 
-new MyGame(0,0,0,0);
+new MyGame(0,0);
 Ramu.init(); 

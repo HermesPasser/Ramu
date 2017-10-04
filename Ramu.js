@@ -1,8 +1,15 @@
+"use strict";
 // ---------------------------------- //
 // Ramu 0.5.2 - Hermes Passer in 09/21//
 //      hermespasser.github.io        //
 // blog: gladiocitrico.blogspot.com   //
 // ---------------------------------- //
+
+// desquecrever o que cada classe é
+
+// implementar improved input
+
+// implementar fixed game loop pois se trocar de aba o delta time sobe as alturas
 
 var gameObjs	   = [],
     objsToDraw 	   = [],
@@ -37,15 +44,16 @@ const keyCode = {
 	equal_sign: 187, comma: 188, dash: 189, period: 190, forward_slash: 191, back_slash: 220, grave_accent: 192, single_quote: 222
 };
 
-class RamuMath{
-	/// Prevents creating an instance of this class.
-	constructor(){
-		throw new Error('This is a static class');
-	}
-}
+// class RamuMath{
+	// /// Prevents creating an instance of this class.
+	// constructor(){
+		// throw new Error('This is a static class');
+	// }
+// }
 
 class Rect{	
 	constructor(x, y, w, h){
+		if (arguments.length != 4) throw new Error('Wrong number of arguments');
 		this.x = x;
 		this.y = y;
 		this.width = w;
@@ -89,7 +97,7 @@ class Ramu{
 		// canvas.addEventListener('touchmove',  function(e){},  false);
 	}
 	
-	/// Main loop of Ramu.
+	/// Game loop of Ramu.
 	static loop(){
 		// Calculate the delta time
 		let now = Date.now();
@@ -151,6 +159,8 @@ class RamuUtils{
 
 class GameObj{
 	constructor(x = 0, y = 0){
+		if (arguments.length > 2) throw new Error('Wrong number of arguments');
+
 		this.x = x;
 		this.y = y;
 		this.tag =  this.tag || "none";
@@ -176,6 +186,8 @@ class GameObj{
 class Drawable extends GameObj{
 	constructor(x, y, width, height, canDraw = false){
 		super();
+		if (arguments.length < 4) throw new Error('Wrong number of arguments');
+
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -237,7 +249,8 @@ class Drawable extends GameObj{
 
 class Collisor extends Drawable{
 	constructor(x, y, width, height){
-		super(x,y, width, height);
+		super(x, y, width, height);
+		if (arguments.length != 4) throw new Error('Wrong number of arguments');
 		this.canCollide = true;
 		this.isInCollision = false;
 		this.collision = [];
@@ -277,6 +290,10 @@ class Collisor extends Drawable{
 		this.canDraw = Ramu.debugMode;
 	}
 	
+	InCollision(){
+		return this.collision.length != 0;
+	}
+	
 	/// Virtual onCollision to be inherited.
 	onCollision(){ }
 
@@ -284,8 +301,10 @@ class Collisor extends Drawable{
 		if(!this.canCollide) return;
 		
 		this.collision = [];
-		this.isInCollision = false;
 		
+		// nem todos estão colidindo
+		// ja que o primeiro ground fica vernelho
+		// frame sim frame não
 		for (var i = 0; i < objsToCollide.length; i++){
 			if (objsToCollide[i] === this || !objsToCollide[i].canCollide)
 				continue;
@@ -295,7 +314,7 @@ class Collisor extends Drawable{
 				   this.y < objsToCollide[i].y + objsToCollide[i].height &&
 				   this.height + this.y > objsToCollide[i].y){
 			
-				this.isInCollision = true;
+				objsToCollide[i].collision.push(this);
 				this.collision.push(objsToCollide[i]);
 				this.onCollision();
 			}
@@ -303,16 +322,14 @@ class Collisor extends Drawable{
 	}
 }
 
-class SimpleRectCollisor extends Collisor{
-	// constructor(x, y, width, height){ super(x, y, width, height); }
-	
+class SimpleRectCollisor extends Collisor{	
 	draw(){
 		if (Ramu.debugMode){
-			if (!this.isInCollision)
-				ctx.strokeStyle = "blue";
-			else 
+			
+			if (this.InCollision())
 				ctx.strokeStyle = "red";
-
+			else ctx.strokeStyle = "blue";
+			
 			ctx.strokeRect(this.x, this.y, this.width, this.height);
 			ctx.strokeStyle = "#000000"; // reset default value
 		}
@@ -323,6 +340,8 @@ class SimpleRectCollisor extends Collisor{
 class GameSprite extends Drawable{
 	constructor(src, x, y, w, h, canDraw = true){
 		super(x, y, w, h);
+		if (arguments.length < 4) throw new Error('Wrong number of arguments');
+
 		this.img = new Image();
 		this.img.src = src;
 		this.canDraw = canDraw;	
@@ -355,6 +374,8 @@ class SpriteAnimation extends Drawable{
 	}
 	
 	addFrame(src){
+		if (arguments.length != 1) throw new Error('Wrong number of arguments');
+		
 		let img = new Image();
 		img.src = src;
 		this.frames.push(img);
@@ -403,12 +424,15 @@ class SpriteAnimation extends Drawable{
 class SpritesheetAnimation extends SpriteAnimation{
 	constructor(src, x, y, width, height){
 		super(x, y, width, height);
+		if (arguments.length != 5) throw new Error('Wrong number of arguments');
 		this.img = new Image();
 		this.img.src = src;
 	}
 	
 	addFrame(rect){
-		this.frames.push(rect);
+		if (arguments.length != 1) 
+			throw new Error('Wrong number of arguments');
+		else this.frames.push(rect);
 	}
 	
 	draw(){
@@ -429,9 +453,89 @@ class SpritesheetAnimation extends SpriteAnimation{
 	}
 }
 
+class SpritesheetAnimator extends GameObj{
+	constructor(x, y, width, height){
+		super(x,y);
+		if (arguments.length != 4) throw new Error('Wrong number of arguments');
+		
+		this.anim = {};
+		this.animDrawPriority = drawLastPriority++;
+		
+		// Create because GameObj doesn't contains width and height
+		this.width  = width;
+		this.height = height;
+	}
+	
+	addAnimation(nameID, spritesheetAnimation){
+		if (arguments.length != 2) throw new Error('Wrong number of arguments');
+		
+		spritesheetAnimation.x = this.x;
+		spritesheetAnimation.y = this.y;
+		spritesheetAnimation.canDraw = false;
+		spritesheetAnimation.drawPriority = this.animDrawPriority;
+		Drawable.sortPriority();
+		this.anim[nameID] = spritesheetAnimation;
+	}
+	
+	setCurrentAnimation(nameID){
+		if (arguments.length != 1) throw new Error('Wrong number of arguments');
+		
+		for (var key in this.anim)
+			this.anim[key].canDraw = false;
+		
+		if (this.anim[key] != null)
+			this.anim[nameID].canDraw = true;
+	}
+	
+	getCurrentAnimationID(){
+		for (var key in this.anim)
+			if (this.anim[key].canDraw)
+				return key;
+		return null;		
+	}
+	
+	setFlipHorizontally(bool){
+		for (var key in this.anim)
+			this.anim[key].flipHorizontally = bool;
+	}
+	
+	setFlipVertically(bool){
+		for (var key in this.anim)
+			this.anim[key].flipVertically = bool;
+	}
+	
+	setX(x){
+		for (var key in this.anim)
+			this.anim[key].x = x;
+	}
+	
+	setY(y){
+		for (var key in this.anim)
+			this.anim[key].y = y;
+	}	
+	
+	addX(x){
+		for (var key in this.anim)
+			this.anim[key].x += x;
+	}
+	
+	addY(y){
+		for (var key in this.anim)
+			this.anim[key].y += y;
+	}
+	
+	destroy(){
+		for (var key in this.anim)
+			this.anim[key].destroy();
+		super.destroy();
+	}
+}
+
 class Parallax extends GameObj{ // Not use time delta yet
 	constructor(src, x, y, w, h, velocity = 2){
 		super(x, y);
+		if (arguments.length < 5) throw new Error('Wrong number of arguments');
+
 		this.left   = new GameSprite(src, x - w, y, w, h);
 		this.center = new GameSprite(src, x  + w  , y, w, h);
 		this.right  = new GameSprite(src, x + w, y, w, h);
