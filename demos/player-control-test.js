@@ -1,4 +1,4 @@
-// Spritesheet Animator, Player Control by Hermes Passer in 09-19-17 using Ramu 0.5.1
+// Spritesheet Animator and Player Control by Hermes Passer in 09-19-17 using Ramu 0.5.1
 var state = { idle: 0, run: 1, jump: 2, rouch: 3, climb_idle: 4, climb: 4 },
 	current 		   = state.idle,
 	vel 			   = 60,

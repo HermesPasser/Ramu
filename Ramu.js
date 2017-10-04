@@ -1,6 +1,6 @@
 "use strict";
 // ---------------------------------- //
-// Ramu 0.5.2 - Hermes Passer in 09/21//
+// Ramu 0.5.3 - Hermes Passer in 09/21//
 //      hermespasser.github.io        //
 // blog: gladiocitrico.blogspot.com   //
 // ---------------------------------- //
@@ -71,7 +71,9 @@ class Ramu{
 	static init(){
 		Ramu.debugMode = false;
 		Ramu.inLoop = true;
-		Ramu.time = { last: Date.now(), delta: 0 };
+		// Deltatime is actually a timestep and frametime is originally the delta time,
+		// change of terms exists for timestep be used instead of delta (frametimne)
+		Ramu.time = { last: Date.now(), delta: 1/60, frameTime: 0 };
 		Ramu.input();
 		Ramu.start();
 		window.requestAnimationFrame(Ramu.loop);
@@ -96,21 +98,33 @@ class Ramu{
 		// canvas.addEventListener('touchstart', function(e){},  false);
 		// canvas.addEventListener('touchmove',  function(e){},  false);
 	}
-	
+
 	/// Game loop of Ramu.
 	static loop(){
-		// Calculate the delta time
-		let now = Date.now();
-		Ramu.time.delta = (now - Ramu.time.last) / 1000;
 		
+		let now = 0;
 		if (Ramu.inLoop){
-			Ramu.checkCollision();
-			Ramu.update();
+			now = Date.now();
+			Ramu.time.frameTime = Ramu.time.frameTime + Math.min(1, (now - Ramu.time.last) / 1000);
+		
+			while(Ramu.time.frameTime > Ramu.time.delta) {
+				Ramu.checkCollision();
+				Ramu.update();
+				Ramu.time.frameTime = Ramu.time.frameTime - Ramu.time.delta;
+				
+				// Panic | from isaacsukin.com/news/2015/01/detailed-explanation-javascript-game-loops-and-timing
+				let numUpdateSteps = 0;
+				if (++numUpdateSteps >= 240) {
+					Ramu.time.frameTime = 0;
+					break;
+				}
+			}
 		}
 		
 		Ramu.draw();
 		Ramu.lastKeysPressed = {};
-		Ramu.time.last = now;
+		
+		if (Ramu.inLoop) Ramu.time.last = now;
 		window.requestAnimationFrame(Ramu.loop);
 	}
 	
@@ -301,10 +315,6 @@ class Collisor extends Drawable{
 		if(!this.canCollide) return;
 		
 		this.collision = [];
-		
-		// nem todos estão colidindo
-		// ja que o primeiro ground fica vernelho
-		// frame sim frame não
 		for (var i = 0; i < objsToCollide.length; i++){
 			if (objsToCollide[i] === this || !objsToCollide[i].canCollide)
 				continue;
