@@ -16,7 +16,7 @@ class AnimatedCollisor extends SimpleRectCollisor{
 
 class StaticRect extends GameObj{
 	constructor(x,y,w,h){
-		super(x,y, w, h);	
+		super(x,y,);	
 		this.collider = new AnimatedCollisor(x, y, w, h);
 		this.sprite = new GameSprite(dirPotato, x, y, w, h);
 		this.sprite.canDraw = false;

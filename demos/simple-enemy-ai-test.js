@@ -73,19 +73,19 @@ class EnemyBase extends SpritesheetAnimator{
 		else if (this.x < -this.width)
 			this.setX(canvas.width);
 		
-		if (this.mainCol.InCollision) {
+		if (this.mainCol.isInCollision) {
 			for (var i = 0; i < this.mainCol.collision.length; i++){
 				if (this.mainCol.collision[i].tag == "ground")
 					this.inGround = true;
 			}
 		}
 	
-		if (!this.leftSensor.InCollision || !this.rightSensor.InCollision) {	
+		if (!this.leftSensor.isInCollision || !this.rightSensor.isInCollision) {	
 			FORCEX = -FORCEX
 		} 
 		
 		// Gravity system
-		if (!this.mainCol.InCollision) this.inGround = false;
+		if (!this.mainCol.isInCollision) this.inGround = false;
 		if (!this.inGround) this.addY(FORCE * Ramu.time.delta);
 		
 		// Move System		
@@ -99,11 +99,12 @@ class MyGame extends GameObj{
 		Ramu.debugMode = true;
 		
 		// Animation
+		let lumImg = RamuUtils.getImage(lumDir);
 		
-		var lum_idle = new SpritesheetAnimation(LUMDIR, 40, 40, 25, 50);
+		var lum_idle = new SpritesheetAnimation(lumDir, 40, 40, 25, 50);
 		lum_idle.addFrame(new Rect(0,0,25,50));
 		
-		// var lum_run = new SpritesheetAnimation(LUMDIR, 80, 40, 25, 50);
+		// var lum_run = new SpritesheetAnimation(lumDir, 80, 40, 25, 50);
 		// lum_run.addFrame(new Rect(0,0,25,50));
 		// lum_run.addFrame(new Rect(25,0,25,50));
 		// lum_run.addFrame(new Rect(50,0,25,50));

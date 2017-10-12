@@ -21,7 +21,7 @@ class Player extends SpritesheetAnimator{
 		this.mainCol = new SimpleRectCollisor(x, y, width, height);
 		this.inGround = false;
 	}
-
+	
 	setX(x){
 		super.setX(x);
 		this.mainCol.x 	= x;
@@ -55,7 +55,7 @@ class Player extends SpritesheetAnimator{
 		if (this.y > canvas.height) this.setY(canvas.height)
 		
 		// Gravity
-			
+				
 		var g = gravityVel * Ramu.time.delta;
 		this.addY(g);
 		
@@ -165,30 +165,32 @@ class MyGame extends GameObj{
 
 		// Animation
 		
-		var lum_idle = new SpritesheetAnimation(lumDir, 40, 40, 25, 50);
+		let lumImg = RamuUtils.getImage(lumDir);
+		
+		var lum_idle = new SpritesheetAnimation(lumImg, 40, 40, 25, 50);
 		lum_idle.addFrame(new Rect(0,0,25,50));
 		
-		var lum_run = new SpritesheetAnimation(lumDir, 80, 40, 25, 50);
+		var lum_run = new SpritesheetAnimation(lumImg, 80, 40, 25, 50);
 		lum_run.addFrame(new Rect(0,0,25,50));
 		lum_run.addFrame(new Rect(25,0,25,50));
 		lum_run.addFrame(new Rect(50,0,25,50));
 		lum_run.animationTime = 0.2;
 		
-		var lum_jump = new SpritesheetAnimation(lumDir, 140, 40, 25, 50);
+		var lum_jump = new SpritesheetAnimation(lumImg, 140, 40, 25, 50);
 		lum_jump.addFrame(new Rect(75,0,25,50));
 		lum_jump.addFrame(new Rect(101,0,25,50));
 		lum_jump.animationTime = 1;
 		lum_jump.playInLoop = false;
 		
-		var lum_climb_idle = new SpritesheetAnimation(lumDir, 180, 40, 25, 50);
+		var lum_climb_idle = new SpritesheetAnimation(lumImg, 180, 40, 25, 50);
 		lum_climb_idle.addFrame(new Rect(125,0,25,50));
 		
-		var lum_climb = new SpritesheetAnimation(lumDir, 180, 40, 25, 50);
+		var lum_climb = new SpritesheetAnimation(lumImg, 180, 40, 25, 50);
 		lum_climb.addFrame(new Rect(125,0,25,50));
 		lum_climb.addFrame(new Rect(151,0,25,50));
 		lum_climb.animationTime = 0.2;
 		
-		var lum_crouch = new SpritesheetAnimation(lumDir, 200, 40, 25, 50);
+		var lum_crouch = new SpritesheetAnimation(lumImg, 200, 40, 25, 50);
 		lum_crouch.addFrame(new Rect(175,0,25,50));
 		
 		// Enemy
@@ -228,6 +230,7 @@ class MyGame extends GameObj{
 		this.lum.addAnimation("climb", lum_climb);
 		this.lum.addAnimation("rouch", lum_crouch);
 		this.lum.setCurrentAnimation("idle");
+		
 	}
 	
 	update(){

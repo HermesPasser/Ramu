@@ -1,10 +1,10 @@
 // Animation Exemple by Hermes Passer in 09-21-17
-var dirGear = "img/gear.png",
-	dirOther = "img/anim/";
 	
 class AnimTest extends Drawable{
 	start(){
-		
+		let dirOther = "img/anim/";
+		let gear = RamuUtils.getImage("img/gear.png");
+
 		// Separate sprite animation without loop
 		this.spriteAnimW = new SpriteAnimation(100, 115, 50, 50);
 		this.spriteAnimW.animationTime = 0.5;
@@ -19,7 +19,7 @@ class AnimTest extends Drawable{
 			this.spriteAnim.addFrame(dirOther + i + ".png");
 
 		// One sprite (sheet) animation without loop
-		this.sheetW = new SpritesheetAnimation(dirGear, 50, 255, 134, 136);
+		this.sheetW = new SpritesheetAnimation(gear, 50, 255, 134, 136);
 		this.sheetW.animationTime = 0.2;
 		this.sheetW.playInLoop = false;
 		this.sheetW.addFrame(new Rect(0,0,133,135));
@@ -27,7 +27,7 @@ class AnimTest extends Drawable{
 		this.sheetW.addFrame(new Rect(270,0,133,135));
 		
 		// One sprite (sheet) animation
-		this.sheet = new SpritesheetAnimation(dirGear, canvas.width/2, 255, 134, 136);
+		this.sheet = new SpritesheetAnimation(gear, canvas.width/2, 255, 134, 136);
 		this.sheet.animationTime = 0.2;
 		this.sheet.addFrame(new Rect(0,0,133,135));
 		this.sheet.addFrame(new Rect(134,0,133,135));

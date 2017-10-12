@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 // ---------------------------------- //
 // Ramu 0.5.3 - Hermes Passer in 09/21//
 //      hermespasser.github.io        //
@@ -8,8 +8,6 @@
 // desquecrever o que cada classe é
 
 // implementar improved input
-
-// implementar fixed game loop pois se trocar de aba o delta time sobe as alturas
 
 var gameObjs	   = [],
     objsToDraw 	   = [],
@@ -44,13 +42,6 @@ const keyCode = {
 	equal_sign: 187, comma: 188, dash: 189, period: 190, forward_slash: 191, back_slash: 220, grave_accent: 192, single_quote: 222
 };
 
-// class RamuMath{
-	// /// Prevents creating an instance of this class.
-	// constructor(){
-		// throw new Error('This is a static class');
-	// }
-// }
-
 class Rect{	
 	constructor(x, y, w, h){
 		if (arguments.length != 4) throw new Error('Wrong number of arguments');
@@ -58,6 +49,20 @@ class Rect{
 		this.y = y;
 		this.width = w;
 		this.height = h;
+	}
+}
+
+class RamuMath{
+	/// Prevents creating an instance of this class.
+	constructor(){
+		throw new Error('This is a static class');
+	}
+	
+	static overlap(rect1, rect2) {
+		return(rect1.x < rect2.x + rect2.width &&
+			   rect1.x + rect1.width > rect2.x &&
+			   rect1.y < rect2.y + rect2.height &&
+			   rect1.height + rect1.y > rect2.y);
 	}
 }
 
@@ -71,9 +76,11 @@ class Ramu{
 	static init(){
 		Ramu.debugMode = false;
 		Ramu.inLoop = true;
+		
 		// Deltatime is actually a timestep and frametime is originally the delta time,
 		// change of terms exists for timestep be used instead of delta (frametimne)
 		Ramu.time = { last: Date.now(), delta: 1/60, frameTime: 0 };
+		
 		Ramu.input();
 		Ramu.start();
 		window.requestAnimationFrame(Ramu.loop);
@@ -165,13 +172,20 @@ class RamuUtils{
 		throw new Error('This is a static class');
 	}
 	
+	/// Get a image with source
+	static getImage(src){
+		let img = new Image();
+		img.src = src;
+		return img;
+	}
+	
 	/// Check if image is loaded
 	static imageIsLoaded(img){
 		return img.complete && img.naturalWidth !== 0 && img.naturalHeight !== 0;
 	}
 }
 
-class GameObj{
+class GameObj{	
 	constructor(x = 0, y = 0){
 		if (arguments.length > 2) throw new Error('Wrong number of arguments');
 
@@ -266,7 +280,7 @@ class Collisor extends Drawable{
 		super(x, y, width, height);
 		if (arguments.length != 4) throw new Error('Wrong number of arguments');
 		this.canCollide = true;
-		this.isInCollision = false;
+		// this.isInCollision = false;
 		this.collision = [];
 		this.collisionPriority = collisionLastPriority++;
 
@@ -304,8 +318,8 @@ class Collisor extends Drawable{
 		this.canDraw = Ramu.debugMode;
 	}
 	
-	InCollision(){
-		return this.collision.length != 0;
+	get isInCollision(){ 
+		return this.collision.length != 0; 
 	}
 	
 	/// Virtual onCollision to be inherited.
@@ -319,11 +333,10 @@ class Collisor extends Drawable{
 			if (objsToCollide[i] === this || !objsToCollide[i].canCollide)
 				continue;
 			
-			if (this.x < objsToCollide[i].x + objsToCollide[i].width &&
-				   this.x + this.width > objsToCollide[i].x &&
-				   this.y < objsToCollide[i].y + objsToCollide[i].height &&
-				   this.height + this.y > objsToCollide[i].y){
+			let rect1 = new Rect(this.x, this.y, this.width, this.height);
+			let rect2 = new Rect(objsToCollide[i].x, objsToCollide[i].y, objsToCollide[i].width, objsToCollide[i].height);
 			
+			if (RamuMath.overlap(rect1, rect2)){
 				objsToCollide[i].collision.push(this);
 				this.collision.push(objsToCollide[i]);
 				this.onCollision();
@@ -336,7 +349,7 @@ class SimpleRectCollisor extends Collisor{
 	draw(){
 		if (Ramu.debugMode){
 			
-			if (this.InCollision())
+			if (this.isInCollision)
 				ctx.strokeStyle = "red";
 			else ctx.strokeStyle = "blue";
 			
@@ -371,6 +384,30 @@ class GameSprite extends Drawable{
 	}
 }
 
+class GameSpritesheet extends Drawable{
+	constructor(image, sheetRect, x, y, w, h, canDraw = true){
+		super(x, y, w, h);
+		if (arguments.length < 5) throw new Error('Wrong number of arguments');
+
+		this.img = image;
+		this.sheet = sheetRect;
+		this.canDraw = canDraw;	
+	}
+	
+	draw(){					
+		let originX = this.flipHorizontally ? -this.width - this.x : this.x;
+		let originY = this.flipVertically   ? -this.height - this.y : this.y;
+
+		if (!RamuUtils.imageIsLoaded(this.img)){
+			ctx.fillRect(originX, originY, this.width, this.height); // Draw a black rect instead of image
+			return;
+		}	
+		
+		ctx.drawImage(this.img, this.sheet.x, this.sheet.y, this.sheet.width, this.sheet.height, 
+					originX, originY, this.width, this.height);
+	}
+}
+
 class SpriteAnimation extends Drawable{
 	constructor(x, y, width, height){
 		super(x, y, width, height);
@@ -383,12 +420,9 @@ class SpriteAnimation extends Drawable{
 		this.playInLoop 	 = true;
 	}
 	
-	addFrame(src){
+	addFrame(src){ 
 		if (arguments.length != 1) throw new Error('Wrong number of arguments');
-		
-		let img = new Image();
-		img.src = src;
-		this.frames.push(img);
+		this.frames.push(RamuUtils.getImage(src)); // Frame as a image
 	}
 	
 	reset(){
@@ -432,17 +466,16 @@ class SpriteAnimation extends Drawable{
 
 // check if rect is grather than or less than de image size
 class SpritesheetAnimation extends SpriteAnimation{
-	constructor(src, x, y, width, height){
+	constructor(image, x, y, width, height){
 		super(x, y, width, height);
 		if (arguments.length != 5) throw new Error('Wrong number of arguments');
-		this.img = new Image();
-		this.img.src = src;
+		this.img = image;
 	}
 	
 	addFrame(rect){
 		if (arguments.length != 1) 
 			throw new Error('Wrong number of arguments');
-		else this.frames.push(rect);
+		else this.frames.push(rect); // Frame as a rect of a image
 	}
 	
 	draw(){
