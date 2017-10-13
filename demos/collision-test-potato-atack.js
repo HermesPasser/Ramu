@@ -37,6 +37,7 @@ class AnimatedRect extends Drawable{
 		if (this.x <= 0 || this.x >= canvas.width - this.width){
 			this.collider.forceX = -(this.collider.forceX);
 		}
+		
 		if (this.y <= 0 || this.y >= canvas.height - this.height){
 			this.collider.forceY = -(this.collider.forceY);
 		}
@@ -55,6 +56,7 @@ class MovingChar extends SimpleRectCollisor{
 		super(x,y, width, height);
 		this.die = false;
 	}
+	
 	draw(){
 		super.draw();
 		if (this.die) ctx.fillText("*died*",this.x, this.y);
@@ -62,8 +64,7 @@ class MovingChar extends SimpleRectCollisor{
 	}
 	
 	update(){
-		if (this.die) 
-			return;
+		if (this.die) return;
 		
 		super.update();
 		
@@ -94,7 +95,7 @@ class MovingChar extends SimpleRectCollisor{
 			this.height--;
 		}	
 		
-		if (this.width == 0 && this.height == 0){
+		if (this.width <= 0 && this.height <= 0){
 			this.die = true;
 			this.canCollide = false;
 		}
@@ -111,7 +112,7 @@ class MyGame extends Drawable{
 		this.option = [0, 1, 2];
 		this.state = { menu: 0, game: 1, gameOver: 2 };
 		this.reset();
-				
+			
 		this.w = canvas.width / 2 - 35;
 		this.h = canvas.height / 2 - 50;
 		
@@ -165,6 +166,7 @@ class MyGame extends Drawable{
 	}
 	
 	update(){
+		this.readInput();
 		if (this.character.die){
 			this.currState = this.state.gameOver;
 			this.currOp = 0;
@@ -173,8 +175,7 @@ class MyGame extends Drawable{
 	
 	draw(){
 		ctx.fillStyle = this.gradient;
-	
-		this.readInput();		
+		
 		switch(this.currState){
 			case this.state.menu:			
 				ctx.font="30px Verdana";
