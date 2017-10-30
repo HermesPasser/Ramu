@@ -5,10 +5,6 @@
 // blog: gladiocitrico.blogspot.com   //
 // ---------------------------------- //
 
-// desquecrever o que cada classe é
-
-// implementar improved input
-
 var gameObjs	   = [],
     objsToDraw 	   = [],
     objsToCollide  = [],
@@ -17,6 +13,8 @@ var gameObjs	   = [],
 
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
+
+//{ Utils
 
 const keyCode = {
 	a:    65, b:    66, c:    67, d:    68, e:    69, f:    70, g:    71, h:    72, i:    73, j:    74, 
@@ -65,6 +63,27 @@ class RamuMath{
 			   rect1.height + rect1.y > rect2.y);
 	}
 }
+
+class RamuUtils{
+	constructor(){
+		throw new Error('This is a static class');
+	}
+	
+	/// Get a image with source
+	static getImage(src){
+		let img = new Image();
+		img.src = src;
+		return img;
+	}
+	
+	/// Check if image is loaded
+	static imageIsLoaded(img){
+		return img.complete && img.naturalWidth !== 0 && img.naturalHeight !== 0;
+	}
+}
+//}
+
+//{ Engine
 
 class Ramu{
 	/// Prevents creating an instance of this class.
@@ -167,24 +186,6 @@ class Ramu{
 	}
 }
 
-class RamuUtils{
-	constructor(){
-		throw new Error('This is a static class');
-	}
-	
-	/// Get a image with source
-	static getImage(src){
-		let img = new Image();
-		img.src = src;
-		return img;
-	}
-	
-	/// Check if image is loaded
-	static imageIsLoaded(img){
-		return img.complete && img.naturalWidth !== 0 && img.naturalHeight !== 0;
-	}
-}
-
 class GameObj{	
 	constructor(x = 0, y = 0){
 		if (arguments.length > 2) throw new Error('Wrong number of arguments');
@@ -196,7 +197,7 @@ class GameObj{
 	}
 	
 	destroy(){
-		for (var i = 0; i < gameObjs.length; i++){
+		for (let i = 0; i < gameObjs.length; i++){
 			if (gameObjs[i] === this){
 				gameObjs.splice(i, 1);
 				break;
@@ -234,8 +235,8 @@ class Drawable extends GameObj{
 	}
 	
 	static sortPriority(){
-		for (var i = 0; i < objsToDraw.length; ++i){
-			for (var j = i + 1; j < objsToDraw.length; ++j){
+		for (let i = 0; i < objsToDraw.length; ++i){
+			for (let j = i + 1; j < objsToDraw.length; ++j){
 				if (objsToDraw[i].drawPriority > objsToDraw[j].drawPriority){
 					let temp =  objsToDraw[i];
 					objsToDraw[i] = objsToDraw[j];
@@ -247,7 +248,7 @@ class Drawable extends GameObj{
 	
 	destroy(){
 		super.destroy();
-		for (var i = 0; i < objsToDraw.length; i++){
+		for (let i = 0; i < objsToDraw.length; i++){
 			if (objsToDraw[i] === this){
 				objsToDraw.splice(i, 1);
 				break;
@@ -275,6 +276,10 @@ class Drawable extends GameObj{
 	draw(){ }
 }
 
+//}
+
+//{ Collisor
+
 class Collisor extends Drawable{
 	constructor(x, y, width, height){
 		super(x, y, width, height);
@@ -293,8 +298,8 @@ class Collisor extends Drawable{
 	}
 	
 	static sortPriority(){
-		for (var i = 0; i < objsToCollide.length; ++i){
-			for (var j = i + 1; j < objsToCollide.length; ++j){
+		for (let i = 0; i < objsToCollide.length; ++i){
+			for (let j = i + 1; j < objsToCollide.length; ++j){
 				if (objsToCollide[i].collisionPriority > objsToCollide[j].collisionPriority){
 					let temp =  objsToCollide[i];
 					objsToCollide[i] = objsToCollide[j];
@@ -305,13 +310,13 @@ class Collisor extends Drawable{
 	}
 	
 	destroy(){
-		super.destroy();
-		for (var i = 0; i < objsToCollide.length; i++){
+		for (let i = 0; i < objsToCollide.length; i++){
 			if (objsToCollide[i] === this){
 				objsToCollide.splice(i, 1);
 				break;
 			}
 		}
+		super.destroy();
 	}
 	
 	update(){
@@ -329,7 +334,7 @@ class Collisor extends Drawable{
 		if(!this.canCollide) return;
 		
 		this.collision = [];
-		for (var i = 0; i < objsToCollide.length; i++){
+		for (let i = 0; i < objsToCollide.length; i++){
 			if (objsToCollide[i] === this || !objsToCollide[i].canCollide)
 				continue;
 			
@@ -354,12 +359,58 @@ class SimpleRectCollisor extends Collisor{
 			else ctx.strokeStyle = "blue";
 			
 			ctx.strokeRect(this.x, this.y, this.width, this.height);
-			ctx.strokeStyle = "#000000"; // reset default value
+			ctx.strokeStyle = "#000000"; // reset to default value
 		}
 	}
 }
 
-// create version of gamesprite using sheets of an image instead of full images
+class Raycast extends Collisor{
+	constructor(initX, initY, finalX, finalY, lifeTime){
+		super(initX, initY, 1, 1);
+		if (arguments.length != 5) throw new Error('Wrong number of arguments');
+		this.initX = initX;
+		this.initY = initY;
+		this.finalX = finalX;
+		this.finalY = finalY;
+		this.lifeTime = lifeTime;
+		this.currentTime = 0;
+		this.showWarn = true;
+	}
+
+	update(){
+		if (this.lifeTime <= this.currentTime)
+			return; // destroy?
+		
+		super.update();
+		
+		this.currentTime += Ramu.time.delta;
+		this.x += this.finalX * Ramu.time.delta;
+		this.y += this.finalY * Ramu.time.delta;
+		
+		if (Ramu.debugMode && this.showWarn && (this.x >= canvas.width || this.y >= canvas.height)){
+			console.warn("Cannot draw objects out of the canvas.")
+			this.showWarn = false;
+		}
+	}
+	
+	draw(){
+		if (this.isInCollision)
+			ctx.strokeStyle = "red";
+		else ctx.strokeStyle = "blue";
+			
+		ctx.beginPath();
+		ctx.moveTo(this.x, this.y);
+		ctx.lineTo(this.initX, this.initY);
+		ctx.stroke();
+
+		ctx.strokeStyle = "#000000"; // reset to default value
+	}
+}
+
+//}
+
+//{ Sprite
+
 class GameSprite extends Drawable{
 	constructor(src, x, y, w, h, canDraw = true){
 		super(x, y, w, h);
@@ -387,11 +438,20 @@ class GameSprite extends Drawable{
 class GameSpritesheet extends Drawable{
 	constructor(image, sheetRect, x, y, w, h, canDraw = true){
 		super(x, y, w, h);
-		if (arguments.length < 5) throw new Error('Wrong number of arguments');
+		if (arguments.length < 6) throw new Error('Wrong number of arguments');
 
 		this.img = image;
-		this.sheet = sheetRect;
+		this.setSheet(sheetRect);
 		this.canDraw = canDraw;	
+	}
+	
+	setSheet(sheetRect){
+		this.sheet = sheetRect;
+	}
+	
+	setPosition(x, y){
+		this.x = x;
+		this.y = y;
 	}
 	
 	draw(){					
@@ -509,6 +569,12 @@ class SpritesheetAnimator extends GameObj{
 		this.height = height;
 	}
 	
+	setDrawPriority(integer){
+		if (arguments.length != 1) throw new Error('Wrong number of arguments');
+		for (var key in this.anim)
+			this.anim[key].drawPriority = integer;
+	}
+	
 	addAnimation(nameID, spritesheetAnimation){
 		if (arguments.length != 2) throw new Error('Wrong number of arguments');
 		
@@ -568,12 +634,17 @@ class SpritesheetAnimator extends GameObj{
 	}
 	
 	destroy(){
-		for (var key in this.anim)
+		for (var key in this.anim){
 			this.anim[key].destroy();
+			this.anim[key] = null;
+		}
 		super.destroy();
 	}
 }
 
+//}
+
+//{ Other
 class Parallax extends GameObj{ // Not use time delta yet
 	constructor(src, x, y, w, h, velocity = 2){
 		super(x, y);
@@ -621,9 +692,14 @@ class Parallax extends GameObj{ // Not use time delta yet
 	
 	destroy(){
 		this.left.destroy();
+		this.left = null;
 		this.center.destroy();
+		this.center = null;
 		this.right.destroy();
+		this.right = null;
 		super.destroy();
 	}
 }
+
+//}
 
