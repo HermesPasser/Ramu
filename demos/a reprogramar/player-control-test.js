@@ -3,8 +3,10 @@ var state = { idle: 0, run: 1, jump: 2, rouch: 3, climb_idle: 4, climb: 4 },
 	current 		   = state.idle,
 	vel 			   = 60,
 	trueHeight 		   = 50,
+	
 	timeToShot 		   = 0.2,
 	currentTimeToShot  = 0,
+	
 	currentPixelToJump = 0,
 	pixelsToJump 	   = 100;
 	gravityVel 		   = 15,
@@ -102,7 +104,7 @@ class Lightning extends GameObj{
 		this.sprite.x += force;
 		this.coll.x += force; 
 
-		// Kill the enemy if collide // implementar inimigo
+		// Kill the enemy if collide // implement enemy
 		for (var i = 0; i < this.coll.collision.length; i++){
 			if (this.coll.collision[i].tag == "enemy"){
 				this.coll.collision[i].applyDamage(10);
@@ -110,7 +112,7 @@ class Lightning extends GameObj{
 			}
 		}
 		
-		// Destroy when is out of the canvas
+		// Destroy if is out of the canvas
 		if (this.x < -this.width || this.x > canvas.width)
 			this.destroy();
 		

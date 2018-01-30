@@ -1,4 +1,4 @@
-// Mapping Test by Hermes Passer in 09-13-17 using Ramu 0.2
+// Vertical Mapping Example by Hermes Passer
 
 class MyGame extends Drawable{
 	start(){
@@ -25,21 +25,21 @@ class MyGame extends Drawable{
 	}
 	
 	draw(){
-		ctx.font="13px Arial";
-		ctx.strokeStyle = "red";
-		ctx.strokeText("Simple mapping test using a array as map, press 'A' or 'D' to move.", 1, 15);
-		ctx.strokeText("by Hermes Passer.", 1, 40);
+		Ramu.ctx.font="13px Arial";
+		Ramu.ctx.strokeStyle = "red";
+		Ramu.ctx.strokeText("Simple mapping test using a array as map, press 'A' or 'D' to move.", 1, 15);
+		Ramu.ctx.strokeText("by Hermes Passer.", 1, 40);
 		
-		ctx.strokeStyle = "black";
+		Ramu.ctx.strokeStyle = "black";
 		for (var i = this.initial_x, x = 0; i < this.SCENE.length; i++, x += 50){		
 			if (this.SCENE[i] == "_")
-				ctx.drawImage(this.ground, x, canvas.height -50, 50, 50);
+				Ramu.ctx.drawImage(this.ground, x, Ramu.canvas.height -50, 50, 50);
 			else if (this.SCENE[i] == "|")
-				ctx.drawImage(this.flying_ground, x, canvas.height -50, 50, 50);
+				Ramu.ctx.drawImage(this.flying_ground, x, Ramu.canvas.height -50, 50, 50);
 		}
 	}
 }
 
 new MyGame(0,0,0,0);
 
-Ramu.init();
+Ramu.init(500, 500);
