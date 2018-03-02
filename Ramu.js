@@ -906,7 +906,7 @@ class Text extends Drawable {
 	}
 	
 	start(){
-		this.setUp();
+		//this.setUp();
 	}
 	
 	// Adapted from www.html5canvastutorials.com/tutorials/html5-canvas-wrap-text-tutorial
@@ -920,6 +920,8 @@ class Text extends Drawable {
 		Ramu.ctx.font = this.font;
 		Ramu.ctx.fillStyle = this.fillStyle;
 		
+		this._words = this.text.replace(/\n/g, " \\n ").split(' ');
+		
 		for(var n = 0; n < this._words.length; n++) {
 			testLine = line + this._words[n] + ' ';
 			metrics = Ramu.ctx.measureText(testLine);			
@@ -931,7 +933,6 @@ class Text extends Drawable {
 				y += this.lineHeight;
 				
 			}
-			
 			else if (testWidth > this.maxWidth && n > 0) {
 				Ramu.ctx.fillText(line, this.x, y);
 				line = this._words[n] + ' ';
@@ -947,9 +948,9 @@ class Text extends Drawable {
 		Ramu.ctx.fillStyle = oldStyle;
 	}
 	
-	setUp(){
-		this._words = this.text.replace(/\n/g, " \\n ").split(' ');
-	}
+	// setUp(){
+		// this._words = this.text.replace(/\n/g, " \\n ").split(' ');
+	// }
 }
 
 //}
