@@ -492,6 +492,10 @@ class Raycast extends Collisor{
 	init(initX, initY, velocityX, velocityY, lifeTime){
 		if (arguments.length != 5) throw new Error('ArgumentError: Wrong number of arguments');
 
+		// To call onRaycastEnd when was aborted
+		if (this.started)
+			this.onRaycastEnd();
+		
 		this.x = initX;
 		this.y = initY;
 		this.initX = initX;
