@@ -237,6 +237,16 @@ class Ramu{
 			gameObjs[i].update();	
 		}
 	}
+
+	static get width(){
+		if (Ramu.canvas)
+			return Ramu.canvas.width;
+	}
+	
+	static get height(){
+		if (Ramu.canvas)
+			return Ramu.canvas.height;
+	}
 	
 	/// Check all collisions in the game.
 	static checkCollision(){
