@@ -617,7 +617,7 @@ class Spritesheet extends Drawable{
 
 /// Displays an animation that uses various images
 class SpriteAnimation extends Drawable{
-	constructor(x, y, width, height){
+	constructor(x, y, width, height, true){
 		super(x, y, width, height);
 		if (arguments.length != 4) throw new Error('ArgumentError: Wrong number of arguments');
 		this.frames 		 = [];
