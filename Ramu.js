@@ -99,6 +99,11 @@ class RamuUtils{
 		return img.complete && img.naturalWidth !== 0 && img.naturalHeight !== 0;
 	}
 	
+	static isOutOfCanvas(gameObject){
+		return gameObject.x < 0 || gameObject.x > Ramu.canvas.width ||
+			   gameObject.y < 0 || gameObject.y > Ramu.canvas.height;
+	}
+	
 	static CustomTypeError(instance, classToCompare){
 		return new Error("TypeError: " + Object.keys({instance})[0] + ' must be a ' + classToCompare.name + ' instance.');
 	}
