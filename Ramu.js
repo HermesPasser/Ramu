@@ -484,7 +484,7 @@ class Raycast extends Collisor{
 	constructor(){
 		super(1, 1, 1, 1);
 		this.started  = false;
-		this.abord();
+		this.abort();
 	}
 
 	onRaycastEnd(){} // Virtual
@@ -507,7 +507,7 @@ class Raycast extends Collisor{
 		this.started = true;
 	}
 	
-	abord(){
+	abort(){
 		this.currentTime = 0;
 		this.started = false;
 	}
@@ -515,7 +515,7 @@ class Raycast extends Collisor{
 	update(){
 		if (this.started && this.currentTime >= this.lifeTime){			
 			this.onRaycastEnd();
-			this.abord();
+			this.abort();
 		}
 	
 		if (!this.started || this.currentTime >= this.lifeTime)
