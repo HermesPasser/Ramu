@@ -80,6 +80,19 @@ class RamuUtils{
 		return img;
 	}
 	
+	static playSound(sound, volume = null){
+		if (volume != null)
+			sound.volume = volume;
+		
+		const playPromise = sound.play();
+		if (playPromise !== null){
+			
+			playPromise.catch( () => { 
+				sound.play();
+			});
+		}
+	}
+	
 	/// Check if image is loaded
 	static imageIsLoaded(img){
 		if (!(img instanceof Image)) return false;
