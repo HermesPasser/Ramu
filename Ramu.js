@@ -130,6 +130,10 @@ class Ramu{
 		Ramu.ctx = Ramu.canvas.getContext("2d");
 		document.body.appendChild(Ramu.canvas);
 		
+		Ramu.callSortUpdate    = false;
+		Ramu.callSortDraw 	   = false;
+		Ramu.callSortCollision = false;
+		
 		Ramu.debugMode = false;
 		Ramu.inLoop = true;
 		
@@ -172,7 +176,19 @@ class Ramu{
 		
 			while(Ramu.time.frameTime > Ramu.time.delta) {
 				Ramu.start();
+
+				if (Ramu.callSortCollision){
+					Collisor.sortPriority();
+					Ramu.callSortCollision = false;
+				}
+				
 				Ramu.checkCollision();
+				
+				if (Ramu.callSortUpdate){
+					GameObj.sortPriority();
+					Ramu.callSortUpdate = false;
+				}
+				
 				Ramu.update();
 				Ramu.time.frameTime = Ramu.time.frameTime - Ramu.time.delta;
 				
@@ -184,6 +200,11 @@ class Ramu{
 					break;
 				}
 			}
+		}
+		
+		if (Ramu.callSortDraw){
+			Drawable.sortPriority();
+			Ramu.callSortDraw = false;
 		}
 		
 		Ramu.draw();
@@ -210,14 +231,20 @@ class Ramu{
 	
 	/// Update all gameObjs in the game.
 	static update(){
-		for (var i = 0; i < gameObjs.length; i++)
+		for (var i = 0; i < gameObjs.length; i++){
+			if (!gameObjs[i]._start_was_called)
+				continue;
 			gameObjs[i].update();	
+		}
 	}
 	
 	/// Check all collisions in the game.
 	static checkCollision(){
-		for (var i = 0; i < objsToCollide.length; i++)
+		for (var i = 0; i < objsToCollide.length; i++){
+			if (!gameObjs[i]._start_was_called)
+				continue;
 			objsToCollide[i].checkCollision();
+		}
 	}
 	
 	/// Executes all draw methods of all gameObjs in the game.
@@ -226,6 +253,9 @@ class Ramu{
 		Ramu.ctx.clearRect(0, 0, Ramu.canvas.width, Ramu.canvas.height);
 		
 		for (var i = 0; i < objsToDraw.length; i++){
+			if (!gameObjs[i]._start_was_called)
+				continue;
+			
 			let positionWidth = objsToDraw[i].x + objsToDraw[i].width;		
 			let positionHeigh = objsToDraw[i].y + objsToDraw[i].height;
 			
@@ -253,7 +283,7 @@ class GameObj{
 	}
 	static addObjt(obj){
 		gameObjs.push(obj);
-		GameObj.sortPriority();
+		Ramu.callSortUpdate = true;
 	}
 	
 	static sortPriority(){
@@ -304,7 +334,7 @@ class Drawable extends GameObj{
 	
 	static addObjt(drawableObj){
 		objsToDraw.push(drawableObj);
-		Drawable.sortPriority();
+		Ramu.callSortDraw = true;
 	}
 	
 	static sortPriority(){
@@ -368,7 +398,7 @@ class Collisor extends Drawable{
 	
 	static addObjt(colObj){
 		objsToCollide.push(colObj);
-		Collisor.sortPriority();
+		Ramu.callSortCollision = true;
 	}
 	
 	static sortPriority(){
