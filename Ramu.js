@@ -953,5 +953,91 @@ class Text extends Drawable {
 	// }
 }
 
+class SimpleParticle extends GameObj{
+	constructor(img, rect, lifeSpan, particleNumber){
+		super(rect.x, rect.y, rect.width, rect.height);
+		this.particleNumber = particleNumber / 2;
+		this.particle = img;
+		this.destroyOnEnd = false;
+		this.lifeSpan = lifeSpan;
+	}
+	
+	start(){		
+		this.particles = [];
+		this.isOver = true
+		for (let i = 0; i < 200; i++)
+			this.particles[i] = new Sprite(this.particle, this.x, this.y, this.width, this.height, false);
+	}
+	
+	init(){
+		for (let i = 0; i < this.particles.length ; i++){
+			this.particles[i].canDraw = true;
+			this.particles[i].opacity = 1;
+		}
+
+		this.currentTimeToFall = 0;
+		this.currentLife = 0;
+		this.isOver = false;		
+	}
+	
+	setPosition(x, y){
+		this.x = x;
+		this.y = y;
+		
+		// if (this.isOver)
+		this.resetPosition();
+	}
+	
+	update(){
+		if (this.isOver)
+			return;
+				
+		this.currentTimeToFall >= this.currentLife / 2 ? this.move(this.particleNumber) : this.move(this.particleNumber / 2);
+		this.currentLife += Ramu.time.delta;
+		
+		if (this.currentLife > this.lifeSpan){
+			for (let i = 0; i < this.particles.length ; i++)
+				this.particles[i].opacity -= 0.07;
+		}
+		
+		if (this.particles[0].opacity <= 0){
+			this.isOver = true;
+			
+			if (this.destroyOnEnd)
+				this.destroy();
+			else this.resetPosition();
+		}
+	}
+	
+	resetPosition(){
+		for (let i = 0; i < this.particles.length ; i++){
+			this.particles[i].x = this.x;
+			this.particles[i].y = this.y;			
+			this.particles[i].canDraw = false;
+		}
+	}
+	
+	destroy(){
+		for (let i = 0; i < this.particles.length ; i++){
+			this.particles[i].destroy();
+			delete this.particles[i];
+		}
+		super.destroy();
+	}
+	
+	random(max, min){
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+	
+	move(vel){
+		for (let i = 0; i < this.particles.length ; i++){
+			let x = this.random(-vel, vel);
+			let y = this.random(-vel, vel);
+			this.particles[i].x += x * Ramu.time.delta;
+			this.particles[i].y += y * Ramu.time.delta;
+		}	
+	}
+}
+
 //}
 
