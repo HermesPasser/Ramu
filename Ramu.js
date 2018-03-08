@@ -11,7 +11,7 @@ var gameObjs	   = [],
 	updateLastPriority 	  = 0,
     drawLastPriority	  = 0,
 	collisionLastPriority = 0;	
-	
+
 //{ Utils
 
 const keyCode = {
@@ -98,7 +98,7 @@ class RamuUtils{
 		if (!(img instanceof Image)) return false;
 		return img.complete && img.naturalWidth !== 0 && img.naturalHeight !== 0;
 	}
-	
+		
 	static isOutOfCanvas(gameObject){
 		return gameObject.x < 0 || gameObject.x > Ramu.canvas.width ||
 			   gameObject.y < 0 || gameObject.y > Ramu.canvas.height;
@@ -237,7 +237,7 @@ class Ramu{
 			gameObjs[i].update();	
 		}
 	}
-
+	
 	static get width(){
 		if (Ramu.canvas)
 			return Ramu.canvas.width;
@@ -251,7 +251,7 @@ class Ramu{
 	/// Check all collisions in the game.
 	static checkCollision(){
 		for (var i = 0; i < objsToCollide.length; i++){
-			if (!gameObjs[i]._start_was_called)
+			if (!objsToCollide[i]._start_was_called)
 				continue;
 			objsToCollide[i].checkCollision();
 		}
@@ -263,7 +263,7 @@ class Ramu{
 		Ramu.ctx.clearRect(0, 0, Ramu.canvas.width, Ramu.canvas.height);
 		
 		for (var i = 0; i < objsToDraw.length; i++){
-			if (!gameObjs[i]._start_was_called)
+			if (!objsToDraw[i]._start_was_called)
 				continue;
 			
 			let positionWidth = objsToDraw[i].x + objsToDraw[i].width;		
@@ -483,7 +483,7 @@ class SimpleRectCollisor extends Collisor{
 class Raycast extends Collisor{
 	constructor(){
 		super(1, 1, 1, 1);
-		this.started  = false;
+		this.started = false;
 		this.abort();
 	}
 
@@ -617,8 +617,8 @@ class Spritesheet extends Drawable{
 
 /// Displays an animation that uses various images
 class SpriteAnimation extends Drawable{
-	constructor(x, y, width, height, true){
-		super(x, y, width, height);
+	constructor(x, y, width, height){
+		super(x, y, width, height, true);
 		if (arguments.length != 4) throw new Error('ArgumentError: Wrong number of arguments');
 		this.frames 		 = [];
 		this.currentFrame 	 = 0;
@@ -630,6 +630,21 @@ class SpriteAnimation extends Drawable{
 	}
 	
 	addFrame(img){ 
+		// Kawthar
+		// if(void 0 === img || arguments.length != 1)
+		// throw new Error();
+
+		// if(Array.isArray(img)){
+		// for (let i = 0; i < img[i]; i++) 
+			// this.frames.push(img);
+		// return;
+		// } else if(img instanceof Image){
+		// this.frames.push(img);
+		// return;
+		// }
+
+		//Argumento ou não é array ou não é uma instância de Image
+		// throw RamuUtils.CustomTypeError(img, Image);
 		if (arguments.length != 1) throw new Error('ArgumentError: Wrong number of arguments');
 		if (!(img instanceof Image)) throw RamuUtils.CustomTypeError(img, Image);
 		
@@ -728,7 +743,7 @@ class SpritesheetAnimation extends SpriteAnimation{
 /// Control SpritesheetAnimations
 class SpritesheetAnimator extends GameObj{
 	constructor(x, y, width, height){
-		super(x,y,width,height);
+		super(x, y, width, height);
 		if (arguments.length != 4) throw new Error('ArgumentError: Wrong number of arguments');
 		
 		this.anim = {};
@@ -906,7 +921,7 @@ class Text extends Drawable {
 	}
 	
 	start(){
-		//this.setUp();
+		// this.setUp();
 	}
 	
 	// Adapted from www.html5canvastutorials.com/tutorials/html5-canvas-wrap-text-tutorial
