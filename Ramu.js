@@ -630,25 +630,26 @@ class SpriteAnimation extends Drawable{
 	}
 	
 	addFrame(img){ 
-		// Kawthar
-		// if(void 0 === img || arguments.length != 1)
-		// throw new Error();
-
-		// if(Array.isArray(img)){
-		// for (let i = 0; i < img[i]; i++) 
-			// this.frames.push(img);
-		// return;
-		// } else if(img instanceof Image){
-		// this.frames.push(img);
-		// return;
-		// }
-
-		//Argumento ou não é array ou não é uma instância de Image
-		// throw RamuUtils.CustomTypeError(img, Image);
-		if (arguments.length != 1) throw new Error('ArgumentError: Wrong number of arguments');
-		if (!(img instanceof Image)) throw RamuUtils.CustomTypeError(img, Image);
+		if(void 0 === img || arguments.length != 1)
+			throw new Error('ArgumentError: Wrong number of arguments');
 		
-		this.frames.push(img);
+		if(Array.isArray(img)){
+			for (let i = 0; i < img.length; i++) {
+				if(!img[i] instanceof Image)
+					throw RamuUtils.CustomTypeError(img, img);
+				
+				this.frames.push(img);
+			}
+			return;
+		} else if(img instanceof Image){
+			if(!img[i] instanceof Image)
+				throw RamuUtils.CustomTypeError(img, img);
+			
+			this.frames.push(img);
+			return;
+		}
+
+		throw RamuUtils.CustomTypeError(img, Image);
 	}
 	
 	reset(){
@@ -703,11 +704,33 @@ class SpritesheetAnimation extends SpriteAnimation{
 	}
 	
 	addFrame(rect){
-		if (arguments.length != 1) throw new Error('ArgumentError: Wrong number of arguments');
-		if (!(rect instanceof Rect)) throw RamuUtils.CustomTypeError(rect, Rect);
-		if (rect.x < 0 || rect.y < 0) throw new Error('ArgumentOutOfRangeError: The rect position cannot be negative.');
+		if(void 0 === rect || arguments.length != 1)
+			throw new Error('ArgumentError: Wrong number of arguments');
+		
+		if(Array.isArray(rect)){
+			for (let i = 0; i < rect.length; i++){
+				if(!rect[i] instanceof Rect)
+					throw RamuUtils.CustomTypeError(rect, rect);
+				
+				if (rect.x < 0 || rect.y < 0) 
+					throw new Error('ArgumentOutOfRangeError: The rect position cannot be negative.');
+				
+				this.frames.push(rect[i]);			
+			}
+				
+			return;
+		} else if(rect instanceof Rect){
+			if(!rect[i] instanceof Rect)
+				throw RamuUtils.CustomTypeError(rect, rect);
+			
+			if (rect.x < 0 || rect.y < 0) 
+				throw new Error('ArgumentOutOfRangeError: The rect position cannot be negative.');
+			
+			this.frames.push(rect);
+			return;
+		}
 
-		this.frames.push(rect);
+		throw RamuUtils.CustomTypeError(rect, rect);
 	}
 	
 	draw(){
