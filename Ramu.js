@@ -638,11 +638,11 @@ class SpriteAnimation extends Drawable{
 				if(!img[i] instanceof Image)
 					throw RamuUtils.CustomTypeError(img, img);
 				
-				this.frames.push(img);
+				this.frames.push(img[i]);
 			}
 			return;
 		} else if(img instanceof Image){
-			if(!img[i] instanceof Image)
+			if(!img instanceof Image)
 				throw RamuUtils.CustomTypeError(img, img);
 			
 			this.frames.push(img);
@@ -712,7 +712,7 @@ class SpritesheetAnimation extends SpriteAnimation{
 				if(!rect[i] instanceof Rect)
 					throw RamuUtils.CustomTypeError(rect, rect);
 				
-				if (rect.x < 0 || rect.y < 0) 
+				if (rect[i].x < 0 || rect[i].y < 0) 
 					throw new Error('ArgumentOutOfRangeError: The rect position cannot be negative.');
 				
 				this.frames.push(rect[i]);			
@@ -720,7 +720,7 @@ class SpritesheetAnimation extends SpriteAnimation{
 				
 			return;
 		} else if(rect instanceof Rect){
-			if(!rect[i] instanceof Rect)
+			if(!rect instanceof Rect)
 				throw RamuUtils.CustomTypeError(rect, rect);
 			
 			if (rect.x < 0 || rect.y < 0) 
