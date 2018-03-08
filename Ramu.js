@@ -796,7 +796,7 @@ class SpritesheetAnimator extends GameObj{
 		spritesheetAnimation.y = this.y;
 		spritesheetAnimation.canDraw = false;
 		spritesheetAnimation.drawPriority = this.animDrawPriority;
-		Drawable.sortPriority();
+		Ramu.callSortDraw = true;
 		this.anim[nameID] = spritesheetAnimation;
 	}
 	
@@ -895,7 +895,7 @@ class Parallax extends GameObj{
 		this.left.drawPriority   = parseInt(num);
 		this.center.drawPriority = parseInt(num);
 		this.right.drawPriority  = parseInt(num);
-		Drawable.sortPriority();
+		Ramu.callSortDraw = true;
 	}
 	
 	update(){
