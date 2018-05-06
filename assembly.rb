@@ -43,25 +43,21 @@ def create_file
 end
 
 def assembly_core
-	$core.each do |s| 
-		$file_content += get_file_text(s) + "\n"
-	end
+	$core.each { |s| $file_content += get_file_text(s) + "\n" }
 end
 
 def assembly_complete
-	$complete.each do |s| 
-		$file_content += get_file_text(s) + "\n"
-	end
+	$complete.each { |s| $file_content += get_file_text(s) + "\n" }
 end
 
 def assembly_other
-	$other.each do |s| 
-		$file_content += get_file_text(s) + "\n"
-	end
+	$other.each { |s| $file_content += get_file_text(s) + "\n" }
 end
 
 def main
 	print "Moroboshi - Ramu's File Mounting Utility"
+	$output_name = ARGV[1] == nil ? $output_name : ARGV[1]
+	
 	case ARGV[0]
 	when "-core"
 		assembly_core
@@ -74,12 +70,13 @@ def main
 		assembly_other
 	else	
 		puts "\n\t-core to add just the minimum scripts to make it work"
-		puts "\t-complete to add the default sprite and collision scripts "
-		puts "\t-other to add everything "
+		puts "\t-complete to add the default sprite and collision scripts"
+		puts "\t-other to add everything"
+		puts "\t-<filename> (optional) new file name"
 		exit(0)
 	end
 	create_file
-	print " - done."
+	print ' - done.'
 end
 
 main
