@@ -8,9 +8,11 @@ class GameObj{
 		this.height = h;
 		this.tag =  this.tag || "none";
 		this.updatePriority = updateLastPriority++;
+		this.canUpdate = true;
 		
 		GameObj.addObjt(this);
 	}
+	
 	static addObjt(obj){
 		gameObjs.push(obj);
 		Ramu.callSortUpdate = true;
@@ -29,6 +31,11 @@ class GameObj{
 	}
 	
 	destroy(){
+		if (!this._start_was_called){
+			console.warn("The update was not called yet,")
+			return;
+		}
+		
 		for (let i = 0; i < gameObjs.length; i++){
 			if (gameObjs[i] === this){
 				gameObjs.splice(i, 1);

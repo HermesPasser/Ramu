@@ -27,6 +27,11 @@ class Collisor extends Drawable{
 	}
 	
 	destroy(){
+		if (!this._start_was_called){
+			console.warn("The update was not called yet,")
+			return;
+		}
+		
 		for (let i = 0; i < objsToCollide.length; i++){
 			if (objsToCollide[i] === this){
 				objsToCollide.splice(i, 1);

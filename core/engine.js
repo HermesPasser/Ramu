@@ -117,7 +117,7 @@ class Ramu{
 	/// Update all gameObjs in the game.
 	static update(){
 		for (var i = 0; i < gameObjs.length; i++){
-			if (!gameObjs[i]._start_was_called)
+			if (!gameObjs[i]._start_was_called || !gameObjs[i].canUpdate)
 				continue;
 			gameObjs[i].update();	
 		}

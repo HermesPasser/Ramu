@@ -34,6 +34,11 @@ class Drawable extends GameObj{
 	}
 	
 	destroy(){
+		if (!this._start_was_called){
+			console.warn("The update was not called yet,")
+			return;
+		}
+		
 		super.destroy();
 		for (let i = 0; i < objsToDraw.length; i++){
 			if (objsToDraw[i] === this){

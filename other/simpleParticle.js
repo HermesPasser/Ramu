@@ -1,20 +1,31 @@
 class SimpleParticle extends GameObj{
 	constructor(img, rect, lifeSpan, particleNumber){
 		super(rect.x, rect.y, rect.width, rect.height);
+		if (arguments.length != 4) throw new Error('ArgumentError: Wrong number of arguments');
+
 		this.particleNumber = particleNumber / 2;
 		this.particle = img;
 		this.destroyOnEnd = false;
 		this.lifeSpan = lifeSpan;
 	}
 	
-	start(){		
+	start(){
 		this.particles = [];
-		this.isOver = true
-		for (let i = 0; i < 200; i++)
+		this.isOver = true;
+		this.alreadyPlayed = false;
+		for (let i = 0; i < 200; i++){
 			this.particles[i] = new Sprite(this.particle, this.x, this.y, this.width, this.height, false);
+			this.particles[i].tag = 'particle-sprite';
+		}
 	}
 	
 	init(){
+		if (!this._start_was_called){
+			console.warn("The update was not called yet,")
+			this.start();
+			this._start_was_called = true;
+		}
+		
 		for (let i = 0; i < this.particles.length ; i++){
 			this.particles[i].canDraw = true;
 			this.particles[i].opacity = 1;
@@ -36,10 +47,10 @@ class SimpleParticle extends GameObj{
 	update(){
 		if (this.isOver)
 			return;
-				
+			
 		this.currentTimeToFall >= this.currentLife / 2 ? this.move(this.particleNumber) : this.move(this.particleNumber / 2);
 		this.currentLife += Ramu.time.delta;
-		
+				
 		if (this.currentLife > this.lifeSpan){
 			for (let i = 0; i < this.particles.length ; i++)
 				this.particles[i].opacity -= 0.07;
@@ -47,6 +58,7 @@ class SimpleParticle extends GameObj{
 		
 		if (this.particles[0].opacity <= 0){
 			this.isOver = true;
+			this.alreadyPlayed = true;
 			
 			if (this.destroyOnEnd)
 				this.destroy();
@@ -63,10 +75,14 @@ class SimpleParticle extends GameObj{
 	}
 	
 	destroy(){
-		for (let i = 0; i < this.particles.length ; i++){
-			this.particles[i].destroy();
-			delete this.particles[i];
-		}
+		this.canUpdate = false;
+		// for (let i = 0; i < this.particles.length; i++)
+			// this.particles[i].destroy();
+		
+		// this.particles = null;
+		// this.particle.destroy();
+		
+		this.particle = null;
 		super.destroy();
 	}
 	
