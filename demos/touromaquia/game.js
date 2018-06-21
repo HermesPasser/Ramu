@@ -259,6 +259,6 @@ class Game extends GameObj{
 }
 
 Ramu.init(500, 500); 
-Ramu.debugMode = true;
+// Ramu.debugMode = true;
 
 var game = new Game();
