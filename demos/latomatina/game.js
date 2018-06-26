@@ -138,14 +138,6 @@ class Game extends GameObj{
 			});
 		}
 	}
-	
-	onClick(){
-		Ramu.canvas.addEventListener('click', event => {
-			let bound = Ramu.canvas.getBoundingClientRect();
-			let x = event.clientX - bound.left - Ramu.canvas.clientLeft; // let y = event.clientY - bound.top - Ramu.canvas.clientTop;
-			game.throwTomato(x);
-		});
-	}
 
 	throwTomato(x){
 		if (!this.canThrow)
