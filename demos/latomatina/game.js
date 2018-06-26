@@ -79,6 +79,7 @@ class Citizen extends SimpleRectCollisor{
 		this.collision.forEach(function(item) {
 			if (item.tag === 'tomato'){
 				game.hitScore++;
+				item.destroy();
 				obj.destroy();
 			}
 		});
