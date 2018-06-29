@@ -87,13 +87,13 @@ class Game extends GameObj{
 		this.infoDump = new Text('Click to place the portal. Hermes Passer in 2018-06-29', 100, 490);
 		this.result = new Text('', 200, 250);
 		
-		this.enTunnel = new EntranceTunnel(300, 1)
+		this.enTunnel = new EntranceTunnel(300, 1);
 		this.exTunnel = new Sprite(RamuUtils.getImage('res/exit_tunnel.gif'), 30, Ramu.height - 97, 34, 97);
 		this.enTunnel.drawPriority = 2;
 		this.exTunnel.drawPriority = 2;
 		
 		this.exPortal = new Sprite(RamuUtils.getImage('res/exit_portal.gif'), 302, 300, 26, 18);
-		this.enPortal = new EntrancePortal(355, 30)
+		this.enPortal = new EntrancePortal(355, 30);
 		
 		this.train = new Train(this.exTunnel.x + 1, this.exTunnel.y + 20);
 		
@@ -102,12 +102,12 @@ class Game extends GameObj{
 	
 	update(){ this.createEvent(); }
 	
-	lose(){ this.result.text = "YOU LOST" }
+	lose(){ this.result.text = "YOU LOST"; }
 	
-	win(){ this.result.text = "YOU WON" }
+	win(){ this.result.text = "YOU WON"; }
 	
 	setRules(){
-		this.btn = new SimpleSpriteButton(RamuUtils.getImage('res/button.gif'), 350, 475, 108, 20)
+		this.btn = new SimpleSpriteButton(RamuUtils.getImage('res/button.gif'), 350, 475, 108, 20);
 		this.btn.setOnClick(function(){
 			game.train.canGo = true;
 			game.audio.play();
