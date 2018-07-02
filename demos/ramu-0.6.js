@@ -48,6 +48,18 @@ class Rect{
 		this.width = w;
 		this.height = h;
 	}
+	
+	static hasNegativeValue(rect){
+		return Rect.hasNegativeValueInXY(rect) || Rect.hasNegativeValueInWH(rect);
+	}
+	
+	static hasNegativeValueInXY(rect){
+		return rect.x < 0 || rect.y < 0;
+	}
+	
+	static hasNegativeValueInWH(rect){
+		return rect.width < 0 || rect.height < 0;
+	}
 }
 
 class RamuMath{
@@ -129,9 +141,10 @@ class Ramu{
 		Ramu.ctx = Ramu.canvas.getContext("2d");
 		document.body.appendChild(Ramu.canvas);
 		
-		Ramu.callSortUpdate    = false;
-		Ramu.callSortDraw 	   = false;
-		Ramu.callSortCollision = false;
+		// dont remember why i commented this but it doesn't change anything anyway.
+		// Ramu.callSortUpdate    = false;
+		// Ramu.callSortDraw 	   = false;
+		// Ramu.callSortCollision = false;
 		
 		Ramu.debugMode = false;
 		Ramu.inLoop = true;
@@ -276,7 +289,6 @@ class Ramu{
 		}
 	}
 }
-
 class GameObj{	
 	constructor(x = 0, y = 0, w = 0, h = 0){
 		if (arguments.length > 4) throw new Error('ArgumentError: Wrong number of arguments');
@@ -469,7 +481,6 @@ class Collisor extends Drawable{
 			
 			if (RamuMath.overlap(rect1, rect2)){
 				objsToCollide[i].collision.push(this);
-				
 				this.collision.push(objsToCollide[i]);
 				this.onCollision();
 			}
@@ -713,6 +724,7 @@ class SpritesheetAnimation extends SpriteAnimation{
 	}
 	
 	addFrame(rect){
+		// multi frame support by github.com/Kawtmany
 		if(void 0 === rect || arguments.length != 1)
 			throw new Error('ArgumentError: Wrong number of arguments');
 		
@@ -721,18 +733,18 @@ class SpritesheetAnimation extends SpriteAnimation{
 				if(!rect[i] instanceof Rect)
 					throw RamuUtils.CustomTypeError(rect, rect);
 				
-				if (rect[i].x < 0 || rect[i].y < 0) 
+				if (Rect.hasNegativeValueInXY(rect[i]))
 					throw new Error('ArgumentOutOfRangeError: The rect position cannot be negative.');
 				
 				this.frames.push(rect[i]);			
 			}
-				
+			
 			return;
 		} else if(rect instanceof Rect){
 			if(!rect instanceof Rect)
 				throw RamuUtils.CustomTypeError(rect, rect);
 			
-			if (rect.x < 0 || rect.y < 0) 
+			if (Rect.hasNegativeValueInXY(rect))
 				throw new Error('ArgumentOutOfRangeError: The rect position cannot be negative.');
 			
 			this.frames.push(rect);
@@ -1075,12 +1087,14 @@ class SimpleParticle extends GameObj{
 	
 	destroy(){
 		this.canUpdate = false;
+		// i commented this because this break something, but the sprites must be removed anyway. Gotta go figure out other way to destroy objects
 		// for (let i = 0; i < this.particles.length; i++)
 			// this.particles[i].destroy();
 		
 		// this.particles = null;
 		// this.particle.destroy();
 		
+		// its no use, the image is a ramu object
 		this.particle = null;
 		super.destroy();
 	}
@@ -1098,4 +1112,3 @@ class SimpleParticle extends GameObj{
 		}	
 	}
 }
-

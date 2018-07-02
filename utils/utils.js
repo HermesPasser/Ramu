@@ -1,4 +1,6 @@
-class RamuUtils{
+// ============ RAMU UTILS 1.7 - 2018-06-30 ============ //
+
+Ramu.Utils = class Utils{
 	constructor(){
 		throw new Error('This is a static class');
 	}
@@ -10,6 +12,7 @@ class RamuUtils{
 		return img;
 	}
 	
+	// Move to RamuAudio soon
 	static playSound(sound, volume = null){
 		if (volume != null)
 			sound.volume = volume;
@@ -28,14 +31,22 @@ class RamuUtils{
 		if (!(img instanceof Image)) return false;
 		return img.complete && img.naturalWidth !== 0 && img.naturalHeight !== 0;
 	}
-		
+	
+	/// Check if the gameObject is out of the canvas
 	static isOutOfCanvas(gameObject){
 		return gameObject.x < 0 || gameObject.x > Ramu.canvas.width ||
 			   gameObject.y < 0 || gameObject.y > Ramu.canvas.height;
 	}
 	
+	/// Check if object/hash is empty
+	static isEmpty(obj){
+		for(var key in obj)
+			return false;
+		return true;
+	}
+	
+	/// Used in ramu internal to throw erros
 	static CustomTypeError(instance, classToCompare){
 		return new Error("TypeError: " + Object.keys({instance})[0] + ' must be a ' + classToCompare.name + ' instance.');
 	}
-
 }

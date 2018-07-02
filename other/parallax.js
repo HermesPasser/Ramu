@@ -2,7 +2,7 @@ class Parallax extends GameObj{
 	constructor(img, x, y, w, h, velocity = 20){
 		super(x, y, w, h);
 		if (arguments.length < 5) throw new Error('ArgumentError: Wrong number of arguments');
-		if (!(img instanceof Image)) throw RamuUtils.CustomTypeError(img, Image);
+		if (!(img instanceof Image)) throw Ramu.Utils.CustomTypeError(img, Image);
 
 		this.left   = new Sprite(img, x - w, y, w, h);
 		this.center = new Sprite(img, x  + w  , y, w, h);
@@ -12,7 +12,7 @@ class Parallax extends GameObj{
 	}
 	
 	canDraw(bool){
-		if (!(bool instanceof Boolean)) throw RamuUtils.CustomTypeError(bool, Boolean);
+		if (!(bool instanceof Boolean)) throw Ramu.Utils.CustomTypeError(bool, Boolean);
 
 		this.left.canDraw   = bool;
 		this.center.canDraw = bool;

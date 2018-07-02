@@ -4,13 +4,18 @@ $file_content = ''
 $output_name  = 'Ramu.js'
 
 $core = [
-	File.join('core', 'constants.js'),
+	File.join('core', 'header.js'),
 	File.join('utils', 'keyCode.js'),
 	File.join('utils', 'rect.js'),
+	File.join('core', 'ramu', 'declaration.js'),
+	File.join('core', 'ramu', 'init.js'),
+	File.join('core', 'ramu', 'input.js'),
+	File.join('core', 'ramu', 'loop.js'),
+	File.join('core', 'ramu', 'engine.js'),
 	File.join('utils', 'math.js'),
 	File.join('utils', 'utils.js'),
-	File.join('core', 'engine.js'),
-	File.join('core', 'object.js'),
+	# File.join('core', 'ramu', 'destroy.js'), TODO
+	File.join('core', 'gameObject.js'),
 	File.join('core', 'drawable.js'),
 	File.join('core', 'collisor.js')
 	
@@ -23,10 +28,13 @@ $complete = [
 	File.join('sprite', 'spritesheet.js'),
 	File.join('sprite', 'animation', 'spriteAnimation.js'),
 	File.join('sprite', 'animation', 'spritesheetAnimation.js'),
-	File.join('sprite', 'animation', 'SpritesheetAnimator.js')
+	File.join('sprite', 'animation', 'SpritesheetAnimator.js'),
+	File.join('event', 'mouse', 'clickable.js'),
+	File.join('event', 'mouse', 'simpleSpriteButton.js')
 ]
 
 $other = [
+	File.join('other', 'ramuAudio.js'),
 	File.join('other', 'parallax.js'),
 	File.join('other', 'text.js'),
 	File.join('other', 'simpleParticle.js')

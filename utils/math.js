@@ -1,4 +1,6 @@
-class RamuMath{
+// ============ RAMU MATH 1.7 - 2018-06-30 ============ //
+
+Ramu.Math = class Math{
 	/// Prevents creating an instance of this class.
 	constructor(){
 		throw new Error('This is a static class');

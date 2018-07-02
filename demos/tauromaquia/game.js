@@ -1,5 +1,3 @@
-// Using the final 0.6 (https://github.com/HermesPasser/Ramu/blob/1c02380cbdd86c1fe44e24bd35906aa0ba2f3f9a/Ramu.js)
-
 const DIRECTION = {TOP: 0, LEFT: 1, RIGHT: 2, BOTTOM: 3};
 
 class Entity extends Drawable{

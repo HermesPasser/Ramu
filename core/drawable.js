@@ -8,7 +8,7 @@ class Drawable extends GameObj{
 		this.width = width;
 		this.height = height;
 		this.canDraw = canDraw;
-		this.drawPriority     = drawLastPriority++;
+		this.drawPriority     = Ramu.drawLastPriority++;
 		this.flipHorizontally = false;
 		this.flipVertically   = false;
 		this.drawOutOfCanvas  = false;
@@ -17,17 +17,17 @@ class Drawable extends GameObj{
 	}
 	
 	static addObjt(drawableObj){
-		objsToDraw.push(drawableObj);
+		Ramu.objsToDraw.push(drawableObj);
 		Ramu.callSortDraw = true;
 	}
 	
 	static sortPriority(){
-		for (let i = 0; i < objsToDraw.length; ++i){
-			for (let j = i + 1; j < objsToDraw.length; ++j){
-				if (objsToDraw[i].drawPriority > objsToDraw[j].drawPriority){
-					let temp =  objsToDraw[i];
-					objsToDraw[i] = objsToDraw[j];
-					objsToDraw[j] = temp;
+		for (let i = 0; i < Ramu.objsToDraw.length; ++i){
+			for (let j = i + 1; j < Ramu.objsToDraw.length; ++j){
+				if (Ramu.objsToDraw[i].drawPriority > Ramu.objsToDraw[j].drawPriority){
+					let temp =  Ramu.objsToDraw[i];
+					Ramu.objsToDraw[i] = Ramu.objsToDraw[j];
+					Ramu.objsToDraw[j] = temp;
 				}
 			}
 		}
@@ -40,9 +40,9 @@ class Drawable extends GameObj{
 		}
 		
 		super.destroy();
-		for (let i = 0; i < objsToDraw.length; i++){
-			if (objsToDraw[i] === this){
-				objsToDraw.splice(i, 1);
+		for (let i = 0; i < Ramu.objsToDraw.length; i++){
+			if (Ramu.objsToDraw[i] === this){
+				Ramu.objsToDraw.splice(i, 1);
 				break;
 			}
 		}

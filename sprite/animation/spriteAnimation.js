@@ -19,20 +19,20 @@ class SpriteAnimation extends Drawable{
 		if(Array.isArray(img)){
 			for (let i = 0; i < img.length; i++) {
 				if(!img[i] instanceof Image)
-					throw RamuUtils.CustomTypeError(img, img);
+					throw Ramu.Utils.CustomTypeError(img, img);
 				
 				this.frames.push(img[i]);
 			}
 			return;
 		} else if(img instanceof Image){
 			if(!img instanceof Image)
-				throw RamuUtils.CustomTypeError(img, img);
+				throw Ramu.Utils.CustomTypeError(img, img);
 			
 			this.frames.push(img);
 			return;
 		}
 
-		throw RamuUtils.CustomTypeError(img, Image);
+		throw Ramu.Utils.CustomTypeError(img, Image);
 	}
 	
 	reset(){
@@ -61,7 +61,7 @@ class SpriteAnimation extends Drawable{
 		let originY = this.flipVertically   ? -this.height - this.y : this.y;
 		
 		if (this.frames.length > 0){
-			if (!RamuUtils.imageIsLoaded(this.frames[this.currentFrame])){
+			if (!Ramu.Utils.imageIsLoaded(this.frames[this.currentFrame])){
 				Ramu.ctx.fillRect(originX, originY, this.width, this.height); // Draw a black rect instead of image
 				return;
 			}

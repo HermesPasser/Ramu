@@ -1,7 +1,7 @@
 'use strict';
 
 // ---------------------------------- //
-// Ramu 0.6 - Hermes Passer in 09/21  //
+// Ramu 0.7 - Hermes Passer           //
 //      hermespasser.github.io        //
 // blog: gladiocitrico.blogspot.com   //
 // ---------------------------------- //
@@ -9,13 +9,6 @@
 // para caso alguma func seja chamada no mesmo frame que o start
 // criar um callnextframe para ela ser chamada apos o start 
 // para não quebrar tudo
-
-var gameObjs	   = [],
-    objsToDraw 	   = [],
-    objsToCollide  = [],
-	updateLastPriority 	  = 0,
-    drawLastPriority	  = 0,
-	collisionLastPriority = 0;
 
 const keyCode = {
 	a:    65, b:    66, c:    67, d:    68, e:    69, f:    70, g:    71, h:    72, i:    73, j:    74, 
@@ -40,6 +33,7 @@ const keyCode = {
 
 	equal_sign: 187, comma: 188, dash: 189, period: 190, forward_slash: 191, back_slash: 220, grave_accent: 192, single_quote: 222
 };
+//Ramu.Rect = 
 class Rect{	
 	constructor(x, y, w, h){
 		if (arguments.length != 4) throw new Error('ArgumentError: Wrong number of arguments');
@@ -48,9 +42,277 @@ class Rect{
 		this.width = w;
 		this.height = h;
 	}
+	
+	static hasNegativeValue(rect){
+		return Rect.hasNegativeValueInXY(rect) || Rect.hasNegativeValueInWH(rect);
+	}
+	
+	static hasNegativeValueInXY(rect){
+		return rect.x < 0 || rect.y < 0;
+	}
+	
+	static hasNegativeValueInWH(rect){
+		return rect.width < 0 || rect.height < 0;
+	}
 }
 
-class RamuMath{
+// ============ RAMU DECLARATION 1.7 - 2018-06-30 ============ //
+
+class Ramu{
+	/// Prevents creating an instance of this class.
+	constructor(){
+		throw new Error('This is a static class');
+	}
+	
+	static get width(){
+		if (Ramu.canvas)
+			return Ramu.canvas.width;
+	}
+
+	static get height(){
+		if (Ramu.canvas)
+			return Ramu.canvas.height;
+	}
+	
+	static get VERSION() {
+		return "0.7";
+	}
+}
+
+
+// Ramu.callDestroy	   = false; //TODO
+Ramu.callSortUpdate    = false;
+Ramu.callSortDraw 	   = false;
+Ramu.callSortCollision = false;
+
+Ramu.debugMode  = false;
+Ramu.inLoop 	= true;
+
+Ramu.canvas = null;
+Ramu.ctx = null;
+
+Ramu.time = null;
+
+/// Init the Ramu and the main loop.
+Ramu.init = function(width = 500, height = 500){
+	if (!document.body)
+		throw new Error('No body tag found.');
+	
+	Ramu.canvas = document.createElement('canvas');
+	Ramu.canvas.width  = width
+	Ramu.canvas.height = height
+	Ramu.ctx = Ramu.canvas.getContext('2d');
+	document.body.appendChild(Ramu.canvas);
+	
+	Ramu.callSortUpdate    = false;
+	Ramu.callSortDraw 	   = false;
+	Ramu.callSortCollision = false;
+	
+	Ramu.debugMode = false;
+	Ramu.inLoop = true;
+	
+	// Deltatime is actually a timestep and frametime is originally the delta time,
+	// change of terms exists for timestep be used instead of delta (frametimne)
+	Ramu.time = { last: Date.now(), delta: 1/60, frameTime: 0 };
+	
+	Ramu.input();
+	Ramu.start();
+	window.requestAnimationFrame(Ramu.loop);
+}
+
+// ============ RAMU INPUT 1.7 - 2018-06-30 ============ //
+
+Ramu.pressedKeys	 = {};
+Ramu.lastKeysPressed = {};
+Ramu.clickedPosition = {};
+
+Ramu._key = function(){
+	Ramu.pressedKeys	 = {}; // The key continues on this list until the key up.
+	Ramu.lastKeysPressed = {}; // The key continues on this list until the end of frame.
+	
+	document.body.addEventListener("keydown", function(e){	
+		Ramu.pressedKeys[e.keyCode] = e.keyCode;
+		Ramu.lastKeysPressed[e.keyCode] = e.keyCode;
+	}, false);
+	
+	document.body.addEventListener("keyup", function(e){
+		delete Ramu.pressedKeys[e.keyCode];
+	}, false);
+}
+
+Ramu._click = function(){
+	Ramu.clickedPosition = {};
+	Ramu.canvas.addEventListener('click', event => {
+		// esse metodo não é tão bom, clicar apos deixar a aba ativa gerara isso a ser chamado varias vezes num mesmo clique
+		
+		let bound = Ramu.canvas.getBoundingClientRect();			
+		Ramu.clickedPosition = { 
+			X: event.clientX - bound.left - Ramu.canvas.clientLeft, 
+			Y: event.clientY - bound.top - Ramu.canvas.clientTop
+		};
+	});
+}
+
+/// Start all input events listeners
+Ramu.input = function(){
+	Ramu._key();
+	Ramu._click();
+	
+	// Ramu.canvas.addEventListener('mousemove'   function(e){},  false);
+	// Ramu.canvas.addEventListener('touchstart', function(e){},  false);
+	// Ramu.canvas.addEventListener('touchmove',  function(e){},  false);
+}
+
+// ============ RAMU LOOP 1.7 - 2018-06-30 ============ //
+
+Ramu.gameObjs	    = [];
+Ramu.objsToDraw 	= [];
+Ramu.objsToCollide  = [];
+
+Ramu.updateLastPriority    = 0;
+Ramu.drawLastPriority	   = 0;
+Ramu.collisionLastPriority = 0;
+
+/* TODO
+Ramu._sortDestroy = function(){
+	if (Ramu.callDestroy){
+		Ramu.destroyObjs();
+		Ramu.callDestroy = false;
+	}
+}
+*/
+
+Ramu._sortCollision = function(){
+	if (Ramu.callSortCollision){
+		Collisor.sortPriority();
+		Ramu.callSortCollision = false;
+	}
+}
+
+Ramu._sortUpdate = function(){
+	if (Ramu.callSortUpdate){
+		GameObj.sortPriority();
+		Ramu.callSortUpdate = false;
+	}
+}
+
+Ramu._sortDraw = function(){
+	if (Ramu.callSortDraw){
+		Drawable.sortPriority();
+		Ramu.callSortDraw = false;
+	}
+}
+
+Ramu._updateSteps = function(){
+	// Panic | from isaacsukin.com/news/2015/01/detailed-explanation-javascript-game-loops-and-timing
+	let numUpdateSteps = 0;
+	if (++numUpdateSteps >= 240) {
+		Ramu.time.frameTime = 0;
+		console.warn("Panic.")
+		return true;
+	}
+	return false;
+}
+
+Ramu._clearInput = function(){
+	Ramu.lastKeysPressed = {};
+	Ramu.clickedPosition = {};
+}
+
+/// Game loop of Ramu.
+Ramu.loop = function(){	
+	let now = 0;
+	if (Ramu.inLoop){
+		now = Date.now();
+		Ramu.time.frameTime = Ramu.time.frameTime + Math.min(1, (now - Ramu.time.last) / 1000);
+	
+		while(Ramu.time.frameTime > Ramu.time.delta) {
+			Ramu.start();
+
+			// Ramu._sortDestroy();
+			
+			Ramu._sortCollision();
+			
+			Ramu.checkCollision();
+			
+			Ramu._sortUpdate();
+			
+			Ramu.update();
+			
+			Ramu.time.frameTime = Ramu.time.frameTime - Ramu.time.delta;
+			
+			if (Ramu._updateSteps()); // if it return true so is panic then stop the loop
+				break;
+		}
+	}
+	
+	Ramu._sortDraw();
+	
+	Ramu.draw();
+	Ramu._clearInput();
+	
+	if (Ramu.inLoop) Ramu.time.last = now;
+	window.requestAnimationFrame(Ramu.loop);
+}
+
+// ============ RAMU MAIN ENGINE (WITH NO LOOP) 1.7 - 2018-06-30 ============ //
+
+/// Executes all start methods of all Ramu.gameObjs in the game.
+Ramu.start = function(){
+	for (var i = 0; i < Ramu.gameObjs.length; i++){
+		
+		// If this was defined then start already was called, so skip it
+		if (Ramu.gameObjs[i]._start_was_called)
+			continue;
+		
+		// Even if this attribute receives false, the start is not called again
+		// because of this attribute is alreay defined
+		Ramu.gameObjs[i]._start_was_called = true;
+		Ramu.gameObjs[i].start();
+	}
+}
+
+/// Update all Ramu.gameObjs in the game.
+Ramu.update = function(){
+	for (var i = 0; i < Ramu.gameObjs.length; i++){
+		if (!Ramu.gameObjs[i]._start_was_called || !Ramu.gameObjs[i].canUpdate)
+			continue;
+		Ramu.gameObjs[i].update();	
+	}
+}
+
+/// Check all collisions in the game.
+Ramu.checkCollision = function(){
+	for (var i = 0; i < Ramu.objsToCollide.length; i++){
+		if (!Ramu.objsToCollide[i]._start_was_called)
+			continue;
+		Ramu.objsToCollide[i].checkCollision();
+	}
+}
+
+/// Executes all draw methods of all Ramu.gameObjs in the game.
+Ramu.draw = function(){
+	Ramu.ctx.imageSmoothingEnabled = true; // reset the defaut value
+	Ramu.ctx.clearRect(0, 0, Ramu.width, Ramu.height);
+	
+	for (var i = 0; i < Ramu.objsToDraw.length; i++){
+		if (!Ramu.objsToDraw[i]._start_was_called)
+			continue;
+		
+		let positionWidth = Ramu.objsToDraw[i].x + Ramu.objsToDraw[i].width;		
+		let positionHeigh = Ramu.objsToDraw[i].y + Ramu.objsToDraw[i].height;
+		
+		let isOutOfCanvas = positionWidth >= 0 && Ramu.objsToDraw[i].x <= Ramu.width &&
+							positionHeigh >= 0 && Ramu.objsToDraw[i].y <= Ramu.height // Renderiza somente o que esta no Ramu.canvas
+		
+		if (Ramu.objsToDraw[i].drawOutOfCanvas || isOutOfCanvas)
+			Ramu.objsToDraw[i].drawInCanvas();
+	}
+}
+
+// ============ RAMU MATH 1.7 - 2018-06-30 ============ //
+
+Ramu.Math = class Math{
 	/// Prevents creating an instance of this class.
 	constructor(){
 		throw new Error('This is a static class');
@@ -70,7 +332,9 @@ class RamuMath{
 	}
 }
 
-class RamuUtils{
+// ============ RAMU UTILS 1.7 - 2018-06-30 ============ //
+
+Ramu.Utils = class Utils{
 	constructor(){
 		throw new Error('This is a static class');
 	}
@@ -82,6 +346,7 @@ class RamuUtils{
 		return img;
 	}
 	
+	// Move to RamuAudio soon
 	static playSound(sound, volume = null){
 		if (volume != null)
 			sound.volume = volume;
@@ -100,180 +365,22 @@ class RamuUtils{
 		if (!(img instanceof Image)) return false;
 		return img.complete && img.naturalWidth !== 0 && img.naturalHeight !== 0;
 	}
-		
+	
+	/// Check if the gameObject is out of the canvas
 	static isOutOfCanvas(gameObject){
 		return gameObject.x < 0 || gameObject.x > Ramu.canvas.width ||
 			   gameObject.y < 0 || gameObject.y > Ramu.canvas.height;
 	}
 	
+	/// Check if object/hash is empty
+	static isEmpty(obj){
+		for(var key in obj)
+			return false;
+		return true;
+	}
+	
 	static CustomTypeError(instance, classToCompare){
 		return new Error("TypeError: " + Object.keys({instance})[0] + ' must be a ' + classToCompare.name + ' instance.');
-	}
-
-}
-
-class Ramu{
-	/// Prevents creating an instance of this class.
-	constructor(){
-		throw new Error('This is a static class');
-	}
-	
-	/// Init the Ramu and the main loop.
-	static init(width = 500, height = 500){
-		if (!document.body)
-			throw new Error('No body tag found.');
-		
-		Ramu.canvas = document.createElement("canvas");
-		Ramu.canvas.width  = width
-		Ramu.canvas.height = height
-		Ramu.ctx = Ramu.canvas.getContext("2d");
-		document.body.appendChild(Ramu.canvas);
-		
-		Ramu.callSortUpdate    = false;
-		Ramu.callSortDraw 	   = false;
-		Ramu.callSortCollision = false;
-		
-		Ramu.debugMode = false;
-		Ramu.inLoop = true;
-		
-		// Deltatime is actually a timestep and frametime is originally the delta time,
-		// change of terms exists for timestep be used instead of delta (frametimne)
-		Ramu.time = { last: Date.now(), delta: 1/60, frameTime: 0 };
-		
-		Ramu.input();
-		Ramu.start();
-		window.requestAnimationFrame(Ramu.loop);
-	}
-	
-	/// Start all input events listeners
-	static input(){
-		Ramu.pressedKeys	 = {}; // The key continues on this list until the key up.
-		Ramu.lastKeysPressed = {}; // The key continues on this list until the end of frame.
-		
-		document.body.addEventListener("keydown", function(e){	
-			Ramu.pressedKeys[e.keyCode] = e.keyCode;
-			Ramu.lastKeysPressed[e.keyCode] = e.keyCode;
-		}, false);
-		
-		document.body.addEventListener("keyup", function(e){
-			delete Ramu.pressedKeys[e.keyCode];
-		}, false);
-		
-		// Ramu.canvas.addEventListener('click',      function(e){},  false);
-		// Ramu.canvas.addEventListener('mousemove'   function(e){},  false);
-		// Ramu.canvas.addEventListener('touchstart', function(e){},  false);
-		// Ramu.canvas.addEventListener('touchmove',  function(e){},  false);
-	}
-
-	/// Game loop of Ramu.
-	static loop(){
-		
-		let now = 0;
-		if (Ramu.inLoop){
-			now = Date.now();
-			Ramu.time.frameTime = Ramu.time.frameTime + Math.min(1, (now - Ramu.time.last) / 1000);
-		
-			while(Ramu.time.frameTime > Ramu.time.delta) {
-				Ramu.start();
-
-				if (Ramu.callSortCollision){
-					Collisor.sortPriority();
-					Ramu.callSortCollision = false;
-				}
-				
-				Ramu.checkCollision();
-				
-				if (Ramu.callSortUpdate){
-					GameObj.sortPriority();
-					Ramu.callSortUpdate = false;
-				}
-				
-				Ramu.update();
-				Ramu.time.frameTime = Ramu.time.frameTime - Ramu.time.delta;
-				
-				// Panic | from isaacsukin.com/news/2015/01/detailed-explanation-javascript-game-loops-and-timing
-				let numUpdateSteps = 0;
-				if (++numUpdateSteps >= 240) {
-					Ramu.time.frameTime = 0;
-					console.warn("Panic.")
-					break;
-				}
-			}
-		}
-		
-		if (Ramu.callSortDraw){
-			Drawable.sortPriority();
-			Ramu.callSortDraw = false;
-		}
-		
-		Ramu.draw();
-		Ramu.lastKeysPressed = {};
-		
-		if (Ramu.inLoop) Ramu.time.last = now;
-		window.requestAnimationFrame(Ramu.loop);
-	}
-	
-	/// Executes all start methods of all gameObjs in the game.
-	static start(){
-		for (var i = 0; i < gameObjs.length; i++){
-			
-			// If this was defined then start already was called, so skip it
-			if (gameObjs[i]._start_was_called)
-				continue;
-			
-			// Even if this attribute receives false, the start is not called again
-			// because of this attribute is alreay defined
-			gameObjs[i]._start_was_called = true;
-			gameObjs[i].start();
-		}
-	}
-	
-	/// Update all gameObjs in the game.
-	static update(){
-		for (var i = 0; i < gameObjs.length; i++){
-			if (!gameObjs[i]._start_was_called || !gameObjs[i].canUpdate)
-				continue;
-			gameObjs[i].update();	
-		}
-	}
-	
-	static get width(){
-		if (Ramu.canvas)
-			return Ramu.canvas.width;
-	}
-	
-	static get height(){
-		if (Ramu.canvas)
-			return Ramu.canvas.height;
-	}
-	
-	/// Check all collisions in the game.
-	static checkCollision(){
-		for (var i = 0; i < objsToCollide.length; i++){
-			if (!objsToCollide[i]._start_was_called)
-				continue;
-			objsToCollide[i].checkCollision();
-		}
-	}
-	
-	/// Executes all draw methods of all gameObjs in the game.
-	static draw(){
-		Ramu.ctx.imageSmoothingEnabled = true; // reset the defaut value
-		Ramu.ctx.clearRect(0, 0, Ramu.canvas.width, Ramu.canvas.height);
-		
-		for (var i = 0; i < objsToDraw.length; i++){
-			if (!objsToDraw[i]._start_was_called)
-				continue;
-			
-			let positionWidth = objsToDraw[i].x + objsToDraw[i].width;		
-			let positionHeigh = objsToDraw[i].y + objsToDraw[i].height;
-			
-			let isOutOfCanvas = positionWidth >= 0 && objsToDraw[i].x <= Ramu.canvas.width &&
-								positionHeigh >= 0 && objsToDraw[i].y <= Ramu.canvas.height // Renderiza somente o que esta no Ramu.canvas
-			
-			if (objsToDraw[i].drawOutOfCanvas || isOutOfCanvas)
-				objsToDraw[i].drawInCanvas();
-		}
 	}
 }
 
@@ -286,24 +393,25 @@ class GameObj{
 		this.width = w;
 		this.height = h;
 		this.tag =  this.tag || "none";
-		this.updatePriority = updateLastPriority++;
+		this.updatePriority = Ramu.updateLastPriority++;
 		this.canUpdate = true;
+		this.canDestroy = false;
 		
 		GameObj.addObjt(this);
 	}
 	
 	static addObjt(obj){
-		gameObjs.push(obj);
+		Ramu.gameObjs.push(obj);
 		Ramu.callSortUpdate = true;
 	}
 	
 	static sortPriority(){
-		for (let i = 0; i < gameObjs.length; ++i){
-			for (let j = i + 1; j < gameObjs.length; ++j){
-				if (gameObjs[i].updatePriority > gameObjs[j].updatePriority){
-					let temp 	=  gameObjs[i];
-					gameObjs[i] = gameObjs[j];
-					gameObjs[j] = temp;
+		for (let i = 0; i < Ramu.gameObjs.length; ++i){
+			for (let j = i + 1; j < Ramu.gameObjs.length; ++j){
+				if (Ramu.gameObjs[i].updatePriority > Ramu.gameObjs[j].updatePriority){
+					let temp 	=  Ramu.gameObjs[i];
+					Ramu.gameObjs[i] = Ramu.gameObjs[j];
+					Ramu.gameObjs[j] = temp;
 				}
 			}
 		}
@@ -314,10 +422,18 @@ class GameObj{
 			console.warn("The update was not called yet,")
 			return;
 		}
+
+		//remover se não funcionar a nova técnica
+		// console.log("destroy chamado para " )
+		// console.log(this)
+		// console.log("  " )
 		
-		for (let i = 0; i < gameObjs.length; i++){
-			if (gameObjs[i] === this){
-				gameObjs.splice(i, 1);
+		this.canDestroy = true;
+		Ramu.callDestroy = true;
+		
+		for (let i = 0; i < Ramu.gameObjs.length; i++){
+			if (Ramu.gameObjs[i] === this){
+				Ramu.gameObjs.splice(i, 1);
 				break;
 			}
 		}
@@ -340,7 +456,7 @@ class Drawable extends GameObj{
 		this.width = width;
 		this.height = height;
 		this.canDraw = canDraw;
-		this.drawPriority     = drawLastPriority++;
+		this.drawPriority     = Ramu.drawLastPriority++;
 		this.flipHorizontally = false;
 		this.flipVertically   = false;
 		this.drawOutOfCanvas  = false;
@@ -349,17 +465,17 @@ class Drawable extends GameObj{
 	}
 	
 	static addObjt(drawableObj){
-		objsToDraw.push(drawableObj);
+		Ramu.objsToDraw.push(drawableObj);
 		Ramu.callSortDraw = true;
 	}
 	
 	static sortPriority(){
-		for (let i = 0; i < objsToDraw.length; ++i){
-			for (let j = i + 1; j < objsToDraw.length; ++j){
-				if (objsToDraw[i].drawPriority > objsToDraw[j].drawPriority){
-					let temp =  objsToDraw[i];
-					objsToDraw[i] = objsToDraw[j];
-					objsToDraw[j] = temp;
+		for (let i = 0; i < Ramu.objsToDraw.length; ++i){
+			for (let j = i + 1; j < Ramu.objsToDraw.length; ++j){
+				if (Ramu.objsToDraw[i].drawPriority > Ramu.objsToDraw[j].drawPriority){
+					let temp =  Ramu.objsToDraw[i];
+					Ramu.objsToDraw[i] = Ramu.objsToDraw[j];
+					Ramu.objsToDraw[j] = temp;
 				}
 			}
 		}
@@ -372,9 +488,9 @@ class Drawable extends GameObj{
 		}
 		
 		super.destroy();
-		for (let i = 0; i < objsToDraw.length; i++){
-			if (objsToDraw[i] === this){
-				objsToDraw.splice(i, 1);
+		for (let i = 0; i < Ramu.objsToDraw.length; i++){
+			if (Ramu.objsToDraw[i] === this){
+				Ramu.objsToDraw.splice(i, 1);
 				break;
 			}
 		}
@@ -408,23 +524,23 @@ class Collisor extends Drawable{
 		if (arguments.length != 4) throw new Error('ArgumentError: Wrong number of arguments');
 		this.canCollide = true;
 		this.collision = [];
-		this.collisionPriority = collisionLastPriority++;
+		this.collisionPriority = Ramu.collisionLastPriority++;
 
 		Collisor.addObjt(this);
 	}
 	
 	static addObjt(colObj){
-		objsToCollide.push(colObj);
+		Ramu.objsToCollide.push(colObj);
 		Ramu.callSortCollision = true;
 	}
 	
 	static sortPriority(){
-		for (let i = 0; i < objsToCollide.length; ++i){
-			for (let j = i + 1; j < objsToCollide.length; ++j){
-				if (objsToCollide[i].collisionPriority > objsToCollide[j].collisionPriority){
-					let temp =  objsToCollide[i];
-					objsToCollide[i] = objsToCollide[j];
-					objsToCollide[j] = temp;
+		for (let i = 0; i < Ramu.objsToCollide.length; ++i){
+			for (let j = i + 1; j < Ramu.objsToCollide.length; ++j){
+				if (Ramu.objsToCollide[i].collisionPriority > Ramu.objsToCollide[j].collisionPriority){
+					let temp =  Ramu.objsToCollide[i];
+					Ramu.objsToCollide[i] = Ramu.objsToCollide[j];
+					Ramu.objsToCollide[j] = temp;
 				}
 			}
 		}
@@ -436,9 +552,9 @@ class Collisor extends Drawable{
 			return;
 		}
 		
-		for (let i = 0; i < objsToCollide.length; i++){
-			if (objsToCollide[i] === this){
-				objsToCollide.splice(i, 1);
+		for (let i = 0; i < Ramu.objsToCollide.length; i++){
+			if (Ramu.objsToCollide[i] === this){
+				Ramu.objsToCollide.splice(i, 1);
 				break;
 			}
 		}
@@ -460,16 +576,16 @@ class Collisor extends Drawable{
 		if(!this.canCollide) return;
 		
 		this.collision = [];
-		for (let i = 0; i < objsToCollide.length; i++){
-			if (objsToCollide[i] === this || !objsToCollide[i].canCollide)
+		for (let i = 0; i < Ramu.objsToCollide.length; i++){
+			if (Ramu.objsToCollide[i] === this || !Ramu.objsToCollide[i].canCollide)
 				continue;
 			
 			let rect1 = new Rect(this.x, this.y, this.width, this.height);
-			let rect2 = new Rect(objsToCollide[i].x, objsToCollide[i].y, objsToCollide[i].width, objsToCollide[i].height);
+			let rect2 = new Rect(Ramu.objsToCollide[i].x, Ramu.objsToCollide[i].y, Ramu.objsToCollide[i].width, Ramu.objsToCollide[i].height);
 			
-			if (RamuMath.overlap(rect1, rect2)){
-				objsToCollide[i].collision.push(this);
-				this.collision.push(objsToCollide[i]);
+			if (Ramu.Math.overlap(rect1, rect2)){
+				Ramu.objsToCollide[i].collision.push(this);
+				this.collision.push(Ramu.objsToCollide[i]);
 				this.onCollision();
 			}
 		}
@@ -563,7 +679,7 @@ class Sprite extends Drawable{
 	constructor(img, x, y, w, h, canDraw = true){
 		super(x, y, w, h);
 		if (arguments.length < 5) throw new Error('ArgumentError: Wrong number of arguments');
-		if (!(img instanceof Image)) throw RamuUtils.CustomTypeError(img, Image);
+		if (!(img instanceof Image)) throw Ramu.Utils.CustomTypeError(img, Image);
 
 		this.img = img;
 		this.canDraw = canDraw;	
@@ -573,7 +689,7 @@ class Sprite extends Drawable{
 		let originX = this.flipHorizontally ? -this.width - this.x : this.x;
 		let originY = this.flipVertically   ? -this.height - this.y : this.y;
 		
-		if (!RamuUtils.imageIsLoaded(this.img)){
+		if (!Ramu.Utils.imageIsLoaded(this.img)){
 			Ramu.ctx.fillRect(originX, originY, this.width, this.height); // Draw a black rect instead of image
 			return;
 		}
@@ -589,7 +705,7 @@ class Spritesheet extends Drawable{
 	constructor(image, sheetRect, x, y, w, h, canDraw = true){
 		super(x, y, w, h);
 		if (arguments.length < 6) throw new Error('ArgumentError: Wrong number of arguments');
-		if (!(image instanceof Image)) throw RamuUtils.CustomTypeError(image, Image);
+		if (!(image instanceof Image)) throw Ramu.Utils.CustomTypeError(image, Image);
 
 		this.img = image;
 		this.setSheet(sheetRect);
@@ -597,7 +713,7 @@ class Spritesheet extends Drawable{
 	}
 	
 	setSheet(sheetRect){
-		if (!(sheetRect instanceof Rect)) throw RamuUtils.CustomTypeError(sheetRect, Rect);
+		if (!(sheetRect instanceof Rect)) throw Ramu.Utils.CustomTypeError(sheetRect, Rect);
 
 		this.sheet = sheetRect;
 	}
@@ -612,7 +728,7 @@ class Spritesheet extends Drawable{
 		// does not work
 		let originY = this.flipVertically   ? -this.height - this.y : this.y;
 
-		if (!RamuUtils.imageIsLoaded(this.img)){
+		if (!Ramu.Utils.imageIsLoaded(this.img)){
 			Ramu.ctx.fillRect(originX, originY, this.width, this.height); // Draw a black rect instead of image
 			return;
 		}
@@ -644,20 +760,20 @@ class SpriteAnimation extends Drawable{
 		if(Array.isArray(img)){
 			for (let i = 0; i < img.length; i++) {
 				if(!img[i] instanceof Image)
-					throw RamuUtils.CustomTypeError(img, img);
+					throw Ramu.Utils.CustomTypeError(img, img);
 				
 				this.frames.push(img[i]);
 			}
 			return;
 		} else if(img instanceof Image){
 			if(!img instanceof Image)
-				throw RamuUtils.CustomTypeError(img, img);
+				throw Ramu.Utils.CustomTypeError(img, img);
 			
 			this.frames.push(img);
 			return;
 		}
 
-		throw RamuUtils.CustomTypeError(img, Image);
+		throw Ramu.Utils.CustomTypeError(img, Image);
 	}
 	
 	reset(){
@@ -686,7 +802,7 @@ class SpriteAnimation extends Drawable{
 		let originY = this.flipVertically   ? -this.height - this.y : this.y;
 		
 		if (this.frames.length > 0){
-			if (!RamuUtils.imageIsLoaded(this.frames[this.currentFrame])){
+			if (!Ramu.Utils.imageIsLoaded(this.frames[this.currentFrame])){
 				Ramu.ctx.fillRect(originX, originY, this.width, this.height); // Draw a black rect instead of image
 				return;
 			}
@@ -701,44 +817,46 @@ class SpriteAnimation extends Drawable{
 // e ele tiver setado para girar o sprite em vertical ou horizontal
 // ele desenha parte fora do sprite
 // isso acontece mesmo se a animação tiver um frame
+
 /// Displays an animation that uses various sprite sheets of a single image
 class SpritesheetAnimation extends SpriteAnimation{
 	constructor(img, x, y, width, height){
 		super(x, y, width, height);
 		if (arguments.length != 5) throw new Error('ArgumentError: Wrong number of arguments');
-		if (!(img instanceof Image)) throw RamuUtils.CustomTypeError(img, Image);
+		if (!(img instanceof Image)) throw Ramu.Utils.CustomTypeError(img, Image);
 
 		this.img = img;
 	}
 	
 	addFrame(rect){
+		// multi frame support by github.com/Kawtmany
 		if(void 0 === rect || arguments.length != 1)
 			throw new Error('ArgumentError: Wrong number of arguments');
 		
 		if(Array.isArray(rect)){
 			for (let i = 0; i < rect.length; i++){
 				if(!rect[i] instanceof Rect)
-					throw RamuUtils.CustomTypeError(rect, rect);
+					throw Ramu.Utils.CustomTypeError(rect, rect);
 				
-				if (rect[i].x < 0 || rect[i].y < 0) 
+				if (Rect.hasNegativeValueInXY(rect[i]))
 					throw new Error('ArgumentOutOfRangeError: The rect position cannot be negative.');
 				
 				this.frames.push(rect[i]);			
 			}
-				
+			
 			return;
 		} else if(rect instanceof Rect){
 			if(!rect instanceof Rect)
-				throw RamuUtils.CustomTypeError(rect, rect);
+				throw Ramu.Utils.CustomTypeError(rect, rect);
 			
-			if (rect.x < 0 || rect.y < 0) 
+			if (Rect.hasNegativeValueInXY(rect))
 				throw new Error('ArgumentOutOfRangeError: The rect position cannot be negative.');
 			
 			this.frames.push(rect);
 			return;
 		}
 
-		throw RamuUtils.CustomTypeError(rect, rect);
+		throw Ramu.Utils.CustomTypeError(rect, rect);
 	}
 	
 	draw(){
@@ -747,12 +865,12 @@ class SpritesheetAnimation extends SpriteAnimation{
 		let originY = this.flipVertically   ? -this.height - this.y : this.y;
 		let rect    = this.frames[this.currentFrame];
 		
-		if (RamuUtils.imageIsLoaded(this.img) && (rect.width > this.img.width || rect.height > this.img.height))
+		if (Ramu.Utils.imageIsLoaded(this.img) && (rect.width > this.img.width || rect.height > this.img.height))
 			throw new Error('The rect size cannot be greater than the image size.');
 
 		//Draw
 		if (this.frames.length > 0){
-			if (!RamuUtils.imageIsLoaded(this.img)){
+			if (!Ramu.Utils.imageIsLoaded(this.img)){
 				Ramu.ctx.fillRect(originX, originY, this.width, this.height); // Draw a black rect instead of image
 				return;
 			}	
@@ -783,7 +901,7 @@ class SpritesheetAnimator extends GameObj{
 	}
 	
 	setCanDraw(bool){
-		if (!(typeof(bool) == "boolean")) throw RamuUtils.CustomTypeError(bool, Boolean);
+		if (!(typeof(bool) == 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
 	
 		this.anim[this.currentID].canDraw = bool;
 	}
@@ -797,8 +915,8 @@ class SpritesheetAnimator extends GameObj{
 	
 	addAnimation(nameID, spritesheetAnimation){
 		if (arguments.length != 2) throw new Error('ArgumentError: Wrong number of arguments');
-		// if (!(nameID instanceof String)) throw RamuUtils.CustomTypeError(nameID, String);
-		if (!(spritesheetAnimation instanceof SpritesheetAnimation)) throw RamuUtils.CustomTypeError(spritesheetAnimation, SpritesheetAnimation);
+		// if (!(nameID instanceof String)) throw Ramu.Utils.CustomTypeError(nameID, String);
+		if (!(spritesheetAnimation instanceof SpritesheetAnimation)) throw Ramu.Utils.CustomTypeError(spritesheetAnimation, SpritesheetAnimation);
 		
 		spritesheetAnimation.x = this.x;
 		spritesheetAnimation.y = this.y;
@@ -810,7 +928,7 @@ class SpritesheetAnimator extends GameObj{
 	
 	setCurrentAnimation(nameID){
 		if (arguments.length != 1) throw new Error('ArgumentError: Wrong number of arguments');
-		// if (!(nameID instanceof String)) throw RamuUtils.CustomTypeError(nameID, String);
+		// if (!(nameID instanceof String)) throw Ramu.Utils.CustomTypeError(nameID, String);
 
 		this.currentID = nameID;
 		for (var key in this.anim)
@@ -828,14 +946,14 @@ class SpritesheetAnimator extends GameObj{
 	}
 	
 	setFlipHorizontally(bool){
-		if (!(typeof(bool) == "boolean")) throw RamuUtils.CustomTypeError(bool, Boolean);
+		if (!(typeof(bool) == "boolean")) throw Ramu.Utils.CustomTypeError(bool, Boolean);
 
 		for (var key in this.anim)
 			this.anim[key].flipHorizontally = bool;
 	}
 	
 	setFlipVertically(bool){
-		if (!(typeof(bool) == "boolean")) throw RamuUtils.CustomTypeError(bool, Boolean);
+		if (!(typeof(bool) == "boolean")) throw Ramu.Utils.CustomTypeError(bool, Boolean);
 
 		for (var key in this.anim)
 			this.anim[key].flipVertically = bool;
@@ -875,11 +993,105 @@ class SpritesheetAnimator extends GameObj{
 	}
 }
 
+class Clickable extends GameObj{
+	constructor(x, y, w, h){
+		super(x, y, w, h);
+		if (arguments.length != 4) throw new Error('ArgumentError: Wrong number of arguments');
+		this.enabled = true;
+	}
+	
+	static clickEventExists(){
+		return 'click' in document.documentElement;
+	}
+	
+	update(){
+		if (Clickable.clickEventExists() || this.enabled)
+			this.checkClick();
+	}
+	
+	checkClick(){
+		if (!Ramu.clickedPosition.X && !Ramu.clickedPosition.Y)
+			return;
+			
+		let rect1 = new Rect(this.x, this.y, this.width, this.height);
+		let rect2 = new Rect(Ramu.clickedPosition.X, Ramu.clickedPosition.Y, 1, 1);
+		
+		if (Ramu.Math.overlap(rect1, rect2))
+			this.onClick();
+	}
+	
+	/// Virtual to be inherited
+	onClick(){ }
+}
+
+class SimpleSpriteButton extends Sprite{
+	constructor(img, x, y, w, h){
+		super(img, x, y, w, h, true);
+		if (arguments.length != 5) throw new Error('ArgumentError: Wrong number of arguments');
+		this.clickable = new Clickable(x, y, w, h);
+	}
+	
+	setRect(rect){
+		if (!(rect instanceof Rect)) throw Ramu.Utils.CustomTypeError(rect, Rect);
+		
+		this.x = rect.x;
+		this.clickable.x = rect.x;
+		this.y = rect.y;
+		this.clickable.y = rect.x;
+	}
+	
+	setEnabled(bool){
+		if (!(typeof(bool) == 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
+		this.clickable.enabled = bool;
+	}
+	
+	setOnClick(func){
+		this.clickable.onClick = func;
+	}
+		
+	destroy(){
+		super.destroy();
+		this.clickable.destroy();
+	}
+}
+
+/// Simple abstraction to execute instructions when audio ends, and add a func to stop.
+Ramu.Audio = class Audio extends GameObj{
+	constructor(src){
+		super();
+		if (arguments.length != 1) throw new Error('ArgumentError: Wrong number of arguments');
+		this.audio = new Audio(src);
+		this.isPlaying = false;
+	}
+
+	play(startAt = 0){
+		this.isPlaying = true;
+		this.audio.currentTime = startAt;
+		this.audio.play();
+	}
+	
+	stop(){
+		this.isPlaying = false;
+		this.audio.pause();
+		this.audio.currentTime = 0;
+	}
+	
+	update(){
+		if (this.isPlaying && this.audio.ended){
+			this.stop();
+			this.onAudioEnd();
+		}
+	}
+	
+	/// Virtual to be inherited
+	onAudioEnd(){ } 
+}
+
 class Parallax extends GameObj{
 	constructor(img, x, y, w, h, velocity = 20){
 		super(x, y, w, h);
 		if (arguments.length < 5) throw new Error('ArgumentError: Wrong number of arguments');
-		if (!(img instanceof Image)) throw RamuUtils.CustomTypeError(img, Image);
+		if (!(img instanceof Image)) throw Ramu.Utils.CustomTypeError(img, Image);
 
 		this.left   = new Sprite(img, x - w, y, w, h);
 		this.center = new Sprite(img, x  + w  , y, w, h);
@@ -889,7 +1101,7 @@ class Parallax extends GameObj{
 	}
 	
 	canDraw(bool){
-		if (!(bool instanceof Boolean)) throw RamuUtils.CustomTypeError(bool, Boolean);
+		if (!(bool instanceof Boolean)) throw Ramu.Utils.CustomTypeError(bool, Boolean);
 
 		this.left.canDraw   = bool;
 		this.center.canDraw = bool;
@@ -1074,12 +1286,14 @@ class SimpleParticle extends GameObj{
 	
 	destroy(){
 		this.canUpdate = false;
+		// i commented this because this break something, but the sprites must be removed anyway. Gotta go figure out other way to destroy objects
 		// for (let i = 0; i < this.particles.length; i++)
 			// this.particles[i].destroy();
 		
 		// this.particles = null;
 		// this.particle.destroy();
 		
+		// its no use, the image is a ramu object
 		this.particle = null;
 		super.destroy();
 	}

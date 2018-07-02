@@ -3,7 +3,7 @@ class Spritesheet extends Drawable{
 	constructor(image, sheetRect, x, y, w, h, canDraw = true){
 		super(x, y, w, h);
 		if (arguments.length < 6) throw new Error('ArgumentError: Wrong number of arguments');
-		if (!(image instanceof Image)) throw RamuUtils.CustomTypeError(image, Image);
+		if (!(image instanceof Image)) throw Ramu.Utils.CustomTypeError(image, Image);
 
 		this.img = image;
 		this.setSheet(sheetRect);
@@ -11,7 +11,7 @@ class Spritesheet extends Drawable{
 	}
 	
 	setSheet(sheetRect){
-		if (!(sheetRect instanceof Rect)) throw RamuUtils.CustomTypeError(sheetRect, Rect);
+		if (!(sheetRect instanceof Rect)) throw Ramu.Utils.CustomTypeError(sheetRect, Rect);
 
 		this.sheet = sheetRect;
 	}
@@ -26,7 +26,7 @@ class Spritesheet extends Drawable{
 		// does not work
 		let originY = this.flipVertically   ? -this.height - this.y : this.y;
 
-		if (!RamuUtils.imageIsLoaded(this.img)){
+		if (!Ramu.Utils.imageIsLoaded(this.img)){
 			Ramu.ctx.fillRect(originX, originY, this.width, this.height); // Draw a black rect instead of image
 			return;
 		}

@@ -10,7 +10,7 @@ class SpritesheetAnimator extends GameObj{
 	}
 	
 	setCanDraw(bool){
-		if (!(typeof(bool) == "boolean")) throw RamuUtils.CustomTypeError(bool, Boolean);
+		if (!(typeof(bool) == 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
 	
 		this.anim[this.currentID].canDraw = bool;
 	}
@@ -24,8 +24,8 @@ class SpritesheetAnimator extends GameObj{
 	
 	addAnimation(nameID, spritesheetAnimation){
 		if (arguments.length != 2) throw new Error('ArgumentError: Wrong number of arguments');
-		// if (!(nameID instanceof String)) throw RamuUtils.CustomTypeError(nameID, String);
-		if (!(spritesheetAnimation instanceof SpritesheetAnimation)) throw RamuUtils.CustomTypeError(spritesheetAnimation, SpritesheetAnimation);
+		// if (!(nameID instanceof String)) throw Ramu.Utils.CustomTypeError(nameID, String);
+		if (!(spritesheetAnimation instanceof SpritesheetAnimation)) throw Ramu.Utils.CustomTypeError(spritesheetAnimation, SpritesheetAnimation);
 		
 		spritesheetAnimation.x = this.x;
 		spritesheetAnimation.y = this.y;
@@ -37,7 +37,7 @@ class SpritesheetAnimator extends GameObj{
 	
 	setCurrentAnimation(nameID){
 		if (arguments.length != 1) throw new Error('ArgumentError: Wrong number of arguments');
-		// if (!(nameID instanceof String)) throw RamuUtils.CustomTypeError(nameID, String);
+		// if (!(nameID instanceof String)) throw Ramu.Utils.CustomTypeError(nameID, String);
 
 		this.currentID = nameID;
 		for (var key in this.anim)
@@ -55,14 +55,14 @@ class SpritesheetAnimator extends GameObj{
 	}
 	
 	setFlipHorizontally(bool){
-		if (!(typeof(bool) == "boolean")) throw RamuUtils.CustomTypeError(bool, Boolean);
+		if (!(typeof(bool) == "boolean")) throw Ramu.Utils.CustomTypeError(bool, Boolean);
 
 		for (var key in this.anim)
 			this.anim[key].flipHorizontally = bool;
 	}
 	
 	setFlipVertically(bool){
-		if (!(typeof(bool) == "boolean")) throw RamuUtils.CustomTypeError(bool, Boolean);
+		if (!(typeof(bool) == "boolean")) throw Ramu.Utils.CustomTypeError(bool, Boolean);
 
 		for (var key in this.anim)
 			this.anim[key].flipVertically = bool;

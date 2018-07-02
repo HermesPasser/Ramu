@@ -2,6 +2,7 @@
 
 class MyGame extends Drawable{
 	start(){
+		this.canDraw = true;
 		this.SCENE = "| __________ | _____________   __________ __________ |";
 		this.initial_x = 0;
 		this.blocksToBeExcluded = 10; // Otherwise the scrolling just end when the initial_x is out of the canvas.
@@ -25,7 +26,7 @@ class MyGame extends Drawable{
 	}
 	
 	draw(){
-		Ramu.ctx.font="13px Arial";
+		Ramu.ctx.font = "13px Arial";
 		Ramu.ctx.strokeStyle = "red";
 		Ramu.ctx.strokeText("Simple mapping test using a array as map, press 'A' or 'D' to move.", 1, 15);
 		Ramu.ctx.strokeText("by Hermes Passer.", 1, 40);
@@ -41,5 +42,4 @@ class MyGame extends Drawable{
 }
 
 new MyGame(0,0,0,0);
-
 Ramu.init(500, 500);

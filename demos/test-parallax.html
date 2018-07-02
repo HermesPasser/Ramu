@@ -1,16 +1,14 @@
 <html>
+	<head><title>Parallax Test</title></head>
 	<body>
 		<script type="text/javascript" src="../Ramu.js"></script>
 		<script>
 		// Parallax Test by Hermes Passer
 
-		var skyImage = RamuUtils.getImage("img/clouds.png");
-		var montainsImage = RamuUtils.getImage("img/montains.png");
-		
-		new GameObj(0,0,0,0).start = function(){
-			var sky = new Parallax(skyImage, 1, 1, 500, 500, -20);
-			var montains = new Parallax(montainsImage, 1, 1, 500, 500);
-			sky.setDrawPriority(0)
+		var d = new GameObj(0,0,0,0).start = function(){
+			var sky = new Parallax(Ramu.Utils.getImage("img/clouds.png"), 1, 1, 500, 500, -20);
+			var montains = new Parallax(Ramu.Utils.getImage("img/montains.png"), 1, 1, 500, 500);
+			sky.setDrawPriority(0);
 		};
 		
 		Ramu.init(500, 500);

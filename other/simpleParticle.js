@@ -76,12 +76,14 @@ class SimpleParticle extends GameObj{
 	
 	destroy(){
 		this.canUpdate = false;
+		// i commented this because this break something, but the sprites must be removed anyway. Gotta go figure out other way to destroy objects
 		// for (let i = 0; i < this.particles.length; i++)
 			// this.particles[i].destroy();
 		
 		// this.particles = null;
 		// this.particle.destroy();
 		
+		// its no use, the image is a ramu object
 		this.particle = null;
 		super.destroy();
 	}

@@ -103,7 +103,7 @@ class Arrow extends Sprite{
 	}
 }
 
-// add to the ramu 
+// add to Ramu 
 function isEmpty(obj){
 	for(var key in obj)
 		return false;
