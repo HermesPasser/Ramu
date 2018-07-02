@@ -21,6 +21,11 @@ class Tomato extends SimpleRectCollisor{
 			this.sprite.destroy();
 		}
 	}
+	
+	destroy(){
+		super.destroy();
+		this.sprite.destroy();
+	}
 }
 
 class Citizen extends SimpleRectCollisor{
