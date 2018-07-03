@@ -13,6 +13,9 @@ class Rock extends SimpleRectCollisor{
 	}
 	
 	update(){
+		if (game.isDead)
+			return;
+		
 		this.x -= this.velocity * Ramu.time.delta;
 		this.sprite.x -= this.velocity * Ramu.time.delta;
 		
