@@ -4,7 +4,6 @@ class Rock extends SimpleRectCollisor{
 	constructor(x, y){
 		super(x, y, 39, 36);
 		this.velocity = 100;
-		this.tag = 'player';
 		this.sprite = new Sprite(ROCK_IMG, x, y, 39, 36);
 	}
 	
@@ -117,7 +116,6 @@ class Game extends GameObj{
 		if (keyCode.s in Ramu.pressedKeys) this.player.down();
 		if (keyCode.a in Ramu.pressedKeys) this.player.left();
 		if (keyCode.d in Ramu.pressedKeys) this.player.right();
-
 	}
 }
 
