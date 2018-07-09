@@ -23,12 +23,17 @@ class GameObj{
 		for (let i = 0; i < Ramu.gameObjs.length; ++i){
 			for (let j = i + 1; j < Ramu.gameObjs.length; ++j){
 				if (Ramu.gameObjs[i].updatePriority > Ramu.gameObjs[j].updatePriority){
-					let temp 	=  Ramu.gameObjs[i];
+					let temp =  Ramu.gameObjs[i];
 					Ramu.gameObjs[i] = Ramu.gameObjs[j];
 					Ramu.gameObjs[j] = temp;
 				}
 			}
 		}
+	}
+	
+	setActive(bool){
+		if (!(typeof(bool) == 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
+		this.canUpdate = bool;
 	}
 	
 	destroy(){

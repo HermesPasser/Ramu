@@ -1,4 +1,4 @@
-// ============ RAMU DECLARATION 1.7 - 2018-06-30 ============ //
+// ============ RAMU DECLARATION 1.7 - 2018-07-09 ============ //
 
 class Ramu{
 	/// Prevents creating an instance of this class.
@@ -19,6 +19,6 @@ class Ramu{
 	}
 	
 	static get VERSION() {
-		return '0.7a';
+		return '0.7 07-09-18';
 	}
 }

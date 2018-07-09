@@ -56,7 +56,7 @@ class Rect{
 	}
 }
 
-// ============ RAMU DECLARATION 1.7 - 2018-06-30 ============ //
+// ============ RAMU DECLARATION 1.7 - 2018-07-09 ============ //
 
 class Ramu{
 	/// Prevents creating an instance of this class.
@@ -67,20 +67,22 @@ class Ramu{
 	static get width(){
 		if (Ramu.canvas)
 			return Ramu.canvas.width;
+		return 0;
 	}
 
 	static get height(){
 		if (Ramu.canvas)
 			return Ramu.canvas.height;
+		return 0;
 	}
 	
 	static get VERSION() {
-		return "0.7";
+		return '0.7 07-09-18';
 	}
 }
 
 
-// Ramu.callDestroy	   = false; //TODO
+Ramu.callDestroy	   = false; //TODO
 Ramu.callSortUpdate    = false;
 Ramu.callSortDraw 	   = false;
 Ramu.callSortCollision = false;
@@ -231,12 +233,10 @@ Ramu.loop = function(){
 
 			// Ramu._sortDestroy();
 			
-			Ramu._sortCollision();
-			
+			Ramu._sortCollision();	
 			Ramu.checkCollision();
 			
 			Ramu._sortUpdate();
-			
 			Ramu.update();
 			
 			Ramu.time.frameTime = Ramu.time.frameTime - Ramu.time.delta;
@@ -246,8 +246,7 @@ Ramu.loop = function(){
 		}
 	}
 	
-	Ramu._sortDraw();
-	
+	Ramu._sortDraw();	
 	Ramu.draw();
 	Ramu._clearInput();
 	
@@ -379,6 +378,7 @@ Ramu.Utils = class Utils{
 		return true;
 	}
 	
+	/// Used in ramu internal to throw erros
 	static CustomTypeError(instance, classToCompare){
 		return new Error("TypeError: " + Object.keys({instance})[0] + ' must be a ' + classToCompare.name + ' instance.');
 	}
@@ -409,12 +409,17 @@ class GameObj{
 		for (let i = 0; i < Ramu.gameObjs.length; ++i){
 			for (let j = i + 1; j < Ramu.gameObjs.length; ++j){
 				if (Ramu.gameObjs[i].updatePriority > Ramu.gameObjs[j].updatePriority){
-					let temp 	=  Ramu.gameObjs[i];
+					let temp =  Ramu.gameObjs[i];
 					Ramu.gameObjs[i] = Ramu.gameObjs[j];
 					Ramu.gameObjs[j] = temp;
 				}
 			}
 		}
+	}
+	
+	setActive(bool){
+		if (!(typeof(bool) == 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
+		this.canUpdate = bool;
 	}
 	
 	destroy(){
@@ -481,6 +486,11 @@ class Drawable extends GameObj{
 		}
 	}
 	
+	setActive(bool){
+		super.setActive(bool);
+		this.canDraw = bool;
+	}
+	
 	destroy(){
 		if (!this._start_was_called){
 			console.warn("The update was not called yet,")
@@ -544,6 +554,11 @@ class Collisor extends Drawable{
 				}
 			}
 		}
+	}
+	
+	setActive(bool){
+		super.setActive(bool);
+		this.canCollide = bool;
 	}
 	
 	destroy(){
@@ -695,8 +710,8 @@ class Sprite extends Drawable{
 		}
 		
 		//if (this.canDraw)
-			Ramu.ctx.imageSmoothingEnabled = false;
-			Ramu.ctx.drawImage(this.img, originX, originY, this.width, this.height);
+		Ramu.ctx.imageSmoothingEnabled = false;
+		Ramu.ctx.drawImage(this.img, originX, originY, this.width, this.height);
 	}
 }
 
@@ -902,7 +917,6 @@ class SpritesheetAnimator extends GameObj{
 	
 	setCanDraw(bool){
 		if (!(typeof(bool) == 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
-	
 		this.anim[this.currentID].canDraw = bool;
 	}
 	
@@ -969,7 +983,13 @@ class SpritesheetAnimator extends GameObj{
 		this.y = y;
 		for (var key in this.anim)
 			this.anim[key].y = y;
-	}	
+	}
+	
+	setActive(bool){
+		super.setActive(bool);
+		for(var key in this.anim)
+			this.anim[key].setActive(bool);
+	}
 	
 	addX(x){
 		this.x += x;
@@ -1048,7 +1068,12 @@ class SimpleSpriteButton extends Sprite{
 	setOnClick(func){
 		this.clickable.onClick = func;
 	}
-		
+	
+	setActive(bool){
+		super.setActive(bool);
+		this.clickable.setActive(bool);
+	}
+	
 	destroy(){
 		super.destroy();
 		this.clickable.destroy();
@@ -1076,11 +1101,24 @@ Ramu.Audio = class Audio extends GameObj{
 		this.audio.currentTime = 0;
 	}
 	
+	pause(){
+		this.audio.pause();
+	}
+	
+	resume(){
+		this.audio.play();
+	}
+	
 	update(){
 		if (this.isPlaying && this.audio.ended){
 			this.stop();
 			this.onAudioEnd();
 		}
+	}
+		
+	setActive(bool){
+		super.setActive(bool);
+		this.pause();
 	}
 	
 	/// Virtual to be inherited
@@ -1101,7 +1139,7 @@ class Parallax extends GameObj{
 	}
 	
 	canDraw(bool){
-		if (!(bool instanceof Boolean)) throw Ramu.Utils.CustomTypeError(bool, Boolean);
+		if (!(typeof(bool) == 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
 
 		this.left.canDraw   = bool;
 		this.center.canDraw = bool;
@@ -1134,6 +1172,13 @@ class Parallax extends GameObj{
 		
 		if (this.right.x + this.right.width <= 0)
 			this.right.x = this.center.width;
+	}
+	
+	setActive(bool){
+		super.setActive(bool);
+		this.left.setActive(bool);
+		this.center.setActive(bool);
+		this.right.setActive(bool);
 	}
 	
 	destroy(){
@@ -1282,6 +1327,13 @@ class SimpleParticle extends GameObj{
 			this.particles[i].y = this.y;			
 			this.particles[i].canDraw = false;
 		}
+	}
+		
+	setActive(bool){
+		super.setActive(bool);
+		
+		for (let i = 0; i < this.particles.length ; i++)
+			this.particles[i].setActive(bool);
 	}
 	
 	destroy(){

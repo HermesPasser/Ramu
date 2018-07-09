@@ -19,7 +19,7 @@ class Sprite extends Drawable{
 		}
 		
 		//if (this.canDraw)
-			Ramu.ctx.imageSmoothingEnabled = false;
-			Ramu.ctx.drawImage(this.img, originX, originY, this.width, this.height);
+		Ramu.ctx.imageSmoothingEnabled = false;
+		Ramu.ctx.drawImage(this.img, originX, originY, this.width, this.height);
 	}
 }

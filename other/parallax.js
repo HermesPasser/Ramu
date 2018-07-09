@@ -12,7 +12,7 @@ class Parallax extends GameObj{
 	}
 	
 	canDraw(bool){
-		if (!(bool instanceof Boolean)) throw Ramu.Utils.CustomTypeError(bool, Boolean);
+		if (!(typeof(bool) == 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
 
 		this.left.canDraw   = bool;
 		this.center.canDraw = bool;
@@ -45,6 +45,13 @@ class Parallax extends GameObj{
 		
 		if (this.right.x + this.right.width <= 0)
 			this.right.x = this.center.width;
+	}
+	
+	setActive(bool){
+		super.setActive(bool);
+		this.left.setActive(bool);
+		this.center.setActive(bool);
+		this.right.setActive(bool);
 	}
 	
 	destroy(){

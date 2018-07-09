@@ -73,6 +73,13 @@ class SimpleParticle extends GameObj{
 			this.particles[i].canDraw = false;
 		}
 	}
+		
+	setActive(bool){
+		super.setActive(bool);
+		
+		for (let i = 0; i < this.particles.length ; i++)
+			this.particles[i].setActive(bool);
+	}
 	
 	destroy(){
 		this.canUpdate = false;

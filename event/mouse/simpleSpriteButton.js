@@ -22,7 +22,12 @@ class SimpleSpriteButton extends Sprite{
 	setOnClick(func){
 		this.clickable.onClick = func;
 	}
-		
+	
+	setActive(bool){
+		super.setActive(bool);
+		this.clickable.setActive(bool);
+	}
+	
 	destroy(){
 		super.destroy();
 		this.clickable.destroy();

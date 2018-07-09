@@ -19,11 +19,24 @@ Ramu.Audio = class Audio extends GameObj{
 		this.audio.currentTime = 0;
 	}
 	
+	pause(){
+		this.audio.pause();
+	}
+	
+	resume(){
+		this.audio.play();
+	}
+	
 	update(){
 		if (this.isPlaying && this.audio.ended){
 			this.stop();
 			this.onAudioEnd();
 		}
+	}
+		
+	setActive(bool){
+		super.setActive(bool);
+		this.pause();
 	}
 	
 	/// Virtual to be inherited
