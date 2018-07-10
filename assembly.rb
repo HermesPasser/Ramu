@@ -51,7 +51,7 @@ def create_file
 		puts "\nNo mount command found"
 		exit(0)
 	end
-	File::open($output_name, 'w') { |a| a.write($file_content)}
+	File::open($output_name, 'w') { |a| a.write($file_content) }
 end
 
 def assembly_core

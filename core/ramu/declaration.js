@@ -19,6 +19,6 @@ class Ramu{
 	}
 	
 	static get VERSION() {
-		return '0.7 07-09-18';
+		return '0.7 07-10-18';
 	}
 }

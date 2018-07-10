@@ -31,8 +31,12 @@ class GameObj{
 		}
 	}
 	
+	toRect(){
+		return new Rect(this.x, this.y, this.width, this.height);
+	}
+	
 	setActive(bool){
-		if (!(typeof(bool) == 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
+		if (!(typeof(bool) === 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
 		this.canUpdate = bool;
 	}
 	

@@ -33,11 +33,6 @@ class Drawable extends GameObj{
 		}
 	}
 	
-	setActive(bool){
-		super.setActive(bool);
-		this.canDraw = bool;
-	}
-	
 	destroy(){
 		if (!this._start_was_called){
 			console.warn("The update was not called yet,")

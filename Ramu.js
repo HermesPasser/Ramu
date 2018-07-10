@@ -77,7 +77,7 @@ class Ramu{
 	}
 	
 	static get VERSION() {
-		return '0.7 07-09-18';
+		return '0.7 07-10-18';
 	}
 }
 
@@ -283,7 +283,7 @@ Ramu.update = function(){
 /// Check all collisions in the game.
 Ramu.checkCollision = function(){
 	for (var i = 0; i < Ramu.objsToCollide.length; i++){
-		if (!Ramu.objsToCollide[i]._start_was_called)
+		if (!Ramu.objsToCollide[i]._start_was_called || !Ramu.gameObjs[i].canUpdate)
 			continue;
 		Ramu.objsToCollide[i].checkCollision();
 	}
@@ -295,16 +295,13 @@ Ramu.draw = function(){
 	Ramu.ctx.clearRect(0, 0, Ramu.width, Ramu.height);
 	
 	for (var i = 0; i < Ramu.objsToDraw.length; i++){
-		if (!Ramu.objsToDraw[i]._start_was_called)
+		if (!Ramu.objsToDraw[i]._start_was_called || !Ramu.gameObjs[i].canUpdate)
 			continue;
 		
 		let positionWidth = Ramu.objsToDraw[i].x + Ramu.objsToDraw[i].width;		
 		let positionHeigh = Ramu.objsToDraw[i].y + Ramu.objsToDraw[i].height;
 		
-		let isOutOfCanvas = positionWidth >= 0 && Ramu.objsToDraw[i].x <= Ramu.width &&
-							positionHeigh >= 0 && Ramu.objsToDraw[i].y <= Ramu.height // Renderiza somente o que esta no Ramu.canvas
-		
-		if (Ramu.objsToDraw[i].drawOutOfCanvas || isOutOfCanvas)
+		if (Ramu.objsToDraw[i].drawOutOfCanvas || !Ramu.Utils.isInsidesOfCanvas(Ramu.objsToDraw[i]))
 			Ramu.objsToDraw[i].drawInCanvas();
 	}
 }
@@ -331,7 +328,7 @@ Ramu.Math = class Math{
 	}
 }
 
-// ============ RAMU UTILS 1.7 - 2018-06-30 ============ //
+// ============ RAMU UTILS 1.7 - 2018-07-10 ============ //
 
 Ramu.Utils = class Utils{
 	constructor(){
@@ -365,10 +362,18 @@ Ramu.Utils = class Utils{
 		return img.complete && img.naturalWidth !== 0 && img.naturalHeight !== 0;
 	}
 	
-	/// Check if the gameObject is out of the canvas
+	/// Check if the gameObject position (x,y) is out of the canvas
 	static isOutOfCanvas(gameObject){
 		return gameObject.x < 0 || gameObject.x > Ramu.canvas.width ||
 			   gameObject.y < 0 || gameObject.y > Ramu.canvas.height;
+	}
+	
+	/// Check if the part of gameObject size (x,y,w,h) is inside of the canvas
+	static isInsidesOfCanvas(gameObject){
+		return (gameObject.x + gameObject.width) > 0  && 
+				gameObject.x <= Ramu.width  &&
+				(gameObject.y + gameObject.height) > 0 &&
+				gameObject.y <= Ramu.height			   
 	}
 	
 	/// Check if object/hash is empty
@@ -418,7 +423,7 @@ class GameObj{
 	}
 	
 	setActive(bool){
-		if (!(typeof(bool) == 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
+		if (!(typeof(bool) === 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
 		this.canUpdate = bool;
 	}
 	
@@ -486,11 +491,6 @@ class Drawable extends GameObj{
 		}
 	}
 	
-	setActive(bool){
-		super.setActive(bool);
-		this.canDraw = bool;
-	}
-	
 	destroy(){
 		if (!this._start_was_called){
 			console.warn("The update was not called yet,")
@@ -554,11 +554,6 @@ class Collisor extends Drawable{
 				}
 			}
 		}
-	}
-	
-	setActive(bool){
-		super.setActive(bool);
-		this.canCollide = bool;
 	}
 	
 	destroy(){

@@ -1,4 +1,4 @@
-// ============ RAMU UTILS 1.7 - 2018-06-30 ============ //
+// ============ RAMU UTILS 1.7 - 2018-07-10 ============ //
 
 Ramu.Utils = class Utils{
 	constructor(){
@@ -32,10 +32,18 @@ Ramu.Utils = class Utils{
 		return img.complete && img.naturalWidth !== 0 && img.naturalHeight !== 0;
 	}
 	
-	/// Check if the gameObject is out of the canvas
+	/// Check if the gameObject position (x,y) is out of the canvas
 	static isOutOfCanvas(gameObject){
 		return gameObject.x < 0 || gameObject.x > Ramu.canvas.width ||
 			   gameObject.y < 0 || gameObject.y > Ramu.canvas.height;
+	}
+	
+	/// Check if the part of gameObject size (x,y,w,h) is inside of the canvas
+	static isInsidesOfCanvas(gameObject){
+		return (gameObject.x + gameObject.width) > 0  && 
+				gameObject.x <= Ramu.width  &&
+				(gameObject.y + gameObject.height) > 0 &&
+				gameObject.y <= Ramu.height			   
 	}
 	
 	/// Check if object/hash is empty
