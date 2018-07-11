@@ -30,7 +30,8 @@ $complete = [
 	File.join('sprite', 'animation', 'spritesheetAnimation.js'),
 	File.join('sprite', 'animation', 'SpritesheetAnimator.js'),
 	File.join('event', 'mouse', 'clickable.js'),
-	File.join('event', 'mouse', 'simpleSpriteButton.js')
+	File.join('event', 'mouse', 'simpleSpriteButton.js'),
+	File.join('utils', 'destroyer.js')
 ]
 
 $other = [

@@ -254,7 +254,7 @@ Ramu.loop = function(){
 	window.requestAnimationFrame(Ramu.loop);
 }
 
-// ============ RAMU MAIN ENGINE (WITH NO LOOP) 1.7 - 2018-06-30 ============ //
+// ============ RAMU MAIN ENGINE (WITH NO LOOP) 1.7 - 2018-07-10 ============ //
 
 /// Executes all start methods of all Ramu.gameObjs in the game.
 Ramu.start = function(){
@@ -298,10 +298,7 @@ Ramu.draw = function(){
 		if (!Ramu.objsToDraw[i]._start_was_called || !Ramu.gameObjs[i].canUpdate)
 			continue;
 		
-		let positionWidth = Ramu.objsToDraw[i].x + Ramu.objsToDraw[i].width;		
-		let positionHeigh = Ramu.objsToDraw[i].y + Ramu.objsToDraw[i].height;
-		
-		if (Ramu.objsToDraw[i].drawOutOfCanvas || !Ramu.Utils.isInsidesOfCanvas(Ramu.objsToDraw[i]))
+		if (Ramu.objsToDraw[i].drawOutOfCanvas || Ramu.Utils.isInsidesOfCanvas(Ramu.objsToDraw[i]))
 			Ramu.objsToDraw[i].drawInCanvas();
 	}
 }
@@ -422,6 +419,10 @@ class GameObj{
 		}
 	}
 	
+	toRect(){
+		return new Rect(this.x, this.y, this.width, this.height);
+	}
+	
 	setActive(bool){
 		if (!(typeof(bool) === 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
 		this.canUpdate = bool;
@@ -437,6 +438,8 @@ class GameObj{
 		// console.log("destroy chamado para " )
 		// console.log(this)
 		// console.log("  " )
+		
+		this.setActive(false);
 		
 		this.canDestroy = true;
 		Ramu.callDestroy = true;
@@ -587,7 +590,7 @@ class Collisor extends Drawable{
 		
 		this.collision = [];
 		for (let i = 0; i < Ramu.objsToCollide.length; i++){
-			if (Ramu.objsToCollide[i] === this || !Ramu.objsToCollide[i].canCollide)
+			if (Ramu.objsToCollide[i] === this || !Ramu.objsToCollide[i].canCollide || !Ramu.gameObjs[i].canUpdate)
 				continue;
 			
 			let rect1 = new Rect(this.x, this.y, this.width, this.height);
@@ -1072,6 +1075,25 @@ class SimpleSpriteButton extends Sprite{
 	destroy(){
 		super.destroy();
 		this.clickable.destroy();
+	}
+}
+
+class Destroyer extends GameObj{
+	constructor(time, gameObj){
+		super(0,0,0,0);
+		if (arguments.length !== 2) throw new Error('ArgumentError: Wrong number of arguments');
+		this.timeToDestroy = time;
+		this.currentTime = 0;
+		this.objToBeDestroyed = gameObj;
+	}
+	
+	update(){
+		this.currentTime += Ramu.time.delta;
+		if(this.currentTime >= this.timeToDestroy){
+			if(this.objToBeDestroyed)
+				this.objToBeDestroyed.destroy();
+			this.destroy();
+		}
 	}
 }
 

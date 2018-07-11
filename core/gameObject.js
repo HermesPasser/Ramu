@@ -51,6 +51,8 @@ class GameObj{
 		// console.log(this)
 		// console.log("  " )
 		
+		this.setActive(false);
+		
 		this.canDestroy = true;
 		Ramu.callDestroy = true;
 		

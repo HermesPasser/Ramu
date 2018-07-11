@@ -42,7 +42,7 @@ Ramu.draw = function(){
 		if (!Ramu.objsToDraw[i]._start_was_called || !Ramu.gameObjs[i].canUpdate)
 			continue;
 		
-		if (Ramu.objsToDraw[i].drawOutOfCanvas || !Ramu.Utils.isInsidesOfCanvas(Ramu.objsToDraw[i]))
+		if (Ramu.objsToDraw[i].drawOutOfCanvas || Ramu.Utils.isInsidesOfCanvas(Ramu.objsToDraw[i]))
 			Ramu.objsToDraw[i].drawInCanvas();
 	}
 }
