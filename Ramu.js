@@ -127,6 +127,7 @@ Ramu.init = function(width = 500, height = 500){
 Ramu.pressedKeys	 = {};
 Ramu.lastKeysPressed = {};
 Ramu.clickedPosition = {};
+Ramu.mousePosition   = {};
 
 Ramu._key = function(){
 	Ramu.pressedKeys	 = {}; // The key continues on this list until the key up.
@@ -151,14 +152,24 @@ Ramu._click = function(){
 		Ramu.clickedPosition = { 
 			X: event.clientX - bound.left - Ramu.canvas.clientLeft, 
 			Y: event.clientY - bound.top - Ramu.canvas.clientTop
-		};
+		};		
 	});
 }
-
+Ramu._mouseMove = function(){
+	let bound = Ramu.canvas.getBoundingClientRect();
+	Ramu.canvas.addEventListener('mousemove', event => {
+		Ramu.mousePosition = {
+			X: event.clientX - bound.left, 
+			Y: event.clientY - bound.top
+		};
+      }); 
+}
+	
 /// Start all input events listeners
 Ramu.input = function(){
 	Ramu._key();
 	Ramu._click();
+	Ramu._mouseMove();
 	
 	// Ramu.canvas.addEventListener('mousemove'   function(e){},  false);
 	// Ramu.canvas.addEventListener('touchstart', function(e){},  false);
@@ -370,7 +381,7 @@ Ramu.Utils = class Utils{
 		return (gameObject.x + gameObject.width) > 0  && 
 				gameObject.x <= Ramu.width  &&
 				(gameObject.y + gameObject.height) > 0 &&
-				gameObject.y <= Ramu.height			   
+				gameObject.y <= Ramu.height;	   
 	}
 	
 	/// Check if object/hash is empty
@@ -1016,37 +1027,109 @@ class Clickable extends GameObj{
 		super(x, y, w, h);
 		if (arguments.length != 4) throw new Error('ArgumentError: Wrong number of arguments');
 		this.enabled = true;
+		this.isInHover = false;
 	}
 	
 	static clickEventExists(){
 		return 'click' in document.documentElement;
 	}
 	
+	static getCanvasMousePosition(){
+		let bound = Ramu.canvas.getBoundingClientRect();			
+		return {
+			X: event.clientX - bound.left, 
+			Y: event.clientY - bound.top
+		};
+	}
+	
 	update(){
-		if (Clickable.clickEventExists() || this.enabled)
-			this.checkClick();
+		if (!Clickable.clickEventExists() || !this.enabled)
+			return;
+		
+		this.checkHover();
+		this.checkClick();
+		
 	}
 	
 	checkClick(){
+		// to add a onClickEnter and a onClickExit will be need add an onmouseup and onmousedown event
 		if (!Ramu.clickedPosition.X && !Ramu.clickedPosition.Y)
 			return;
-			
-		let rect1 = new Rect(this.x, this.y, this.width, this.height);
-		let rect2 = new Rect(Ramu.clickedPosition.X, Ramu.clickedPosition.Y, 1, 1);
 		
-		if (Ramu.Math.overlap(rect1, rect2))
+		let rect = new Rect(Ramu.clickedPosition.X, Ramu.clickedPosition.Y, 1, 1);
+		
+		if (Ramu.Math.overlap(this.toRect(), rect)){
+			if (!this.isClicking)
+				this.isClicking = true;
 			this.onClick();
+		} else {
+			this.isClicking = false;
+		}
 	}
+	
+	checkHover(){
+		let rect = new Rect(Ramu.mousePosition.X, Ramu.mousePosition.Y, 1, 1);
+		
+		if (Ramu.Math.overlap(this.toRect(), rect)){
+			if (!this.isInHover){
+				this.isInHover = true;
+				this.onHoverEnter();
+				return;
+			}
+		} else {
+			if (this.isInHover){
+				this.isInHover = false;
+				this.onHoverExit();
+				return;
+			}
+		}
+		
+		if (this.isInHover)
+			this.onHoverStay();
+	}
+	
+	/// Virtual to be inherited
+	onHoverEnter(){ }
+	
+	/// Virtual to be inherited
+	onHoverStay(){ }
+	
+	/// Virtual to be inherited
+	onHoverExit(){ }
 	
 	/// Virtual to be inherited
 	onClick(){ }
 }
 
 class SimpleSpriteButton extends Sprite{
-	constructor(img, x, y, w, h){
-		super(img, x, y, w, h, true);
-		if (arguments.length != 5) throw new Error('ArgumentError: Wrong number of arguments');
+	constructor(x, y, w, h, bottonImg, buttonHover = null, buttonClick = null){
+		super(bottonImg, x, y, w, h, true);
+		if (arguments.length < 5 || arguments.length > 7) throw new Error('ArgumentError: Wrong number of arguments');
 		this.clickable = new Clickable(x, y, w, h);
+		this.clickable.sprite = this; // created here to reference this object in clickable
+		
+		this.imgNormal = bottonImg;
+		this.imgHover = buttonHover;
+		this.imgClick = buttonClick;
+		this.imgBeforeClick = bottonImg;
+		
+		this.onClickFunc = null;
+		this.onClickFuncIsAdded = false;
+		
+		this.onHoverEnterFunc = null;
+		this.onHoverEnterFuncIsAdded = false;
+
+		this.onHoverExitFunc = null;
+		this.onHoverExitFuncIsAdded = false;
+		
+		// Because there is a delay to go back to previous image, it was no need if it have a onClickEnter/Exit
+		this.clicked = false;
+		this.timeToCancelClickImg = 0.2;
+		this.currentTimeToCancelClickImg = 0;
+	}
+	
+	start(){
+		this.updateEvents();
 	}
 	
 	setRect(rect){
@@ -1064,12 +1147,99 @@ class SimpleSpriteButton extends Sprite{
 	}
 	
 	setOnClick(func){
-		this.clickable.onClick = func;
+		this.onClickFunc = func;
+		this.onClickFuncIsAdded = true;
+	}
+	
+	setOnHoverEnter(func){
+		this.onHoverEnterFunc = func;
+		this.onHoverEnterFuncIsAdded = true;
+	}
+	
+	setOnHoverStay(func){
+		this.clickable.onHoverStay = func;
+	}
+	
+	setOnHoverExit(func){
+		this.onHoverExitFunc = func;
+		this.onHoverExitFuncIsAdded = true;
 	}
 	
 	setActive(bool){
 		super.setActive(bool);
 		this.clickable.setActive(bool);
+	}
+	
+	/// Private Setter
+	setToHoverImage(){
+		this.clicked = false;
+		if (this.imgHover)
+			this.img = this.imgHover
+	}
+	
+	/// Private Setter
+	setToClickImage(){
+		if (this.imgClick){
+			this.clicked = true;
+			this.img = this.imgClick
+			this.imgBeforeClick = this.img;
+			this.currentTimeToCancelClickImg = 0;
+		}
+	}
+	
+	updateEvents(){
+		this.clickable.onHoverEnter = function(){
+			if (this.sprite.onHoverEnterFunc){
+				this.sprite.onHoverEnterFunc.call(this);
+			}
+			
+			this.sprite.setToHoverImage();
+		};
+		
+		this.clickable.onHoverExit = function(){
+			if (this.sprite.onHoverExitFunc){
+				this.sprite.onHoverExitFunc.call(this);
+			}
+			
+			this.sprite.clicked = false;
+			this.sprite.img = this.sprite.imgNormal
+		};
+		
+		this.clickable.onClick = function(){
+			if (this.sprite.onClickFunc){
+				this.sprite.onClickFunc.call(this);
+			}
+			
+			this.sprite.setToClickImage();
+		};	
+	}
+	
+	update(){
+		if (this.clicked){			
+			this.currentTimeToCancelClickImg += Ramu.time.delta;
+			if (this.currentTimeToCancelClickImg >= this.timeToCancelClickImg){
+				this.img = this.imgBeforeClick;
+				this.clicked = false;
+			}
+		}
+		
+		// Because if setOnClick was written before Ramu.init then this.onClickFunc will be null and will never be called
+		if (this.onClickFuncIsAdded){
+			this.updateEvents();
+			this.onClickFuncIsAdded = false;			
+		}
+		
+		// Because if setOnHoverEnter was written before Ramu.init then this.onClickFunc will be null and will never be called
+		if (this.onHoverEnterFuncIsAdded){
+			this.updateEvents();
+			this.onHoverEnterFuncIsAdded = false;			
+		}
+		
+		// Because if setOnHoverExit was written before Ramu.init then this.onClickFunc will be null and will never be called
+		if (this.onHoverEnterFuncIsAdded){
+			this.updateEvents();
+			this.onHoverEnterFuncIsAdded = false;			
+		}
 	}
 	
 	destroy(){

@@ -3,6 +3,7 @@
 Ramu.pressedKeys	 = {};
 Ramu.lastKeysPressed = {};
 Ramu.clickedPosition = {};
+Ramu.mousePosition   = {};
 
 Ramu._key = function(){
 	Ramu.pressedKeys	 = {}; // The key continues on this list until the key up.
@@ -27,14 +28,24 @@ Ramu._click = function(){
 		Ramu.clickedPosition = { 
 			X: event.clientX - bound.left - Ramu.canvas.clientLeft, 
 			Y: event.clientY - bound.top - Ramu.canvas.clientTop
-		};
+		};		
 	});
 }
-
+Ramu._mouseMove = function(){
+	let bound = Ramu.canvas.getBoundingClientRect();
+	Ramu.canvas.addEventListener('mousemove', event => {
+		Ramu.mousePosition = {
+			X: event.clientX - bound.left, 
+			Y: event.clientY - bound.top
+		};
+      }); 
+}
+	
 /// Start all input events listeners
 Ramu.input = function(){
 	Ramu._key();
 	Ramu._click();
+	Ramu._mouseMove();
 	
 	// Ramu.canvas.addEventListener('mousemove'   function(e){},  false);
 	// Ramu.canvas.addEventListener('touchstart', function(e){},  false);

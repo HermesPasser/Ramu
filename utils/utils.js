@@ -43,7 +43,7 @@ Ramu.Utils = class Utils{
 		return (gameObject.x + gameObject.width) > 0  && 
 				gameObject.x <= Ramu.width  &&
 				(gameObject.y + gameObject.height) > 0 &&
-				gameObject.y <= Ramu.height			   
+				gameObject.y <= Ramu.height;	   
 	}
 	
 	/// Check if object/hash is empty
