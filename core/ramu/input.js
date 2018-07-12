@@ -3,7 +3,7 @@
 Ramu.pressedKeys	 = {};
 Ramu.lastKeysPressed = {};
 Ramu.clickedPosition = {};
-Ramu.mousePosition   = {};
+Ramu.mousePosition   = { X: 0, Y: 0};
 
 Ramu._key = function(){
 	Ramu.pressedKeys	 = {}; // The key continues on this list until the key up.
