@@ -19,25 +19,26 @@ Ramu._key = function(){
 	}, false);
 }
 
+Ramu._getMousePosition = function(event){
+	let bound = Ramu.canvas.getBoundingClientRect();
+	return {
+		X: event.clientX - bound.left - Ramu.canvas.clientLeft,
+		Y: event.clientY - bound.top - Ramu.canvas.clientTop	
+	}
+}
+
 Ramu._click = function(){
 	Ramu.clickedPosition = {};
 	Ramu.canvas.addEventListener('click', event => {
 		// esse metodo não é tão bom, clicar apos deixar a aba ativa gerara isso a ser chamado varias vezes num mesmo clique
-		
-		let bound = Ramu.canvas.getBoundingClientRect();			
-		Ramu.clickedPosition = { 
-			X: event.clientX - bound.left - Ramu.canvas.clientLeft, 
-			Y: event.clientY - bound.top - Ramu.canvas.clientTop
-		};		
+		Ramu.clickedPosition = Ramu._getMousePosition(event);
+		console.log(Ramu.clickedPosition)
 	});
 }
+
 Ramu._mouseMove = function(){
-	let bound = Ramu.canvas.getBoundingClientRect();
 	Ramu.canvas.addEventListener('mousemove', event => {
-		Ramu.mousePosition = {
-			X: event.clientX - bound.left, 
-			Y: event.clientY - bound.top
-		};
+		Ramu.mousePosition = Ramu._getMousePosition(event);
       }); 
 }
 	
