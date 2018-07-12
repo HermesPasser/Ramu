@@ -32,14 +32,13 @@ Ramu._click = function(){
 	Ramu.canvas.addEventListener('click', event => {
 		// esse metodo não é tão bom, clicar apos deixar a aba ativa gerara isso a ser chamado varias vezes num mesmo clique
 		Ramu.clickedPosition = Ramu._getMousePosition(event);
-		console.log(Ramu.clickedPosition)
 	});
 }
 
 Ramu._mouseMove = function(){
 	Ramu.canvas.addEventListener('mousemove', event => {
 		Ramu.mousePosition = Ramu._getMousePosition(event);
-      }); 
+	}); 
 }
 	
 /// Start all input events listeners

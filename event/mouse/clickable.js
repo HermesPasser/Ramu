@@ -16,7 +16,6 @@ class Clickable extends GameObj{
 		
 		this.checkHover();
 		this.checkClick();
-		
 	}
 	
 	checkClick(){

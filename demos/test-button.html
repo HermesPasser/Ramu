@@ -1,0 +1,53 @@
+<html>
+	<head><title>Button tests</title></head>
+	<body>
+		<script type="text/javascript" src="../Ramu.js"></script>
+		<script type="text/javascript">
+			var text = new Text('last event:', 200, 250, 200, 400);
+			
+			var spritebtn = new SimpleSpriteButton(
+				20, 20, 108, 20, 
+				Ramu.Utils.getImage('img/btn/button.gif'), 
+				Ramu.Utils.getImage('img/btn/button-hover.gif'), 
+				Ramu.Utils.getImage('img/btn/button-click.gif')
+			);
+			spritebtn.setOnClick(function(){
+				text.text = "last event: button sprite click";
+				console.log(text.text);
+			});
+			spritebtn.setOnHoverEnter(function(){
+				text.text = "last event: button sprite hover enter";
+				console.log(text.text);
+			});
+			spritebtn.setOnHoverStay(function(){
+				text.text = "last event: button sprite hover stay";
+			});
+			spritebtn.setOnHoverExit(function(){
+				text.text = "last event: button sprite hover exit";
+			});
+			
+			var sheetbtn = new SimpleSpritesheetButton(
+				20, 200, 108, 20, 
+				Ramu.Utils.getImage('img/btn/button-sheet.gif'), 
+				new Rect(0,0,30,14), 
+				new Rect(0,14,30,14), 
+				new Rect(0,26,30,14)
+			);
+			sheetbtn.setOnClick(function(){
+				text.text = "last event: button sheet click";
+				console.log(text.text);
+			});
+			sheetbtn.setOnHoverEnter(function(){
+				text.text = "last event: button sheet hover enter";
+				console.log(text.text);
+			});
+			sheetbtn.setOnHoverStay(function(){
+				text.text = "last event: button sheet hover stay";
+			});
+			sheetbtn.setOnHoverExit(function(){
+				text.text = "last event: button sheet hover exit";
+			});	
+			Ramu.init();
+		</script>
+	</body>
+</html>
