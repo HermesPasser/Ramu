@@ -9,15 +9,7 @@ class Clickable extends GameObj{
 	static clickEventExists(){
 		return 'click' in document.documentElement;
 	}
-	
-	static getCanvasMousePosition(){
-		let bound = Ramu.canvas.getBoundingClientRect();			
-		return {
-			X: event.clientX - bound.left, 
-			Y: event.clientY - bound.top
-		};
-	}
-	
+
 	update(){
 		if (!Clickable.clickEventExists() || !this.enabled)
 			return;

@@ -127,7 +127,7 @@ Ramu.init = function(width = 500, height = 500){
 Ramu.pressedKeys	 = {};
 Ramu.lastKeysPressed = {};
 Ramu.clickedPosition = {};
-Ramu.mousePosition   = {};
+Ramu.mousePosition   = { X: 0, Y: 0};
 
 Ramu._key = function(){
 	Ramu.pressedKeys	 = {}; // The key continues on this list until the key up.
@@ -1033,15 +1033,7 @@ class Clickable extends GameObj{
 	static clickEventExists(){
 		return 'click' in document.documentElement;
 	}
-	
-	static getCanvasMousePosition(){
-		let bound = Ramu.canvas.getBoundingClientRect();			
-		return {
-			X: event.clientX - bound.left, 
-			Y: event.clientY - bound.top
-		};
-	}
-	
+
 	update(){
 		if (!Clickable.clickEventExists() || !this.enabled)
 			return;
