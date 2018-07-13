@@ -34,16 +34,16 @@ Ramu.Utils = class Utils{
 	
 	/// Check if the gameObject position (x,y) is out of the canvas
 	static isOutOfCanvas(gameObject){
-		return gameObject.x < 0 || gameObject.x > Ramu.canvas.width ||
-			   gameObject.y < 0 || gameObject.y > Ramu.canvas.height;
+		return gameObject.x < 0 || gameObject.x >= Ramu.canvas.width ||
+			   gameObject.y < 0 || gameObject.y >= Ramu.canvas.height;
 	}
 	
 	/// Check if the part of gameObject size (x,y,w,h) is inside of the canvas
 	static isInsidesOfCanvas(gameObject){
-		return (gameObject.x + gameObject.width) > 0  && 
-				gameObject.x <= Ramu.width  &&
-				(gameObject.y + gameObject.height) > 0 &&
-				gameObject.y <= Ramu.height;	   
+		return (gameObject.x + gameObject.width) >= 0  && 
+				gameObject.x < Ramu.width  &&
+				(gameObject.y + gameObject.height) >= 0 &&
+				gameObject.y < Ramu.height;	   
 	}
 	
 	/// Check if object/hash is empty
