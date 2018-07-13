@@ -1,5 +1,5 @@
-const TOMATO_IMG = RamuUtils.getImage('res/tomato.gif');
-const CITIZEN_IMG = RamuUtils.getImage('res/citizen.gif');
+const TOMATO_IMG = Ramu.Utils.getImage('res/tomato.gif');
+const CITIZEN_IMG = Ramu.Utils.getImage('res/citizen.gif');
 
 class Tomato extends SimpleRectCollisor{
 	constructor(x){
@@ -8,7 +8,6 @@ class Tomato extends SimpleRectCollisor{
 		this.sprite.drawPriority = 3;
 		this.tag = 'tomato';
 		this.velocity = 300;
-		// Ramu.callSortDraw = true;
 	}
 	
 	update(){
@@ -98,10 +97,9 @@ class Citizen extends SimpleRectCollisor{
 
 class Game extends GameObj{
 	start(){
-		this.bg = new Parallax(RamuUtils.getImage('res/crowd.gif'), 0, 0, 500, 259, 50);
-		this.truck = new Sprite(RamuUtils.getImage('res/bucket.gif'), 0, 259, 500, 241);
+		this.bg = new Parallax(Ramu.Utils.getImage('res/crowd.gif'), 0, 0, 500, 259, 50);
+		this.truck = new Sprite(Ramu.Utils.getImage('res/bucket.gif'), 0, 259, 500, 241);
 		this.truck.drawPriority = 2;
-		this.eventCreated = false;
 		
 		this.score = new Text('', Ramu.width / 2 - 40, 460);
 		this.infoDump = new Text('Click to throw a tomato. Hermes Passer in 2018-06-26', 40, 480);
@@ -115,11 +113,14 @@ class Game extends GameObj{
 		
 		this.hitScore = 0;
 		this.missScore = 0;
+		
+		this.clickableCanvas = new Clickable(0, 0, Ramu.width, Ramu.height);
+		this.clickableCanvas.onClick = function(){
+			game.throwTomato(Ramu.clickedPosition.X);
+		}
 	}
 	
-	update(){
-		this.createEvent();
-		
+	update(){		
 		if (this.currentTimeThrow >= this.timeToThrow)
 			this.canThrow = true;
 		
@@ -129,19 +130,6 @@ class Game extends GameObj{
 		this.currentTimeThrow += Ramu.time.delta;
 		this.currentTimeInstantiate += Ramu.time.delta;
 		this.score.text = "HITS: " + this.hitScore + " | MISS: " + this.missScore;
-	}
-	
-	createEvent(){
-		// Ramu.canvas will be defined after Ramu.init was called
-		if (Ramu.canvas && !this.eventCreated){
-			this.eventCreated = true;
-			
-			Ramu.canvas.addEventListener('click', event => {
-				let bound = Ramu.canvas.getBoundingClientRect();
-				let x = event.clientX - bound.left - Ramu.canvas.clientLeft; // let y = event.clientY - bound.top - Ramu.canvas.clientTop;
-				game.throwTomato(x);
-			});
-		}
 	}
 
 	throwTomato(x){
