@@ -94,8 +94,8 @@ class SimpleButtonBase extends Clickable{
 	setToClickImage(){
 		if (this.drawableClick){
 			this.clicked = true;
-			this.drawableImage = this.drawableClick
 			this.drawableBeforeClick = this.drawableImage;
+			this.drawableImage = this.drawableClick;
 			this.currentTimeToCancel = 0;
 		}
 	}
