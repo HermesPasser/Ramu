@@ -1,5 +1,5 @@
 /// Simple abstraction to execute instructions when audio ends, and add a func to stop.
-Ramu.Audio = class Audio extends GameObj{
+Ramu.Audio = class extends GameObj{
 	constructor(src){
 		super();
 		if (arguments.length != 1) throw new Error('ArgumentError: Wrong number of arguments');
