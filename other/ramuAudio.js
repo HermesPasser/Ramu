@@ -12,6 +12,8 @@ Ramu.Audio = class extends GameObj{
 	}
 
 	play(startAt = 0){
+		if (!this.canUpdate)
+			return;
 		this.isPlaying = true;
 		this.audio.currentTime = startAt;
 		this.audio.play().catch(this.promiseCatch);
@@ -28,6 +30,8 @@ Ramu.Audio = class extends GameObj{
 	}
 	
 	resume(){
+		if (!this.canUpdate)
+			return;
 		this.audio.play().catch(this.promiseCatch);
 	}
 	
