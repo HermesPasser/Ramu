@@ -37,7 +37,7 @@ $complete = [
 ]
 
 $other = [
-	File.join('other', 'ramuAudio.js'),
+	File.join('other', 'audio.js'),
 	File.join('other', 'parallax.js'),
 	File.join('other', 'text.js'),
 	File.join('other', 'simpleParticle.js')
