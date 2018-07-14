@@ -8,9 +8,9 @@ class SimpleSpritesheetButton extends SimpleButtonBase{
 		this.rectClick = rectClick;
 		this.rectBeforeClick = rectNormal;
 	}
-	
+
 	get drawableObj(){
-		return spritesheet;
+		return this.spritesheet;
 	}
 	
 	set drawableImage(rect){

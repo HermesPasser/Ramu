@@ -77,12 +77,6 @@ class SimpleButtonBase extends Clickable{
 		this.onHoverExitFuncIsAdded = true;
 	}
 	
-	setActive(bool){
-		if (!(typeof(bool) === 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
-		super.setActive(bool);
-		this.setActive(bool);
-	}
-	
 	/// Private Setter
 	setToHoverImage(){
 		this.clicked = false;
@@ -125,6 +119,11 @@ class SimpleButtonBase extends Clickable{
 			
 			this.setToClickImage();
 		};	
+	}
+	
+	setActive(bool){
+		super.setActive(bool);
+		this.drawableObj.setActive(bool);
 	}
 	
 	update(){

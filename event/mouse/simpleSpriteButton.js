@@ -8,9 +8,9 @@ class SimpleSpriteButton extends SimpleButtonBase{
 		this.imgClick = buttonClick;
 		this.imgBeforeClick = bottonImg;
 	}
-	
+
 	get drawableObj(){
-		return sprite;
+		return this.sprite;
 	}
 	
 	set drawableImage(img){
