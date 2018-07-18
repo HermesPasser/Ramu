@@ -1,4 +1,4 @@
-// ============ RAMU MAIN ENGINE (WITH NO LOOP) 1.7 - 2018-07-10 ============ //
+// ============ RAMU MAIN ENGINE (WITH NO LOOP) 1.7 - 2018-07-18 ============ //
 
 /// Executes all start methods of all Ramu.gameObjs in the game.
 Ramu.start = function(){
@@ -18,18 +18,22 @@ Ramu.start = function(){
 /// Update all Ramu.gameObjs in the game.
 Ramu.update = function(){
 	for (var i = 0; i < Ramu.gameObjs.length; i++){
-		if (!Ramu.gameObjs[i]._start_was_called || !Ramu.gameObjs[i].canUpdate)
-			continue;
-		Ramu.gameObjs[i].update();	
+		let obj = Ramu.gameObjs[i];
+		
+		if (obj._start_was_called && obj.canUpdate){	
+			obj.update();
+		}
 	}
 }
 
 /// Check all collisions in the game.
 Ramu.checkCollision = function(){
 	for (var i = 0; i < Ramu.objsToCollide.length; i++){
-		if (!Ramu.objsToCollide[i]._start_was_called || !Ramu.gameObjs[i].canUpdate)
-			continue;
-		Ramu.objsToCollide[i].checkCollision();
+		let obj = Ramu.objsToCollide[i];
+		
+		if (obj._start_was_called && obj.canUpdate){	
+			obj.checkCollision();
+		}
 	}
 }
 
@@ -37,12 +41,16 @@ Ramu.checkCollision = function(){
 Ramu.draw = function(){
 	Ramu.ctx.imageSmoothingEnabled = true; // reset the defaut value
 	Ramu.ctx.clearRect(0, 0, Ramu.width, Ramu.height);
+		
+	// For some reason draw() is being called sometimes even if canUpdate (it happened in Text class) is false at Ramu.draw, this was fixed nesting the ifs instead of do two with the first one being calling a continue. 
 	
 	for (var i = 0; i < Ramu.objsToDraw.length; i++){
-		if (!Ramu.objsToDraw[i]._start_was_called || !Ramu.gameObjs[i].canUpdate)
-			continue;
+		let obj = Ramu.objsToDraw[i];
 		
-		if (Ramu.objsToDraw[i].drawOutOfCanvas || Ramu.Utils.isInsidesOfCanvas(Ramu.objsToDraw[i]))
-			Ramu.objsToDraw[i].drawInCanvas();
+		if (obj._start_was_called && obj.canUpdate){	
+			if (obj.drawOutOfCanvas || Ramu.Utils.isInsidesOfCanvas(obj)){
+				obj.drawInCanvas();
+			}
+		}
 	}
 }
