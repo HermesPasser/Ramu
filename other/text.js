@@ -1,6 +1,7 @@
 class Text extends Drawable {
 	constructor(text, x, y, maxWidth, lineHeight = 25){
 		super(x, y, 1, 1, true);
+		if (arguments.length < 4) throw new Error('ArgumentError: Wrong number of arguments');
 		this.text = text;
 		this.maxWidth = maxWidth;
 		this.lineHeight = lineHeight;
