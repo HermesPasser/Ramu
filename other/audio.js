@@ -5,7 +5,10 @@ Ramu.Audio = class extends GameObj{
 		if (arguments.length != 1) throw new Error('ArgumentError: Wrong number of arguments');
 		this.audio = new Audio(src);
 		this.isPlaying = false;
-		this.promiseCatch = function() {
+		
+		var ref = this;
+		this.promiseCatch = function(){
+			ref.isPlaying = false;
 			if (Ramu.debugMode)
 				console.warn('Ramu.Audio: Cannot play if the user did not interact with the document first.')
 		};
