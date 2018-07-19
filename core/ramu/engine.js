@@ -42,8 +42,6 @@ Ramu.draw = function(){
 	Ramu.ctx.imageSmoothingEnabled = true; // reset the defaut value
 	Ramu.ctx.clearRect(0, 0, Ramu.width, Ramu.height);
 		
-	// For some reason draw() is being called sometimes even if canUpdate (it happened in Text class) is false at Ramu.draw, this was fixed nesting the ifs instead of do two with the first one being calling a continue. 
-	
 	for (var i = 0; i < Ramu.objsToDraw.length; i++){
 		let obj = Ramu.objsToDraw[i];
 		
