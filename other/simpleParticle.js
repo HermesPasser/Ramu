@@ -2,7 +2,8 @@ class SimpleParticle extends GameObj{
 	constructor(img, rect, lifeSpan, particleNumber){
 		super(rect.x, rect.y, rect.width, rect.height);
 		if (arguments.length != 4) throw new Error('ArgumentError: Wrong number of arguments');
-
+		
+		this.drawPriority = Ramu.drawLastPriority++;
 		this.particleNumber = particleNumber / 2;
 		this.particle = img;
 		this.destroyOnEnd = false;
@@ -13,8 +14,10 @@ class SimpleParticle extends GameObj{
 		this.particles = [];
 		this.isOver = true;
 		this.alreadyPlayed = false;
-		for (let i = 0; i < 200; i++){
+		Ramu.callSortDraw = true;
+		for (let i = 0; i < this.particleNumber; i++){
 			this.particles[i] = new Sprite(this.particle, this.x, this.y, this.width, this.height, false);
+			this.particles[i].drawPriority = this.drawPriority;
 			this.particles[i].tag = 'particle-sprite';
 		}
 	}
@@ -36,12 +39,26 @@ class SimpleParticle extends GameObj{
 		this.isOver = false;		
 	}
 	
+	setDrawPriority(priority){
+		Ramu.callSortDraw = true;
+		this.drawPriority = priority;
+
+		for (let i = 0; i < this.particles.length; i++)
+			this.particles[i].drawPriority = priority;	
+	}
+	
 	setPosition(x, y){
 		this.x = x;
 		this.y = y;
 		
 		// if (this.isOver)
 		this.resetPosition();
+	}
+		
+	setActive(bool){
+		super.setActive(bool);
+		for (let i = 0; i < this.particles.length ; i++)
+			this.particles[i].setActive(bool);
 	}
 	
 	update(){
@@ -72,13 +89,6 @@ class SimpleParticle extends GameObj{
 			this.particles[i].y = this.y;			
 			this.particles[i].canDraw = false;
 		}
-	}
-		
-	setActive(bool){
-		super.setActive(bool);
-		
-		for (let i = 0; i < this.particles.length ; i++)
-			this.particles[i].setActive(bool);
 	}
 	
 	destroy(){

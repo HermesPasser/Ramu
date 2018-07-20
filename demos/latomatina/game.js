@@ -101,8 +101,8 @@ class Game extends GameObj{
 		this.truck = new Sprite(Ramu.Utils.getImage('res/bucket.gif'), 0, 259, 500, 241);
 		this.truck.drawPriority = 2;
 		
-		this.score = new Text('', Ramu.width / 2 - 40, 460);
-		this.infoDump = new Text('Click to throw a tomato. Hermes Passer in 2018-06-26', 40, 480);
+		this.score = new Text('', Ramu.width / 2 - 40, 460, 300);
+		this.infoDump = new Text('Click to throw a tomato. Hermes Passer in 2018-06-26', 40, 480, 300);
 		
 		this.timeToThrow = 1;
 		this.currentTimeThrow = this.timeToThrow;

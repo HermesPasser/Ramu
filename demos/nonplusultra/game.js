@@ -84,19 +84,17 @@ class Player extends SimpleRectCollisor{
 	}
 }
 
-
 class Game extends GameObj{
 	start(){
 		this.sea = new SpriteAnimation(0, 0, 500, 500);
 		this.sea.addFrame([Ramu.Utils.getImage('res/sea1.gif'), Ramu.Utils.getImage('res/sea2.gif')]);
 		
 		this.player = new Player(200, 200);
-		this.rules = new Text("'a/w/s/d' to move. Hermes Passer, in 2018-07-03", 1, 20);
+		this.rules = new Text("'a/w/s/d' to move. Hermes Passer, in 2018-07-03", 1, 20, 300);
 		this.timeToInstantiate = 2;
 		this.currentTimeToInstantiate = 2;
 		this.isDead = false;
 	}
-	
 	
 	update(){
 		if (this.isDead)
@@ -120,6 +118,5 @@ class Game extends GameObj{
 }
 
 Ramu.init(500, 500); 
-// Ramu.debugMode = true;
 
 var game = new Game();

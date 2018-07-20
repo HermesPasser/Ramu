@@ -190,8 +190,8 @@ class Game extends GameObj{
 	start(){
 		this.scorePlayer = 0;
 		this.scoreEnemy = 0;
-		this.score = new Text('', Ramu.width/2 - 25, 10);
-		this.rules = new Text("Hit the darkest part to kill the bull. 'a/w/s/d' to move and 'space' to incite. The bull will make attacks while you \nincite him. \nHermes Passer, in 2018-06-21", 1, 20);
+		this.score = new Text('', Ramu.width/2 - 25, 10, 300);
+		this.rules = new Text("Hit the darkest part to kill the bull. 'a/w/s/d' to move and 'space' to incite. The bull will make attacks while you \nincite him. \nHermes Passer, in 2018-06-21", 1, 20, 500);
 		
 		// if starts in same rect then the setRules will say that enemy has won
 		this.player = new Player(0,0);

@@ -83,8 +83,8 @@ class Game extends GameObj{
 		this.audio = new Audio('res/steam-train-whistle-daniel_simon.wav');
 		this.audio.loop = true;
 		
-		this.infoDump = new Text('Click to place the portal. Hermes Passer in 2018-06-29', 100, 490);
-		this.result = new Text('', 200, 250);
+		this.infoDump = new Text('Click to place the portal. Hermes Passer in 2018-06-29', 100, 490, 500);
+		this.result = new Text('', 200, 250, 200);
 		
 		this.enTunnel = new EntranceTunnel(300, 1);
 		this.exTunnel = new Sprite(Ramu.Utils.getImage('res/exit_tunnel.gif'), 30, Ramu.height - 97, 34, 97);
