@@ -97,7 +97,7 @@ class Citizen extends SimpleRectCollisor{
 
 class Game extends GameObj{
 	start(){
-		this.bg = new Parallax(Ramu.Utils.getImage('res/crowd.gif'), 0, 0, 500, 259, 50);
+		this.bg = new Panorama(Ramu.Utils.getImage('res/crowd.gif'), 0, 0, 500, 259, 50);
 		this.truck = new Sprite(Ramu.Utils.getImage('res/bucket.gif'), 0, 259, 500, 241);
 		this.truck.drawPriority = 2;
 		

@@ -38,7 +38,7 @@ $complete = [
 
 $other = [
 	File.join('other', 'audio.js'),
-	File.join('other', 'parallax.js'),
+	File.join('other', 'panorama.js'),
 	File.join('other', 'text.js'),
 	File.join('other', 'simpleParticle.js')
 ]

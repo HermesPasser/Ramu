@@ -1,4 +1,4 @@
-class Parallax extends GameObj{
+class Panorama extends GameObj{
 	constructor(img, x, y, w, h, velocity = 20){
 		super(x, y, w, h);
 		if (arguments.length < 5) throw new Error('ArgumentError: Wrong number of arguments');
@@ -12,7 +12,7 @@ class Parallax extends GameObj{
 	}
 	
 	canDraw(bool){
-		if (!(typeof(bool) == 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
+		if (!(typeof(bool) === 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
 
 		this.left.canDraw   = bool;
 		this.center.canDraw = bool;

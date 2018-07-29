@@ -33,13 +33,13 @@ Ramu.Utils = class Utils{
 	}
 	
 	/// Check if the gameObject position (x,y) is out of the canvas
-	static isOutOfCanvas(gameObject){
+	static isOutOfCanvas(gameObject){ // canvas rect starts at 0 and ends at canvas.size - 1
 		return gameObject.x < 0 || gameObject.x >= Ramu.canvas.width ||
 			   gameObject.y < 0 || gameObject.y >= Ramu.canvas.height;
 	}
 	
 	/// Check if the part of gameObject size (x,y,w,h) is inside of the canvas
-	static isInsidesOfCanvas(gameObject){
+	static isInsidesOfCanvas(gameObject){ // canvas rect starts at 0 and ends at canvas.size - 1
 		return (gameObject.x + gameObject.width) >= 0  && 
 				gameObject.x < Ramu.width  &&
 				(gameObject.y + gameObject.height) >= 0 &&
@@ -55,6 +55,8 @@ Ramu.Utils = class Utils{
 	
 	/// Used in ramu internal to throw erros
 	static CustomTypeError(instance, classToCompare){
+		// esse keys é inutil pois ele retorna a palavra instance e não o nome da variavel que passei no metodo
+		// criar um outro método só para converter para string e passar como parametro aqui
 		return new Error("TypeError: " + Object.keys({instance})[0] + ' must be a ' + classToCompare.name + ' instance.');
 	}
 }
