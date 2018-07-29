@@ -1,30 +1,45 @@
-class SimpleSpriteButton extends Sprite{
-	constructor(img, x, y, w, h){
-		super(img, x, y, w, h, true);
-		if (arguments.length != 5) throw new Error('ArgumentError: Wrong number of arguments');
-		this.clickable = new Clickable(x, y, w, h);
+class SimpleSpriteButton extends SimpleButtonBase{
+	constructor(x, y, w, h, bottonImg, buttonHover = null, buttonClick = null){
+		super(x, y, w, h);
+		if (arguments.length < 5 || arguments.length > 7) throw new Error('ArgumentError: Wrong number of arguments');
+		this.sprite = new Sprite(bottonImg, x, y, w, h);		
+		this.imgNormal = bottonImg;
+		this.imgHover = buttonHover;
+		this.imgClick = buttonClick;
+		this.imgBeforeClick = bottonImg;
+	}
+
+	get drawableObj(){
+		return this.sprite;
 	}
 	
-	setRect(rect){
-		if (!(rect instanceof Rect)) throw Ramu.Utils.CustomTypeError(rect, Rect);
+	set drawableImage(img){
+		if (!(img instanceof Image)) throw Ramu.Utils.CustomTypeError(img, Image);
+		this.sprite.img = img;
+	}
+	
+	get drawableImage(){
+		return this.sprite.img;
+	}
 		
-		this.x = rect.x;
-		this.clickable.x = rect.x;
-		this.y = rect.y;
-		this.clickable.y = rect.x;
+	get drawableNormal(){
+		return this.imgNormal;
 	}
 	
-	setEnabled(bool){
-		if (!(typeof(bool) == 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
-		this.clickable.enabled = bool;
+	get drawableHover(){
+		return this.imgHover;
 	}
 	
-	setOnClick(func){
-		this.clickable.onClick = func;
+	get drawableClick(){
+		return this.imgClick;
 	}
-		
-	destroy(){
-		super.destroy();
-		this.clickable.destroy();
+	
+	set drawableBeforeClick(img){
+		if (!(img instanceof Image)) throw Ramu.Utils.CustomTypeError(img, Image);
+		this.rectBeforeClick = img;
+	}
+	
+	get drawableBeforeClick(){
+		return this.imgBeforeClick;
 	}
 }

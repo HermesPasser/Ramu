@@ -1,6 +1,8 @@
+
 class Text extends Drawable {
 	constructor(text, x, y, maxWidth, lineHeight = 25){
 		super(x, y, 1, 1, true);
+		if (arguments.length < 4) throw new Error('ArgumentError: Wrong number of arguments');
 		this.text = text;
 		this.maxWidth = maxWidth;
 		this.lineHeight = lineHeight;
@@ -14,7 +16,7 @@ class Text extends Drawable {
 	start(){
 		// this.setUp();
 	}
-	
+
 	// Adapted from www.html5canvastutorials.com/tutorials/html5-canvas-wrap-text-tutorial
 	draw(){
 		let y = this.y, testWidth = 0;

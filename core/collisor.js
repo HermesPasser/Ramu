@@ -57,7 +57,7 @@ class Collisor extends Drawable{
 		
 		this.collision = [];
 		for (let i = 0; i < Ramu.objsToCollide.length; i++){
-			if (Ramu.objsToCollide[i] === this || !Ramu.objsToCollide[i].canCollide)
+			if (Ramu.objsToCollide[i] === this || !Ramu.objsToCollide[i].canCollide || !Ramu.gameObjs[i].canUpdate)
 				continue;
 			
 			let rect1 = new Rect(this.x, this.y, this.width, this.height);

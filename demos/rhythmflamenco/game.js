@@ -2,40 +2,11 @@
 const MUSIC = 'res/2AiresChoqueros.ogg'
 const DIRECTION = {TOP: 38, LEFT: 37, RIGHT: 39, BOTTOM: 40}; // arrows key code
 
-// Simple abstraction to execute instructions when audio ends, and add a func to stop. Add to ramu someday
-class RamuAudio extends GameObj{
-	constructor(src){
-		super();
-		this.audio = new Audio(src);
-		this.isPlaying = false;
-	}
-
-	play(startAt = 0){
-		this.isPlaying = true;
-		this.audio.currentTime = startAt;
-		this.audio.play();
-	}
-	
-	stop(){
-		this.isPlaying = false;
-		this.audio.pause();
-		this.audio.currentTime = 0;
-	}
-	
-	update(){
-		if (this.isPlaying && this.audio.ended){
-			this.stop();
-			this.onAudioEnd();
-		}
-	}
-	
-	onAudioEnd(){ } // Virtual
-}
-
 class Slot extends SimpleRectCollisor{
 	constructor(x, y, direction){
 		super(x + 25, y + 25, 25, 25);
-		this.sprite = new Sprite(RamuUtils.getImage('res/slot.png'), x, y, 50, 50);
+		this.sprite = new Sprite(Ramu.Utils.getImage('res/slot.png'), x, y, 50, 50);
+		this.sprite.drawPriority = 1;
 		this.tag = 'slot';
 	}
 }
@@ -46,6 +17,7 @@ class Arrow extends Sprite{
 		this.direction = direction;
 		this.tag = 'arrow sprite';
 		this.canDestroy = false;
+		this.drawPriority = 2;
 	}
 	
 	static instantiate(){
@@ -55,17 +27,17 @@ class Arrow extends Sprite{
 		
 		switch (direction){
 			case DIRECTION.TOP:
-				img = RamuUtils.getImage('res/arrow_up.png');
+				img = Ramu.Utils.getImage('res/arrow_up.png');
 				break;
 			case DIRECTION.LEFT:
-				img = RamuUtils.getImage('res/arrow_left.png');
+				img = Ramu.Utils.getImage('res/arrow_left.png');
 				break;
 			case DIRECTION.RIGHT:
-				img = RamuUtils.getImage('res/arrow_left.png');
+				img = Ramu.Utils.getImage('res/arrow_left.png');
 				isRight = true;
 				break;
 			case DIRECTION.BOTTOM:
-				img = RamuUtils.getImage('res/arrow_up.png');
+				img = Ramu.Utils.getImage('res/arrow_up.png');
 				isBottom = true;
 		}
 		
@@ -91,7 +63,7 @@ class Arrow extends Sprite{
 		
 		this.collisor.y = this.y + 25;
 		
-		if (this.canDestroy && RamuUtils.isOutOfCanvas(this)){
+		if (this.canDestroy && Ramu.Utils.isOutOfCanvas(this)){
 			game.missPoints++;
 			this.destroy();
 		}
@@ -103,26 +75,21 @@ class Arrow extends Sprite{
 	}
 }
 
-// add to Ramu 
-function isEmpty(obj){
-	for(var key in obj)
-		return false;
-	return true;
-}
-
 class Game extends GameObj{
 	start(){
-		this.hitParticle = new SimpleParticle(RamuUtils.getImage("res/particleblue.png"), new Rect(Ramu.width/2 , Ramu.height - 75, 1, 1), 1, 500);
-		this.missParticle = new SimpleParticle(RamuUtils.getImage("res/particlered.png"), new Rect(Ramu.width/2 , Ramu.height - 75, 1, 1), 1, 500);
 		this.slot = new Slot(Ramu.width/2 - 25, Ramu.height - 100);
+		this.hitParticle = new SimpleParticle(Ramu.Utils.getImage("res/particleblue.png"), new Rect(Ramu.width/2 , Ramu.height - 75, 1, 1), 1, 500);
+		// this.hitParticle.setDrawPriority(2);
+		
+		this.missParticle = new SimpleParticle(Ramu.Utils.getImage("res/particlered.png"), new Rect(Ramu.width/2 , Ramu.height - 75, 1, 1), 1, 500);
 		this.started = false;
 		this.gameEnd = false;
 		
-		this.startText = new Text("Press 'space' to start", Ramu.width/2 - 50, Ramu.height/2);
+		this.startText = new Text("Press 'space' to start", Ramu.width/2 - 50, Ramu.height/2, 300);
 		this.startText.fillStyle = 'white';
-		this.infodump = new Text("Play using the 'arrows'. Hermes Passer, in 2018-06-22", 1, 20);
+		this.infodump = new Text("Play using the 'arrows'. Hermes Passer, in 2018-06-22", 1, 20, 300);
 		this.infodump.fillStyle = 'white';
-		this.score = new Text('', 1, 40);
+		this.score = new Text('', 1, 40, 300);
 		this.score.fillStyle = 'white';
 		
 		this.timeToInstantiate = 2;
@@ -130,7 +97,7 @@ class Game extends GameObj{
 		this.timeToReload = 14;
 		this.currentTimeToReload = 0;	
 		
-		this.audio = new RamuAudio(MUSIC);
+		this.audio = new Ramu.Audio(MUSIC);
 		this.setRules();
 		
 		this.hitPoints = 0;
@@ -155,7 +122,7 @@ class Game extends GameObj{
 				game.hitPoints++;
 				obj.parent.destroy();
 				game.hitParticle.init();
-			} else if (!isEmpty(Ramu.lastKeysPressed)){ // pressed the wrong key (do nothing if none key is pressed)
+			} else if (!Ramu.Utils.isEmpty(Ramu.lastKeysPressed)){ // pressed the wrong key (do nothing if none key is pressed)
 				game.missPoints++;
 				game.missParticle.init();
 			}
@@ -193,5 +160,4 @@ class Game extends GameObj{
 }
 
 Ramu.init(500, 500); 
-// Ramu.debugMode = true;
 var game = new Game();

@@ -23,12 +23,21 @@ class GameObj{
 		for (let i = 0; i < Ramu.gameObjs.length; ++i){
 			for (let j = i + 1; j < Ramu.gameObjs.length; ++j){
 				if (Ramu.gameObjs[i].updatePriority > Ramu.gameObjs[j].updatePriority){
-					let temp 	=  Ramu.gameObjs[i];
+					let temp =  Ramu.gameObjs[i];
 					Ramu.gameObjs[i] = Ramu.gameObjs[j];
 					Ramu.gameObjs[j] = temp;
 				}
 			}
 		}
+	}
+	
+	toRect(){
+		return new Rect(this.x, this.y, this.width, this.height);
+	}
+	
+	setActive(bool){
+		if (!(typeof(bool) === 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
+		this.canUpdate = bool;
 	}
 	
 	destroy(){
@@ -41,6 +50,8 @@ class GameObj{
 		// console.log("destroy chamado para " )
 		// console.log(this)
 		// console.log("  " )
+		
+		this.setActive(false);
 		
 		this.canDestroy = true;
 		Ramu.callDestroy = true;

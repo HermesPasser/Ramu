@@ -11,7 +11,6 @@ class SpritesheetAnimator extends GameObj{
 	
 	setCanDraw(bool){
 		if (!(typeof(bool) == 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
-	
 		this.anim[this.currentID].canDraw = bool;
 	}
 	
@@ -78,7 +77,13 @@ class SpritesheetAnimator extends GameObj{
 		this.y = y;
 		for (var key in this.anim)
 			this.anim[key].y = y;
-	}	
+	}
+	
+	setActive(bool){
+		super.setActive(bool);
+		for(var key in this.anim)
+			this.anim[key].setActive(bool);
+	}
 	
 	addX(x){
 		this.x += x;

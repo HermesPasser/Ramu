@@ -70,4 +70,4 @@ console.log("Objects after destroy:");
 printObjs();
 afterDestroyTests();
 
-alert('see the console')
+alert('See the result in the console');
