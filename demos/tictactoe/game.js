@@ -30,19 +30,19 @@ class Game extends GameObj{
 		this.isXTurn = true;
 		this.endGame = false;
 		this.btns = [
-			new ButtonWText(100,100,''),
-			new ButtonWText(160,100,''),
-			new ButtonWText(220,100,''),
+			new ButtonWText(10, 10,''),
+			new ButtonWText(70, 10,''),
+			new ButtonWText(130,10,''),
 			
-			new ButtonWText(100,160,''),
-			new ButtonWText(160,160,''),
-			new ButtonWText(220,160,''),
+			new ButtonWText(10, 70,''),
+			new ButtonWText(70, 70,''),
+			new ButtonWText(130,70,''),
 			
-			new ButtonWText(100,220,''),
-			new ButtonWText(160,220,''),
-			new ButtonWText(220,220,'')
+			new ButtonWText(10, 130,''),
+			new ButtonWText(70, 130,''),
+			new ButtonWText(130,130,'')
 		];
-		this.infoDump = new Text('x turn.', 100, 300, 200);
+		this.infoDump = new Text('x turn.', 10, 210, 200);
 		this.infoDump.font = '25px sans-serif';
 	}
 	
@@ -106,5 +106,5 @@ class Game extends GameObj{
 	}
 }
 
-Ramu.init();
+Ramu.init(220,220);
 var game = new Game();
