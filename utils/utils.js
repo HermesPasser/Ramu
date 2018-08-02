@@ -5,7 +5,7 @@ Ramu.Utils = class Utils{
 		throw new Error('This is a static class');
 	}
 	
-	/// Get a image with source
+	/// Get a image from the source
 	static getImage(src){
 		let img = new Image();
 		img.src = src;
@@ -39,7 +39,7 @@ Ramu.Utils = class Utils{
 	}
 	
 	/// Check if the part of gameObject size (x,y,w,h) is inside of the canvas
-	static isInsidesOfCanvas(gameObject){ // canvas rect starts at 0 and ends at canvas.size - 1
+	static isInsideOfCanvas(gameObject){ // canvas rect starts at 0 and ends at canvas.size - 1
 		return (gameObject.x + gameObject.width) >= 0  && 
 				gameObject.x < Ramu.width  &&
 				(gameObject.y + gameObject.height) >= 0 &&

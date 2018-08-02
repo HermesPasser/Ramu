@@ -35,6 +35,5 @@ Ramu.init = function(width = 500, height = 500){
 	Ramu.time = { last: Date.now(), delta: 1/60, frameTime: 0 };
 	
 	Ramu.input();
-	Ramu.start();
 	window.requestAnimationFrame(Ramu.loop);
 }
