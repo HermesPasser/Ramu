@@ -46,7 +46,7 @@ Ramu.draw = function(){
 		let obj = Ramu.objsToDraw[i];
 		
 		if (obj._start_was_called && obj.canUpdate){	
-			if (obj.drawOutOfCanvas || Ramu.Utils.isInsidesOfCanvas(obj)){
+			if (obj.drawOutOfCanvas || Ramu.Utils.isInsideOfCanvas(obj)){
 				obj.drawInCanvas();
 			}
 		}
