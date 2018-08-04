@@ -69,7 +69,7 @@ class Game extends GameObj{
 	checkVictory(){
 		const positions = [
 			[0,1,2],
-			[2,3,5],
+			[3,4,5],
 			[6,7,8],
 			
 			[0,3,6],
