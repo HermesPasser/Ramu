@@ -19,14 +19,16 @@ class SpritesheetAnimation extends SpriteAnimation{
 			throw new Error('ArgumentError: Wrong number of arguments');
 		
 		if(Array.isArray(rect)){
-			for (let i = 0; i < rect.length; i++){
-				if(!rect[i] instanceof Rect)
+			for (let i = 0, len = rect.length; i < len; ++i){
+				const r = rect[i];
+				
+				if(!r instanceof Rect)
 					throw Ramu.Utils.CustomTypeError(rect, rect);
 				
-				if (Rect.hasNegativeValueInXY(rect[i]))
+				if (Rect.hasNegativeValueInXY(r))
 					throw new Error('ArgumentOutOfRangeError: The rect position cannot be negative.');
 				
-				this.frames.push(rect[i]);			
+				this.frames.push(r);			
 			}
 			
 			return;

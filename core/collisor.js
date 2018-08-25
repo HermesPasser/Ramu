@@ -4,7 +4,7 @@ class Collisor extends Drawable{
 		if (arguments.length != 4) throw new Error('ArgumentError: Wrong number of arguments');
 		this.canCollide = true;
 		this.collision = [];
-		this.collisionPriority = Ramu.collisionLastPriority++;
+		this.collisionPriority = ++Ramu.collisionLastPriority;
 
 		Collisor.addObjt(this);
 	}
@@ -15,8 +15,8 @@ class Collisor extends Drawable{
 	}
 	
 	static sortPriority(){
-		for (let i = 0; i < Ramu.objsToCollide.length; ++i){
-			for (let j = i + 1; j < Ramu.objsToCollide.length; ++j){
+		for (let i = 0, len = Ramu.objsToCollide.length; i < len; ++i){
+			for (let j = i + 1; j < len; ++j){
 				if (Ramu.objsToCollide[i].collisionPriority > Ramu.objsToCollide[j].collisionPriority){
 					let temp =  Ramu.objsToCollide[i];
 					Ramu.objsToCollide[i] = Ramu.objsToCollide[j];
@@ -32,7 +32,8 @@ class Collisor extends Drawable{
 			return;
 		}
 		
-		for (let i = 0; i < Ramu.objsToCollide.length; i++){
+		// better leave it get the lenght each time because the lenght changes inside of the loop?
+		for (let i = 0; i < Ramu.objsToCollide.length; ++i){
 			if (Ramu.objsToCollide[i] === this){
 				Ramu.objsToCollide.splice(i, 1);
 				break;
@@ -56,16 +57,18 @@ class Collisor extends Drawable{
 		if(!this.canCollide) return;
 		
 		this.collision = [];
-		for (let i = 0; i < Ramu.objsToCollide.length; i++){
-			if (Ramu.objsToCollide[i] === this || !Ramu.objsToCollide[i].canCollide || !Ramu.gameObjs[i].canUpdate)
+		for (let i = 0, len = Ramu.objsToCollide.length; i < len; ++i){
+			let obj = Ramu.objsToCollide[i];
+			
+			if (obj === this || !obj.canCollide || !Ramu.gameObjs[i].canUpdate)
 				continue;
 			
 			let rect1 = new Rect(this.x, this.y, this.width, this.height);
-			let rect2 = new Rect(Ramu.objsToCollide[i].x, Ramu.objsToCollide[i].y, Ramu.objsToCollide[i].width, Ramu.objsToCollide[i].height);
+			let rect2 = new Rect(obj.x, obj.y, obj.width, obj.height);
 			
 			if (Ramu.Math.overlap(rect1, rect2)){
-				Ramu.objsToCollide[i].collision.push(this);
-				this.collision.push(Ramu.objsToCollide[i]);
+				obj.collision.push(this);
+				this.collision.push(obj);
 				this.onCollision();
 			}
 		}

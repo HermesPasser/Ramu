@@ -6,9 +6,11 @@
 // tentar fazer algo como usar o instanceof para iterar dentro do game object mesmo quando tentar remover
 // o drawable e collisor?
 Ramu.destroyObjs = function(){
-	for (var d in Ramu.gameObjs) console.log(Ramu.gameObjs[d])
-			console.log(Ramu.gameObjs)
-	for (let i = 0; i < Ramu.gameObjs.length; i++){
+	for (var d in Ramu.gameObjs) 
+		console.log(Ramu.gameObjs[d])
+	
+	console.log(Ramu.gameObjs)
+	for (let i = 0, len = Ramu.gameObjs.length; i < len; ++i){
 		console.log(Ramu.gameObjs[i])
 		if (Ramu.gameObjs[i].canDestroy){
 			
@@ -28,7 +30,7 @@ Ramu.destroyObjs = function(){
 }
 
 Ramu.removeDrawable = function(parentObj){
-	for (let i = 0; i < Ramu.objsToDraw.length; i++){
+	for (let i = 0, len = Ramu.objsToDraw.length; i < len; ++i){
 		if (Ramu.objsToDraw[i] === parentObj){
 			Ramu.objsToDraw.splice(i, 1);
 			break;
@@ -37,7 +39,7 @@ Ramu.removeDrawable = function(parentObj){
 }
 
 Ramu.removeCollisor = function(parentObj){
-	for (let i = 0; i < Ramu.objsToCollide.length; i++){
+	for (let i = 0, len = Ramu.objsToCollide.length; i < len; ++i){
 		if (Ramu.objsToCollide[i] === parentObj){
 			Ramu.objsToCollide.splice(i, 1);
 			break;

@@ -42,7 +42,7 @@ class SpritesheetAnimator extends GameObj{
 		for (var key in this.anim)
 			this.anim[key].canDraw = false;
 		
-		if (this.anim[key] != null)
+		if (this.anim[key] !== null)
 			this.anim[nameID].canDraw = true;
 	}
 	

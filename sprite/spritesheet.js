@@ -1,4 +1,4 @@
-/// Displays an region (sprite sheet) of a image
+/// Displays a region (sprite sheet) of an image
 class Spritesheet extends Drawable{
 	constructor(image, sheetRect, x, y, w, h, canDraw = true){
 		super(x, y, w, h);
@@ -17,6 +17,7 @@ class Spritesheet extends Drawable{
 	}
 	
 	setPosition(x, y){
+		// why parsefloat? parseint isn't better since it is manipulating a canvas array?
 		this.x = parseFloat(x);
 		this.y = parseFloat(y);
 	}

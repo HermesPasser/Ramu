@@ -30,7 +30,7 @@ class Text extends Drawable {
 		
 		this._words = this.text.replace(/\n/g, " \\n ").split(' ');
 		
-		for(var n = 0; n < this._words.length; n++) {
+		for(var n = 0, len = this._words.length; n < len; ++n) {
 			testLine = line + this._words[n] + ' ';
 			metrics = Ramu.ctx.measureText(testLine);			
 			testWidth = metrics.width;

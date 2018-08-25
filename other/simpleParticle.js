@@ -15,7 +15,7 @@ class SimpleParticle extends GameObj{
 		this.isOver = true;
 		this.alreadyPlayed = false;
 		Ramu.callSortDraw = true;
-		for (let i = 0; i < this.particleNumber; i++){
+		for (let i = 0; i < this.particleNumber; ++i){
 			this.particles[i] = new Sprite(this.particle, this.x, this.y, this.width, this.height, false);
 			this.particles[i].drawPriority = this.drawPriority;
 			this.particles[i].tag = 'particle-sprite';
@@ -29,7 +29,7 @@ class SimpleParticle extends GameObj{
 			this._start_was_called = true;
 		}
 		
-		for (let i = 0; i < this.particles.length ; i++){
+		for (let i = 0, len = this.particles.length; i < len ; ++i){
 			this.particles[i].canDraw = true;
 			this.particles[i].opacity = 1;
 		}
@@ -43,7 +43,7 @@ class SimpleParticle extends GameObj{
 		Ramu.callSortDraw = true;
 		this.drawPriority = priority;
 
-		for (let i = 0; i < this.particles.length; i++)
+		for (let i = 0, len = this.particles.length; i < len; ++i)
 			this.particles[i].drawPriority = priority;	
 	}
 	
@@ -57,7 +57,7 @@ class SimpleParticle extends GameObj{
 		
 	setActive(bool){
 		super.setActive(bool);
-		for (let i = 0; i < this.particles.length ; i++)
+		for (let i = 0, len = this.particles.length; i < len ; ++i)
 			this.particles[i].setActive(bool);
 	}
 	
@@ -84,7 +84,7 @@ class SimpleParticle extends GameObj{
 	}
 	
 	resetPosition(){
-		for (let i = 0; i < this.particles.length ; i++){
+		for (let i = 0, len = this.particles.length; i < len; ++i){
 			this.particles[i].x = this.x;
 			this.particles[i].y = this.y;			
 			this.particles[i].canDraw = false;
@@ -110,7 +110,7 @@ class SimpleParticle extends GameObj{
 	}
 	
 	move(vel){
-		for (let i = 0; i < this.particles.length ; i++){
+		for (let i = 0, len = this.particles.length; i < len ; i++){
 			let x = this.random(-vel, vel);
 			let y = this.random(-vel, vel);
 			this.particles[i].x += x * Ramu.time.delta;

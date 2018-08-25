@@ -17,11 +17,12 @@ class SpriteAnimation extends Drawable{
 			throw new Error('ArgumentError: Wrong number of arguments');
 		
 		if(Array.isArray(img)){
-			for (let i = 0; i < img.length; i++) {
-				if(!img[i] instanceof Image)
+			for (let i = 0, len = img.length; i < len; ++i) {
+				const currImg = img[i];
+				if(!currImg instanceof Image)
 					throw Ramu.Utils.CustomTypeError(img, img);
 				
-				this.frames.push(img[i]);
+				this.frames.push(currImg);
 			}
 			return;
 		} else if(img instanceof Image){
@@ -42,16 +43,17 @@ class SpriteAnimation extends Drawable{
 	}
 	
 	update(){
+		const len = this.frames.length;
 		if (this.animationPause) return;
-		if (this.currentFrame == this.frames.length - 1){
+		if (this.currentFrame == len - 1){
 			this.animationIsOver = true;
 			if (!this.playInLoop) return;
 			
 		} else this.animationIsOver = false;
 		
 		this.currentTime += Ramu.time.delta;
-		if (this.frames.length > 0 && this.currentTime > this.animationTime){ 
-			this.currentFrame = (this.currentFrame + 1) % this.frames.length;
+		if (len > 0 && this.currentTime > this.animationTime){ 
+			this.currentFrame = (this.currentFrame + 1) % len;
 			this.currentTime = 0;
 		} 
 	}

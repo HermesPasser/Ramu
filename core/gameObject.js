@@ -7,7 +7,7 @@ class GameObj{
 		this.width = w;
 		this.height = h;
 		this.tag =  this.tag || "none";
-		this.updatePriority = Ramu.updateLastPriority++;
+		this.updatePriority = ++Ramu.updateLastPriority;
 		this.canUpdate = true;
 		this.canDestroy = false;
 		
@@ -20,8 +20,8 @@ class GameObj{
 	}
 	
 	static sortPriority(){
-		for (let i = 0; i < Ramu.gameObjs.length; ++i){
-			for (let j = i + 1; j < Ramu.gameObjs.length; ++j){
+		for (let i = 0, len = Ramu.gameObjs.length; i < len; ++i){
+			for (let j = i + 1; j < len; ++j){
 				if (Ramu.gameObjs[i].updatePriority > Ramu.gameObjs[j].updatePriority){
 					let temp =  Ramu.gameObjs[i];
 					Ramu.gameObjs[i] = Ramu.gameObjs[j];
@@ -56,7 +56,8 @@ class GameObj{
 		this.canDestroy = true;
 		Ramu.callDestroy = true;
 		
-		for (let i = 0; i < Ramu.gameObjs.length; i++){
+		// better leave it get the lenght each time because the lenght changes inside of the loop?	
+		for (let i = 0; i < Ramu.gameObjs.length; ++i){
 			if (Ramu.gameObjs[i] === this){
 				Ramu.gameObjs.splice(i, 1);
 				break;
