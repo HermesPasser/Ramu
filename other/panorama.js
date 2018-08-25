@@ -56,11 +56,8 @@ class Panorama extends GameObj{
 	
 	destroy(){
 		this.left.destroy();
-		delete this.left; //= null;
 		this.center.destroy();
-		delete this.center; //= null;
 		this.right.destroy();
-		delete this.right; //= null;
 		super.destroy();
 	}
 }

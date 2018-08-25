@@ -98,10 +98,8 @@ class SpritesheetAnimator extends GameObj{
 	}
 	
 	destroy(){
-		for (var key in this.anim){
-			this.anim[key].destroy();
-			delete this.anim[key]; //= null;
-		}
+		for (var key in this.anim)
+			this.anim[key].destroy();	
 		this.anim = {};
 		super.destroy();
 	}
