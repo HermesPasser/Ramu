@@ -40,7 +40,7 @@ class GenericDrawableChildClass extends Drawable{
 		
 		this.gameObj1 = new GameObj();
 		this.gameObj2 = new GameObj();
-		this.coll = new Collisor(1,1,1,1);
+		this.coll = new Collisor(1,1,1,1);	
 	}
 	
 	destroy(){
@@ -51,23 +51,33 @@ class GenericDrawableChildClass extends Drawable{
 	}
 }
 
+function setUpTest(){
+	console.log(" == RAMU DESTROY TESTS ==");
+	console.log('');
+
+	console.log("Objects before destroy:");
+	printObjs();
+	beforeDestroyTests();
+}
+
+function startTest(){
+	// This must destroy all gameObjects
+	rootGameObj.destroy();
+
+	console.log("Objects after destroy:");
+	printObjs();
+	afterDestroyTests();
+}
+
 // Create all gameObjects
 var rootGameObj = new GenericDrawableChildClass(0,0,0,0);
 
-Ramu.init(500, 500);
+Ramu.init();
 
-console.log(" == RAMU DESTROY TESTS ==");
-console.log('');
+// To give time for the start methods to be called and the list be filled. (because the objs will be created a frame after the declaration).
+setTimeout(setUpTest, 500);
 
-console.log("Objects before destroy:");
-printObjs();
-beforeDestroyTests();
-
-// This must destroy all gameObjects
-rootGameObj.destroy();
-
-console.log("Objects after destroy:");
-printObjs();
-afterDestroyTests();
+// To give time for the start methods to be called and the list be emptied. (because the objs will be created a frame after the declaration).
+setTimeout(startTest, 500);
 
 alert('See the result in the console');
