@@ -1,5 +1,6 @@
 // ============ RAMU LOOP 1.7 - 2018-06-30 ============ //
 
+// Cannot store the length of these lists to a variable because new itens are added in meantime and then the loop can try acess a yet not defined obj.
 Ramu.gameObjs	    = [];
 Ramu.objsToDraw 	= [];
 Ramu.objsToCollide  = [];

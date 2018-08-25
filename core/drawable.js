@@ -22,8 +22,8 @@ class Drawable extends GameObj{
 	}
 	
 	static sortPriority(){
-		for (let i = 0, len = Ramu.objsToDraw.length; i < len; ++i){
-			for (let j = i + 1; j < len; ++j){
+		for (let i = 0; i < Ramu.objsToDraw.length; ++i){
+			for (let j = i + 1; j < Ramu.objsToDraw.length; ++j){
 				if (Ramu.objsToDraw[i].drawPriority > Ramu.objsToDraw[j].drawPriority){
 					let temp =  Ramu.objsToDraw[i];
 					Ramu.objsToDraw[i] = Ramu.objsToDraw[j];
@@ -40,7 +40,6 @@ class Drawable extends GameObj{
 		}
 		
 		super.destroy();
-		// better leave it get the lenght each time because the lenght changes inside of the loop?	
 		for (let i = 0; i < Ramu.objsToDraw.length; ++i){
 			if (Ramu.objsToDraw[i] === this){
 				Ramu.objsToDraw.splice(i, 1);

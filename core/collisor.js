@@ -15,8 +15,8 @@ class Collisor extends Drawable{
 	}
 	
 	static sortPriority(){
-		for (let i = 0, len = Ramu.objsToCollide.length; i < len; ++i){
-			for (let j = i + 1; j < len; ++j){
+		for (let i = 0; i < Ramu.objsToCollide.length; ++i){
+			for (let j = i + 1; j < Ramu.objsToCollide.length; ++j){
 				if (Ramu.objsToCollide[i].collisionPriority > Ramu.objsToCollide[j].collisionPriority){
 					let temp =  Ramu.objsToCollide[i];
 					Ramu.objsToCollide[i] = Ramu.objsToCollide[j];
@@ -57,7 +57,7 @@ class Collisor extends Drawable{
 		if(!this.canCollide) return;
 		
 		this.collision = [];
-		for (let i = 0, len = Ramu.objsToCollide.length; i < len; ++i){
+		for (let i = 0; i < Ramu.objsToCollide.length; ++i){
 			let obj = Ramu.objsToCollide[i];
 			
 			if (obj === this || !obj.canCollide || !obj.canUpdate)
