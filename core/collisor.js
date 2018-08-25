@@ -60,13 +60,15 @@ class Collisor extends Drawable{
 		for (let i = 0, len = Ramu.objsToCollide.length; i < len; ++i){
 			let obj = Ramu.objsToCollide[i];
 			
-			if (obj === this || !obj.canCollide || !canUpdate.canUpdate)
+			if (obj === this || !obj.canCollide || !obj.canUpdate)
 				continue;
 			
 			let rect1 = new Rect(this.x, this.y, this.width, this.height);
 			let rect2 = new Rect(obj.x, obj.y, obj.width, obj.height);
 			
 			if (Ramu.Math.overlap(rect1, rect2)){
+				// this line will duplicate the obj in the list? 'cause this will be called twice.
+				// TODO: check it later.
 				obj.collision.push(this);
 				this.collision.push(obj);
 				this.onCollision();
