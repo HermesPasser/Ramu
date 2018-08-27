@@ -10,6 +10,8 @@ class Collisor extends Drawable{
 	}
 	
 	static addObjt(colObj){
+		if (!colObj instanceof Collisor) 
+			throw new Error("'colObj' is not a Collisor instance.");
 		Ramu.objsToCollide.push(colObj);
 		Ramu.callSortCollision = true;
 	}
@@ -24,22 +26,6 @@ class Collisor extends Drawable{
 				}
 			}
 		}
-	}
-	
-	destroy(){
-		if (!this._start_was_called){
-			console.warn("The update was not called yet,")
-			return;
-		}
-		
-		// better leave it get the lenght each time because the lenght changes inside of the loop?
-		for (let i = 0; i < Ramu.objsToCollide.length; ++i){
-			if (Ramu.objsToCollide[i] === this){
-				Ramu.objsToCollide.splice(i, 1);
-				break;
-			}
-		}
-		super.destroy();
 	}
 	
 	update(){
@@ -67,8 +53,6 @@ class Collisor extends Drawable{
 			let rect2 = new Rect(obj.x, obj.y, obj.width, obj.height);
 			
 			if (Ramu.Math.overlap(rect1, rect2)){
-				// this line will duplicate the obj in the list? 'cause this will be called twice.
-				// TODO: check it later.
 				obj.collision.push(this);
 				this.collision.push(obj);
 				this.onCollision();

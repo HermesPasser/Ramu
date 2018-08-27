@@ -1,59 +1,36 @@
-// ============ RAMU DESTROY 1.7 - 2018-06-30 ============ //
+// ============ RAMU DESTROY 0.7 - 2018-8-30 ============ //
 
-// TODO
-// não ta deletando todos os que tem canDestroy = true, ele entra no laço umas duas vezes e sai mesmo não tendo break
-// desistir disso, usando o hash também não é bom já que sortear a prioridade é zoado
-// tentar fazer algo como usar o instanceof para iterar dentro do game object mesmo quando tentar remover
-// o drawable e collisor?
-Ramu.destroyObjs = function(){
-	for (var d in Ramu.gameObjs) 
-		console.log(Ramu.gameObjs[d])
-	
-	console.log(Ramu.gameObjs)
-	for (let i = 0, len = Ramu.gameObjs.length; i < len; ++i){
-		console.log(Ramu.gameObjs[i])
+Ramu._destroyGameObj = function(){
+	for (let i = Ramu.gameObjs.length - 1; i >= 0; --i){
 		if (Ramu.gameObjs[i].canDestroy){
-			
-			console.log(Ramu.gameObjs[i])
-
-			if (Ramu.gameObjs[i] instanceof Drawable)
-				Ramu.removeDrawable(Ramu.gameObjs[i]);
-			
-			if (Ramu.gameObjs[i] instanceof Collisor)
-				Ramu.removeCollisor(Ramu.gameObjs[i]);
-			
 			Ramu.gameObjs.splice(i, 1);
-		}
-	}
-	console.log(Ramu.gameObjs)
-
+		}		
+	}	
 }
 
-Ramu.removeDrawable = function(parentObj){
-	for (let i = 0, len = Ramu.objsToDraw.length; i < len; ++i){
-		if (Ramu.objsToDraw[i] === parentObj){
+Ramu._destroyDrawable = function(){
+	for (let i = Ramu.objsToDraw.length - 1; i >= 0; --i){
+		if (Ramu.objsToDraw[i].canDestroy){
+			console.log(Ramu.objsToDraw);
 			Ramu.objsToDraw.splice(i, 1);
-			break;
 		}
 	}
 }
 
-Ramu.removeCollisor = function(parentObj){
-	for (let i = 0, len = Ramu.objsToCollide.length; i < len; ++i){
-		if (Ramu.objsToCollide[i] === parentObj){
+Ramu._destroyCollisor = function(){
+	for (let i = Ramu.objsToCollide.length - 1; i >= 0; --i){
+		if (Ramu.objsToCollide[i].canDestroy){
+			console.log(Ramu.objsToCollide);
 			Ramu.objsToCollide.splice(i, 1);
-			break;
 		}
 	}
 }
 
-Ramu.getChildren = function(parentObj){
-	var childs = [];
-	Object.keys(parentObj).forEach(function(key) {
-		if (parentObj[key] instanceof GameObj)
-			childs.push(parentObj[key]);
-		
-	});
-	
-	return childs;
+Ramu.garbageCollector = function(){
+	if (Ramu.callDestroy){
+		Ramu._destroyGameObj();
+		Ramu._destroyDrawable();
+		Ramu._destroyCollisor();
+		Ramu.callDestroy = false;
+	}
 }

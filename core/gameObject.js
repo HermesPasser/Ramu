@@ -15,6 +15,8 @@ class GameObj{
 	}
 	
 	static addObjt(obj){
+		if (!obj instanceof GameObj)
+			throw new Error("'obj' is not a GameObj instance.");
 		Ramu.gameObjs.push(obj);
 		Ramu.callSortUpdate = true;
 	}
@@ -41,27 +43,18 @@ class GameObj{
 	}
 	
 	destroy(){
-		if (!this._start_was_called){
-			console.warn("The update was not called yet,")
-			return;
+		if (!this._start_was_called){	
+			console.warn(`Forcing update call of ${this.toString()}.`); // "The update was not called yet,")
+			this.start(); // return false;	
 		}
-
-		//remover se não funcionar a nova técnica
-		// console.log("destroy chamado para " )
-		// console.log(this)
-		// console.log("  " )
 		
 		this.setActive(false);
-		
 		this.canDestroy = true;
 		Ramu.callDestroy = true;
-		
-		for (let i = 0; i < Ramu.gameObjs.length; ++i){
-			if (Ramu.gameObjs[i] === this){
-				Ramu.gameObjs.splice(i, 1);
-				break;
-			}
-		}
+	}
+	
+	toString(){
+		return `<${this.constructor.name}#${this.tag}>`;
 	}
 	
 	/// Virtual start to be inherited.

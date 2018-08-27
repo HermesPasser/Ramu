@@ -1,12 +1,7 @@
 class Drawable extends GameObj{
 	constructor(x, y, width, height, canDraw = false){
-		super();
+		super(x, y, width, height);
 		if (arguments.length < 4) throw new Error('ArgumentError: Wrong number of arguments');
-
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
 		this.canDraw = canDraw;
 		this.drawPriority     = ++Ramu.drawLastPriority;
 		this.flipHorizontally = false;
@@ -17,6 +12,8 @@ class Drawable extends GameObj{
 	}
 	
 	static addObjt(drawableObj){
+		if (!drawableObj instanceof Drawable)
+			throw new Error("'drawableObj' is not a Drawable instance.");
 		Ramu.objsToDraw.push(drawableObj);
 		Ramu.callSortDraw = true;
 	}
@@ -33,22 +30,7 @@ class Drawable extends GameObj{
 		}
 	}
 	
-	destroy(){
-		if (!this._start_was_called){
-			console.warn("The update was not called yet,")
-			return;
-		}
-		
-		super.destroy();
-		for (let i = 0; i < Ramu.objsToDraw.length; ++i){
-			if (Ramu.objsToDraw[i] === this){
-				Ramu.objsToDraw.splice(i, 1);
-				break;
-			}
-		}
-	}
-	
-	drawInCanvas(){		
+	drawInCanvas(){	
 		if (this.canDraw){
 
 			Ramu.ctx.globalAlpha = this.opacity;
