@@ -6,22 +6,22 @@ Ramu._canUpdate = function(gameobj){
 
 Ramu._sortCollision = function(){
 	if (Ramu.callSortCollision){
-		Collisor.sortPriority();
 		Ramu.callSortCollision = false;
+		Collisor.sortPriority();
 	}
 }
 
 Ramu._sortDraw = function(){
 	if (Ramu.callSortDraw){
-		Drawable.sortPriority();
 		Ramu.callSortDraw = false;
+		Drawable.sortPriority();
 	}
 }
 
 Ramu._sortUpdate = function(){
 	if (Ramu.callSortUpdate){
-		GameObj.sortPriority();
 		Ramu.callSortUpdate = false;
+		GameObj.sortPriority();
 	}
 }
 

@@ -28,9 +28,9 @@ Ramu._destroyCollisor = function(){
 
 Ramu.garbageCollector = function(){
 	if (Ramu.callDestroy){
+		Ramu.callDestroy = false;
 		Ramu._destroyGameObj();
 		Ramu._destroyDrawable();
 		Ramu._destroyCollisor();
-		Ramu.callDestroy = false;
 	}
 }
