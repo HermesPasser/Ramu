@@ -59,11 +59,11 @@ class Arrow extends Sprite{
 		this.y += 50 * Ramu.time.delta;
 		
 		if (this.y > 0)
-			this.canDestroy = true;
+			this.canCallDestroy = true; // not to conflict with canDestroy that would stop the execution of the update.
 		
 		this.collisor.y = this.y + 25;
 		
-		if (this.canDestroy && Ramu.Utils.isOutOfCanvas(this)){
+		if (this.canCallDestroy && Ramu.Utils.isOutOfCanvas(this)){
 			game.missPoints++;
 			this.destroy();
 		}

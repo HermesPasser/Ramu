@@ -69,7 +69,7 @@ class GenericDrawableChildClass extends Drawable{
 	}
 	
 	destroy(){
-		super.destroy()		
+		super.destroy();
 		this.coll.destroy();
 		this.gameObj1.destroy();
 		this.gameObj2.destroy();
