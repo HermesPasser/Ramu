@@ -25,7 +25,7 @@ class SimpleParticle extends GameObj{
 	
 	init(){
 		if (!this._start_was_called){
-			console.warn("The update was not called yet,")
+			console.warn("The start was not called yet, calling...")
 			this.start();
 			this._start_was_called = true;
 		}
@@ -105,6 +105,7 @@ class SimpleParticle extends GameObj{
 		super.destroy();
 		for (let i = 0, len = this.particles.length; i < len ; ++i)
 			this.particles[i].destroy();
+		this.particles = []; // cleaning up the references
 	}
 	
 	random(max, min){
