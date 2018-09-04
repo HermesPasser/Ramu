@@ -59,11 +59,11 @@ class Arrow extends Sprite{
 		this.y += 50 * Ramu.time.delta;
 		
 		if (this.y > 0)
-			this.canDestroy = true;
+			this.canCallDestroy = true; // not to conflict with canDestroy that would stop the execution of the update.
 		
 		this.collisor.y = this.y + 25;
 		
-		if (this.canDestroy && Ramu.Utils.isOutOfCanvas(this)){
+		if (this.canCallDestroy && Ramu.Utils.isOutOfCanvas(this)){
 			game.missPoints++;
 			this.destroy();
 		}
@@ -78,7 +78,8 @@ class Arrow extends Sprite{
 class Game extends GameObj{
 	start(){
 		this.slot = new Slot(Ramu.width/2 - 25, Ramu.height - 100);
-		this.hitParticle = new SimpleParticle(Ramu.Utils.getImage("res/particleblue.png"), new Rect(Ramu.width/2 , Ramu.height - 75, 1, 1), 1, 500);
+		//  is in img folderbecause is used by other scripts too
+		this.hitParticle = new SimpleParticle(Ramu.Utils.getImage("../img/particleblue.png"), new Rect(Ramu.width/2 , Ramu.height - 75, 1, 1), 1, 500); 
 		// this.hitParticle.setDrawPriority(2);
 		
 		this.missParticle = new SimpleParticle(Ramu.Utils.getImage("res/particlered.png"), new Rect(Ramu.width/2 , Ramu.height - 75, 1, 1), 1, 500);

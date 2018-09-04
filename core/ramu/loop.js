@@ -1,4 +1,4 @@
-// ============ RAMU LOOP 1.7 - 2018-06-30 ============ //
+// ============ RAMU GAME LOOP 0.7 - 2018-8-30 ============ //
 
 // Cannot store the length of these lists to a variable because new itens are added in meantime and then the loop can try acess a yet not defined obj.
 Ramu.gameObjs	    = [];
@@ -8,36 +8,6 @@ Ramu.objsToCollide  = [];
 Ramu.updateLastPriority    = 0;
 Ramu.drawLastPriority	   = 0;
 Ramu.collisionLastPriority = 0;
-
-/* TODO
-Ramu._sortDestroy = function(){
-	if (Ramu.callDestroy){
-		Ramu.destroyObjs();
-		Ramu.callDestroy = false;
-	}
-}
-*/
-
-Ramu._sortCollision = function(){
-	if (Ramu.callSortCollision){
-		Collisor.sortPriority();
-		Ramu.callSortCollision = false;
-	}
-}
-
-Ramu._sortUpdate = function(){
-	if (Ramu.callSortUpdate){
-		GameObj.sortPriority();
-		Ramu.callSortUpdate = false;
-	}
-}
-
-Ramu._sortDraw = function(){
-	if (Ramu.callSortDraw){
-		Drawable.sortPriority();
-		Ramu.callSortDraw = false;
-	}
-}
 
 Ramu._updateSteps = function(){
 	// Panic | from isaacsukin.com/news/2015/01/detailed-explanation-javascript-game-loops-and-timing
@@ -58,21 +28,15 @@ Ramu._clearInput = function(){
 /// Game loop of Ramu.
 Ramu.loop = function(){	
 	let now = 0;
-	if (Ramu.inLoop){
+	if (Ramu.inLoop){		
 		now = Date.now();
 		Ramu.time.frameTime = Ramu.time.frameTime + Math.min(1, (now - Ramu.time.last) / 1000);
 	
 		while(Ramu.time.frameTime > Ramu.time.delta) {
 			Ramu.start();
-
-			// Ramu._sortDestroy();
-			
-			Ramu._sortCollision();	
-			Ramu.checkCollision();
-			
-			Ramu._sortUpdate();
+			Ramu.checkCollision();	
 			Ramu.update();
-			
+			Ramu.garbageCollector();
 			Ramu.time.frameTime = Ramu.time.frameTime - Ramu.time.delta;
 			
 			if (Ramu._updateSteps()); // if it return true so is panic then stop the loop
@@ -80,7 +44,6 @@ Ramu.loop = function(){
 		}
 	}
 	
-	Ramu._sortDraw();	
 	Ramu.draw();
 	Ramu._clearInput();
 	

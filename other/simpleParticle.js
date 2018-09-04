@@ -15,6 +15,7 @@ class SimpleParticle extends GameObj{
 		this.isOver = true;
 		this.alreadyPlayed = false;
 		Ramu.callSortDraw = true;
+		// can use ctx.drawRect + Rect instead of a Sprite but so i cannot use it to profiling tests
 		for (let i = 0; i < this.particleNumber; ++i){
 			this.particles[i] = new Sprite(this.particle, this.x, this.y, this.width, this.height, false);
 			this.particles[i].drawPriority = this.drawPriority;
@@ -24,7 +25,7 @@ class SimpleParticle extends GameObj{
 	
 	init(){
 		if (!this._start_was_called){
-			console.warn("The update was not called yet,")
+			console.warn("The start was not called yet, calling...")
 			this.start();
 			this._start_was_called = true;
 		}
@@ -47,6 +48,15 @@ class SimpleParticle extends GameObj{
 			this.particles[i].drawPriority = priority;	
 	}
 	
+	addToPosition(x, y){
+		this.x += x;
+		this.y += y;
+		for (let i = 0, len = this.particles.length; i < len; ++i){
+			this.particles[i].x += x;
+			this.particles[i].y += y;			
+		}
+	}
+	
 	setPosition(x, y){
 		this.x = x;
 		this.y = y;
@@ -54,7 +64,7 @@ class SimpleParticle extends GameObj{
 		// if (this.isOver)
 		this.resetPosition();
 	}
-		
+	
 	setActive(bool){
 		super.setActive(bool);
 		for (let i = 0, len = this.particles.length; i < len ; ++i)
@@ -73,13 +83,13 @@ class SimpleParticle extends GameObj{
 				this.particles[i].opacity -= 0.07;
 		}
 		
-		if (this.particles[0].opacity <= 0){
+		if (this.particles[0] && this.particles[0].opacity <= 0){ // first clausule because one time this throw an undefined error (even canUpdate of this obj being false it was called and try to access an already undefined position)
 			this.isOver = true;
 			this.alreadyPlayed = true;
 			
 			if (this.destroyOnEnd)
 				this.destroy();
-			else this.resetPosition();
+			else this.resetPosition(); // why this is called? this set canDraw to false too, maybe create other method
 		}
 	}
 	
@@ -92,17 +102,10 @@ class SimpleParticle extends GameObj{
 	}
 	
 	destroy(){
-		this.canUpdate = false;
-		// i commented this because this break something, but the sprites must be removed anyway. Gotta go figure out other way to destroy objects
-		// for (let i = 0; i < this.particles.length; i++)
-			// this.particles[i].destroy();
-		
-		// this.particles = null;
-		// this.particle.destroy();
-		
-		// its no use, the image is a ramu object
-		this.particle = null;
 		super.destroy();
+		for (let i = 0, len = this.particles.length; i < len ; ++i)
+			this.particles[i].destroy();
+		this.particles = []; // cleaning up the references
 	}
 	
 	random(max, min){
