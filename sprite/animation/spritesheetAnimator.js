@@ -5,7 +5,7 @@ class SpritesheetAnimator extends GameObj{
 		if (arguments.length != 4) throw new Error('ArgumentError: Wrong number of arguments');
 		
 		this.anim = {};
-		this.animDrawPriority = drawLastPriority++;
+		this.animDrawPriority = Ramu.drawLastPriority++;
 		this.currentID = "";
 	}
 	
