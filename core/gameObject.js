@@ -53,6 +53,7 @@ class GameObj{
 		Ramu.callDestroy = true;
 	}
 	
+	// TODO: Looks like is unstable, try in other browser to see it works? 
 	toString(){
 		return `<${this.constructor.name}#${this.tag}>`;
 	}
