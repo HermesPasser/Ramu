@@ -16,13 +16,14 @@ class AnimTest extends Drawable{
 		this.setSpritesheet();
 		this.setSpriteAnimation();
 		this.setSpriteSheetAnimation();
+		this.setAnimator();
 	}
 	
 	draw(){
 		Ramu.ctx.fillText("Sprite & Animation Tests by Hermes Passer", 1, 10);
 		
 		var colsPosY = this.sprtY - 5;
-		var src = this.gmsprt.img.src;
+		var src = this.sprt.img.src;
 		Ramu.ctx.fillText("Sprite: " + src, 1, this.sprtY - 20);
 		Ramu.ctx.fillText("normal", 10, colsPosY);
 		Ramu.ctx.fillText("flip horizontally", 210, colsPosY);
@@ -60,27 +61,31 @@ class AnimTest extends Drawable{
 		Ramu.ctx.fillText("flip vertically", 310, colsPosY);
 		Ramu.ctx.fillText("flip horizontally & vertically", 410, colsPosY);
 		
-		Ramu.ctx.fillText("Spritesheet Animator: (soon)" , 1, this.shtanimatorY - 20);
+		Ramu.ctx.fillText("Animator using" , 1, this.shtanimatorY - 20);
+		Ramu.ctx.fillText("SpriteAnimation" , 1, this.shtanimatorY - 10);
+		
+		Ramu.ctx.fillText("Animator using" , 110, this.shtanimatorY - 20);
+		Ramu.ctx.fillText("SpritesheetAnimation" , 110, this.shtanimatorY - 10);
 	}
 	
 	setSprite(){
 		let img = Ramu.Utils.getImage("img/anim/crossSprite_3.gif")
 		
 		// normal
-		this.gmsprt = new Sprite(img, 10, this.sprtY, 70, 70);
-
+		this.sprt = new Sprite(img, 10, this.sprtY, 70, 70);
+		
 		// flip horizontally
-		this.gmsprt = new Sprite(img, 210, this.sprtY, 70, 70);
-		this.gmsprt.flipHorizontally = true;
+		this.sprt = new Sprite(img, 210, this.sprtY, 70, 70);
+		this.sprt.flipHorizontally = true;
 		
 		// flip vertically
-		this.gmsprt = new Sprite(img, 310, this.sprtY, 70, 70);
-		this.gmsprt.flipVertically = true;
+		this.sprt = new Sprite(img, 310, this.sprtY, 70, 70);
+		this.sprt.flipVertically = true;
 		
 		// flip horizontally & vertically
-		this.gmsprt = new Sprite(img, 410, this.sprtY, 70, 70);
-		this.gmsprt.flipHorizontally = true;
-		this.gmsprt.flipVertically = true;
+		this.sprt = new Sprite(img, 410, this.sprtY, 70, 70);
+		this.sprt.flipHorizontally = true;
+		this.sprt.flipVertically = true;
 	}
 	
 	setSpritesheet(){
@@ -108,33 +113,36 @@ class AnimTest extends Drawable{
 		
 		// without loop
 		this.sprtAnim = new SpriteAnimation(10, this.sprtAnimY, 70, 70);
+		this.sprOfAnimator = new SpriteAnimation(10, this.sprtAnimY, 70, 70);
 		this.sprtAnim.playInLoop = false;
-		for (var i = 1; i < 6; i++)
-			this.sprtAnim.addFrame(Ramu.Utils.getImage(dir + i + ".gif"));
+		for (var i = 1; i < 6; i++){
+			this.sprtAnim.addFrame(Ramu.Utils.getImage(dir + i + '.gif'));
+			this.sprOfAnimator.addFrame(Ramu.Utils.getImage(dir + i + '.gif'));
+		}
 		
 		// with loop
 		this.sprtAnim = new SpriteAnimation(100, this.sprtAnimY, 70, 70);
 		for (var i = 1; i < 6; i++)
-			this.sprtAnim.addFrame(Ramu.Utils.getImage(dir + i + ".gif"));
+			this.sprtAnim.addFrame(Ramu.Utils.getImage(dir + i + '.gif'));
 		
 		// flip horizontally
 		this.sprtAnim = new SpriteAnimation(210, this.sprtAnimY, 70, 70);
 		this.sprtAnim.flipHorizontally = true;
 		for (var i = 1; i < 6; i++)
-			this.sprtAnim.addFrame(Ramu.Utils.getImage(dir + i + ".gif"));
+			this.sprtAnim.addFrame(Ramu.Utils.getImage(dir + i + '.gif'));
 				
 		// flip vertically
 		this.sprtAnim = new SpriteAnimation(310, this.sprtAnimY, 70, 70);
 		this.sprtAnim.flipVertically = true;
 		for (var i = 1; i < 6; i++)
-			this.sprtAnim.addFrame(Ramu.Utils.getImage(dir + i + ".gif"));
+			this.sprtAnim.addFrame(Ramu.Utils.getImage(dir + i + '.gif'));
 		
 		// flip horizontally & vertically
 		this.sprtAnim = new SpriteAnimation(410, this.sprtAnimY, 70, 70);
 		this.sprtAnim.flipHorizontally = true;
 		this.sprtAnim.flipVertically = true;
 		for (var i = 1; i < 6; i++)
-			this.sprtAnim.addFrame(Ramu.Utils.getImage(dir + i + ".gif"));
+			this.sprtAnim.addFrame(Ramu.Utils.getImage(dir + i + '.gif'));
 	}
 	
 	setSpriteSheetAnimation(){
@@ -147,8 +155,10 @@ class AnimTest extends Drawable{
 
 		// without loop
 		this.sprtsheetAnim = new SpritesheetAnimation(this.imgsheet, 10, this.sprtshtAnimY, 70, 70);
+		this.sheetToAnimator = new SpritesheetAnimation(this.imgsheet, 10, this.sprtshtAnimY, 70, 70);
 		this.sprtsheetAnim.playInLoop = false;
 		this.sprtsheetAnim.addFrame([frame1, frame2, frame3, frame4, frame5]);
+		this.sheetToAnimator.addFrame([frame1, frame2, frame3, frame4, frame5]);
 		
 		// with loop
 		this.sprtsheetAnim = new SpritesheetAnimation(this.imgsheet, 100, this.sprtshtAnimY, 70, 70);
@@ -169,6 +179,16 @@ class AnimTest extends Drawable{
 		this.sprtsheetAnim.flipHorizontally = true;
 		this.sprtsheetAnim.flipVertically = true;
 		this.sprtsheetAnim.addFrame([frame1, frame2, frame3, frame4, frame5]);
+	}
+
+	setAnimator(){
+		this.animator = new Animator(10, this.shtanimatorY, 70, 70);
+		this.animator.addAnimation('id1', this.sheetToAnimator);
+		this.animator.setCurrentAnimation('id1');
+		
+		this.animator = new Animator(110, this.shtanimatorY, 70, 70);
+		this.animator.addAnimation('id1', this.sprOfAnimator);
+		this.animator.setCurrentAnimation('id1');
 	}
 }
 

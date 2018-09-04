@@ -1,5 +1,4 @@
-/// Control SpritesheetAnimations
-class SpritesheetAnimator extends GameObj{
+class Animator extends GameObj{
 	constructor(x, y, width, height){
 		super(x, y, width, height);
 		if (arguments.length != 4) throw new Error('ArgumentError: Wrong number of arguments');
@@ -9,8 +8,21 @@ class SpritesheetAnimator extends GameObj{
 		this.currentID = "";
 	}
 	
+	// to replace the old one that will be depreciated
+	set canDraw(bool){
+		this.setCanDraw(bool);
+	}
+
+	get X(){
+		return this.x;
+	}
+
+	set X(num){
+		this.x = num;
+	}
+	
 	setCanDraw(bool){
-		if (!(typeof(bool) == 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
+		if (!(typeof(bool) === 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
 		this.anim[this.currentID].canDraw = bool;
 	}
 	
@@ -24,8 +36,8 @@ class SpritesheetAnimator extends GameObj{
 	addAnimation(nameID, spritesheetAnimation){
 		if (arguments.length != 2) throw new Error('ArgumentError: Wrong number of arguments');
 		// if (!(nameID instanceof String)) throw Ramu.Utils.CustomTypeError(nameID, String);
-		if (!(spritesheetAnimation instanceof SpritesheetAnimation)) throw Ramu.Utils.CustomTypeError(spritesheetAnimation, SpritesheetAnimation);
-		
+		if (!(spritesheetAnimation instanceof SpriteAnimation)) throw Ramu.Utils.CustomTypeError(spritesheetAnimation, SpritesheetAnimation);
+
 		spritesheetAnimation.x = this.x;
 		spritesheetAnimation.y = this.y;
 		spritesheetAnimation.canDraw = false;
@@ -36,16 +48,19 @@ class SpritesheetAnimator extends GameObj{
 	
 	setCurrentAnimation(nameID){
 		if (arguments.length != 1) throw new Error('ArgumentError: Wrong number of arguments');
-		// if (!(nameID instanceof String)) throw Ramu.Utils.CustomTypeError(nameID, String);
 
 		this.currentID = nameID;
 		for (var key in this.anim)
 			this.anim[key].canDraw = false;
 		
-		if (this.anim[key] !== null)
+		if (this.anim[key] != null)
 			this.anim[nameID].canDraw = true;
 	}
 	
+	getAnimation(id){
+		return this.anim[id];
+	}
+
 	getCurrentAnimationID(){
 		for (var key in this.anim)
 			if (this.anim[key].canDraw)
@@ -54,14 +69,14 @@ class SpritesheetAnimator extends GameObj{
 	}
 	
 	setFlipHorizontally(bool){
-		if (!(typeof(bool) == "boolean")) throw Ramu.Utils.CustomTypeError(bool, Boolean);
+		if (!(typeof(bool) === 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
 
 		for (var key in this.anim)
 			this.anim[key].flipHorizontally = bool;
 	}
 	
 	setFlipVertically(bool){
-		if (!(typeof(bool) == "boolean")) throw Ramu.Utils.CustomTypeError(bool, Boolean);
+		if (!(typeof(bool) === 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
 
 		for (var key in this.anim)
 			this.anim[key].flipVertically = bool;
@@ -99,8 +114,8 @@ class SpritesheetAnimator extends GameObj{
 	
 	destroy(){
 		super.destroy();
-		for (var key in this.anim)
-			this.anim[key].destroy();	
-		this.anim = {}; // i removed this in 0.7c-Destroyer but kinda makes sense
+		for (var key in this.anim){
+			this.anim[key].destroy();
+		}
 	}
 }

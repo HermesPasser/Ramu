@@ -2,7 +2,6 @@ require 'fileutils'
 
 $file_content = ''
 $output_name  = 'Ramu.js'
-$looking	  = false
 
 $core = [
 	File.join('core', 'header.js'),
@@ -13,12 +12,13 @@ $core = [
 	File.join('core', 'ramu', 'input.js'),
 	File.join('core', 'ramu', 'loop.js'),
 	File.join('core', 'ramu', 'engine.js'),
-	File.join('core', 'ramu', 'destroy.js'),
 	File.join('utils', 'math.js'),
 	File.join('utils', 'utils.js'),
+	# File.join('core', 'ramu', 'destroy.js'), TODO
 	File.join('core', 'gameObject.js'),
 	File.join('core', 'drawable.js'),
 	File.join('core', 'collisor.js')
+	
 ]
 
 $complete = [
@@ -28,7 +28,7 @@ $complete = [
 	File.join('sprite', 'spritesheet.js'),
 	File.join('sprite', 'animation', 'spriteAnimation.js'),
 	File.join('sprite', 'animation', 'spritesheetAnimation.js'),
-	File.join('sprite', 'animation', 'SpritesheetAnimator.js'),
+	File.join('sprite', 'animation', 'animator.js'),
 	File.join('event', 'mouse', 'clickable.js'),
 	File.join('event', 'mouse', 'simpleButtonBase.js'),
 	File.join('event', 'mouse', 'simpleSpriteButton.js'),
@@ -102,8 +102,6 @@ end
 
 def command cmd
 	case cmd
-	when '-look'
-		$looking = true
 	when '-core'
 		assembly_core
 	when '-complete'
@@ -129,33 +127,6 @@ def print_help
 	puts "\t-module <filename1,filename2> to expecific modules"
 	puts "\n"
 	puts "\t-file <filename> (optional) new file name"
-	puts "\n"
-	puts "\t-look remount the file every 5 seconds"
-end
-
-def every(n)
-	loop do
-		before = Time.now
-		yield
-		interval = n - (Time.now - before)
-		sleep(interval) if interval > 0
-	end
-end
-
-def look
-	puts "\nRecreating the file, type 'ctr + c' to stop"
-	begin
-		every 5 do
-			$file_content = ''
-			ARGV.each { |arg| command arg }
-			create_file
-		end
-	rescue Interrupt
-		puts 'Recreation aborted.'
-	rescue Errno::EINVAL
-		puts 'File open error, the program will try again.'
-		look
-	end
 end
 
 def main
@@ -163,13 +134,8 @@ def main
 	
 	if ARGV.length > 0
 		ARGV.each { |arg| command arg }
-		
-		if $looking
-			look
-		else		
-			create_file
-			print ' - done.'
-		end
+		create_file
+		print ' - done.'
 	else
 		print_help
 	end
