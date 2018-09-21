@@ -18,7 +18,21 @@ class Animator extends GameObj{
 	}
 
 	set X(num){
+		// instead i can just set the this.x and leave to set the this.anim[key].x on the setCurrentAnimation
+		for (const key in this.anim)
+			this.anim[key].x = num
 		this.x = num;
+	}
+	
+	get Y(){
+		return this.y;
+	}
+
+	set X(num){
+		// instead i can just set the this.y and leave to set the this.anim[key].y on the setCurrentAnimation
+		for (const key in this.anim)
+			this.anim[key].y = num
+		this.y = num;
 	}
 	
 	setCanDraw(bool){
@@ -29,7 +43,7 @@ class Animator extends GameObj{
 	setDrawPriority(integer){
 		if (arguments.length != 1) throw new Error('ArgumentError: Wrong number of arguments');
 
-		for (var key in this.anim)
+		for (const key in this.anim)
 			this.anim[key].drawPriority = parseInt(integer);
 	}
 	
@@ -50,7 +64,7 @@ class Animator extends GameObj{
 		if (arguments.length != 1) throw new Error('ArgumentError: Wrong number of arguments');
 
 		this.currentID = nameID;
-		for (var key in this.anim)
+		for (const key in this.anim)
 			this.anim[key].canDraw = false;
 		
 		if (this.anim[key] != null)
@@ -62,7 +76,7 @@ class Animator extends GameObj{
 	}
 
 	getCurrentAnimationID(){
-		for (var key in this.anim)
+		for (const key in this.anim)
 			if (this.anim[key].canDraw)
 				return key;
 		return null;		
@@ -71,50 +85,50 @@ class Animator extends GameObj{
 	setFlipHorizontally(bool){
 		if (!(typeof(bool) === 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
 
-		for (var key in this.anim)
+		for (const key in this.anim)
 			this.anim[key].flipHorizontally = bool;
 	}
 	
 	setFlipVertically(bool){
 		if (!(typeof(bool) === 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
 
-		for (var key in this.anim)
+		for (const key in this.anim)
 			this.anim[key].flipVertically = bool;
 	}
 	
 	setX(x){
 		this.x = x;
-		for (var key in this.anim)
+		for (const key in this.anim)
 			this.anim[key].x = x;
 	}
 	
 	setY(y){
 		this.y = y;
-		for (var key in this.anim)
+		for (const key in this.anim)
 			this.anim[key].y = y;
 	}
 	
 	setActive(bool){
 		super.setActive(bool);
-		for(var key in this.anim)
+		for(const key in this.anim)
 			this.anim[key].setActive(bool);
 	}
 	
 	addX(x){
 		this.x += x;
-		for (var key in this.anim)
+		for (const key in this.anim)
 			this.anim[key].x += x;
 	}
 	
 	addY(y){
 		this.y += y;
-		for (var key in this.anim)
+		for (const key in this.anim)
 			this.anim[key].y += y;
 	}
 	
 	destroy(){
 		super.destroy();
-		for (var key in this.anim){
+		for (const key in this.anim){
 			this.anim[key].destroy();
 		}
 	}
