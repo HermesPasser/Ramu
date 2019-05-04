@@ -13,13 +13,18 @@ Ramu.Audio = class extends GameObj{
 				console.warn('Ramu.Audio: Cannot play if the user did not interact with the document first.')
 		};
 	}
-
+	
+	prepareToPlay(){
+		this.audio.play().catch(this.promiseCatch);
+	}
+	
 	play(startAt = 0){
 		if (!this.canUpdate)
 			return;
 		this.isPlaying = true;
 		this.audio.currentTime = startAt;
-		this.audio.play().catch(this.promiseCatch);
+		this.audio.load()
+		this.prepareToPlay();
 	}
 	
 	stop(){
@@ -35,7 +40,7 @@ Ramu.Audio = class extends GameObj{
 	resume(){
 		if (!this.canUpdate)
 			return;
-		this.audio.play().catch(this.promiseCatch);
+		this.prepareToPlay();
 	}
 	
 	update(){
