@@ -10,6 +10,7 @@ $core = [
 	File.join('utils', 'rect.js'),
 	File.join('core', 'ramu', 'declaration.js'),
 	File.join('core', 'ramu', 'init.js'),
+	File.join('core', 'keyController.js'),
 	File.join('core', 'ramu', 'input.js'),
 	File.join('core', 'ramu', 'loop.js'),
 	File.join('core', 'ramu', 'engine.js'),

@@ -1,21 +1,16 @@
 // ============ RAMU INPUT 1.7 - 2018-06-30 ============ //
 
-Ramu.pressedKeys	 = {};
-Ramu.lastKeysPressed = {};
 Ramu.clickedPosition = {};
 Ramu.mousePosition   = { X: 0, Y: 0};
+Ramu.controller = new KeyController();
 
 Ramu._key = function(){
-	Ramu.pressedKeys	 = {}; // The key continues on this list until the key up.
-	Ramu.lastKeysPressed = {}; // The key continues on this list until the end of frame.
-	
 	document.body.addEventListener("keydown", function(e){	
-		Ramu.pressedKeys[e.keyCode] = e.keyCode;
-		Ramu.lastKeysPressed[e.keyCode] = e.keyCode;
+		Ramu.controller._setDown(e.keyCode);
 	}, false);
 	
 	document.body.addEventListener("keyup", function(e){
-		delete Ramu.pressedKeys[e.keyCode];
+		Ramu.controller._setUp(e.keyCode);
 	}, false);
 }
 
@@ -41,7 +36,12 @@ Ramu._mouseMove = function(){
 		Ramu.mousePosition = Ramu._getMousePosition(event);
 	}); 
 }
-	
+
+Ramu._clearInput = function(){
+	Ramu.clickedPosition = {};
+	Ramu.controller._resetState();
+}
+
 /// Start all input events listeners
 Ramu.input = function(){
 	Ramu._key();

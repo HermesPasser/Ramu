@@ -20,11 +20,6 @@ Ramu._updateSteps = function(){
 	return false;
 }
 
-Ramu._clearInput = function(){
-	Ramu.lastKeysPressed = {};
-	Ramu.clickedPosition = {};
-}
-
 /// Game loop of Ramu.
 Ramu.loop = function(){	
 	let now = 0;
