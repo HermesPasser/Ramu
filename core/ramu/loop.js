@@ -9,37 +9,44 @@ Ramu.updateLastPriority    = 0;
 Ramu.drawLastPriority	   = 0;
 Ramu.collisionLastPriority = 0;
 
-Ramu._updateSteps = function(){
-	// Panic | from isaacsukin.com/news/2015/01/detailed-explanation-javascript-game-loops-and-timing
-	let numUpdateSteps = 0;
-	if (++numUpdateSteps >= 240) {
-		Ramu.time.frameTime = 0;
-		console.warn("Panic.")
-		return true;
+Ramu._clearInput = function(){	
+	for(const i in Ramu.pressedKeys) {
+		Ramu.pressedKeys[i].released = false;
+		
+		if (Ramu.pressedKeys[i].pressed)
+			Ramu.pressedKeys[i].repeated = true;
 	}
-	return false;
-}
-
-Ramu._clearInput = function(){
-	Ramu.lastKeysPressed = {};
+	
 	Ramu.clickedPosition = {};
 }
 
 /// Game loop of Ramu.
 Ramu.loop = function(){	
+	function _updateSteps(){
+		// Panic | from isaacsukin.com/news/2015/01/detailed-explanation-javascript-game-loops-and-timing
+		let numUpdateSteps = 0;
+		if (++numUpdateSteps >= 240) {
+			Ramu.time.frameTime = 0;
+			console.warn("Panic.")
+			return true;
+		}
+		return false;
+	}
+	
 	let now = 0;
 	if (Ramu.inLoop){		
 		now = Date.now();
 		Ramu.time.frameTime = Ramu.time.frameTime + Math.min(1, (now - Ramu.time.last) / 1000);
 	
 		while(Ramu.time.frameTime > Ramu.time.delta) {
+			
 			Ramu.start();
 			Ramu.checkCollision();	
 			Ramu.update();
 			Ramu.garbageCollector();
 			Ramu.time.frameTime = Ramu.time.frameTime - Ramu.time.delta;
 			
-			if (Ramu._updateSteps()); // if it return true so is panic then stop the loop
+			if (_updateSteps()); // if it return true so is panic then stop the loop
 				break;
 		}
 	}

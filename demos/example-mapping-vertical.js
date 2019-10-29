@@ -13,12 +13,11 @@ class MyGame extends Drawable{
 	}
 	
 	update(){
-		if (keyCode.a in Ramu.pressedKeys){
+		if (Ramu.isPressed('a')){
 			if (this.initial_x >= 1){
 				this.initial_x--;
-			}  
-			
-		} else if (keyCode.d in Ramu.pressedKeys){
+			}  		
+		} else if (Ramu.isPressed('d')){
 			if (this.initial_x <= this.SCENE.length - 1 - this.blocksToBeExcluded){
 				this.initial_x++;
 			}
