@@ -110,10 +110,10 @@ class Game extends GameObj{
 	}
 		
 	input(){
-		if (keyCode.w in Ramu.pressedKeys) this.player.up();
-		if (keyCode.s in Ramu.pressedKeys) this.player.down();
-		if (keyCode.a in Ramu.pressedKeys) this.player.left();
-		if (keyCode.d in Ramu.pressedKeys) this.player.right();
+		if (Ramu.isPressed('w')) this.player.up();
+		if (Ramu.isPressed('s')) this.player.down();
+		if (Ramu.isPressed('a')) this.player.left();
+		if (Ramu.isPressed('d')) this.player.right();
 	}
 }
 
