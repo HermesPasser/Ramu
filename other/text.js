@@ -1,5 +1,5 @@
 
-class Text extends Drawable {
+Ramu.Text = class extends Drawable {
 	constructor(text, x, y, maxWidth, lineHeight = 25){
 		super(x, y, 1, 1, true);
 		if (arguments.length < 4) throw new Error('ArgumentError: Wrong number of arguments');
