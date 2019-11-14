@@ -241,13 +241,13 @@ class Game extends GameObj{
 	}
 		
 	input(){
-		if (keyCode.w in Ramu.pressedKeys) this.player.walkUp();
-		else if (keyCode.s in Ramu.pressedKeys) this.player.walkDown();
+		if (Ramu.isPressed('w')) this.player.walkUp();
+		else if (Ramu.isPressed('s')) this.player.walkDown();
 		
-		if (keyCode.a in Ramu.pressedKeys) this.player.walkLeft();
-		else if (keyCode.d in Ramu.pressedKeys) this.player.walkRight();
+		if (Ramu.isPressed('a')) this.player.walkLeft();
+		else if (Ramu.isPressed('d')) this.player.walkRight();
 		
-		if (keyCode.space in Ramu.pressedKeys) {
+		if (Ramu.isPressed('space')) {
 			this.player.incite();
 			this.enemy.angry = true;
 		} else {
