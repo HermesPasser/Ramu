@@ -4,27 +4,6 @@ Ramu._canUpdate = function(gameobj){
 	return gameobj._start_was_called && gameobj.canUpdate && !gameobj.canDestroy;
 }
 
-Ramu._sortCollision = function(){
-	if (Ramu.callSortCollision){
-		Ramu.callSortCollision = false;
-		Collisor.sortPriority();
-	}
-}
-
-Ramu._sortDraw = function(){
-	if (Ramu.callSortDraw){
-		Ramu.callSortDraw = false;
-		Drawable.sortPriority();
-	}
-}
-
-Ramu._sortUpdate = function(){
-	if (Ramu.callSortUpdate){
-		Ramu.callSortUpdate = false;
-		GameObj.sortPriority();
-	}
-}
-
 /// Executes all start methods of all Ramu.gameObjs in the game.
 Ramu.start = function(){
 	for (var i = 0; i < Ramu.gameObjs.length; ++i){
@@ -40,7 +19,14 @@ Ramu.start = function(){
 
 /// Update all Ramu.gameObjs in the game.
 Ramu.update = function(){
-	Ramu._sortUpdate();
+	function _sortUpdate(){
+		if (Ramu.callSortUpdate){
+			Ramu.callSortUpdate = false;
+			GameObj.sortPriority();
+		}
+	}
+	
+	_sortUpdate();
 	for (var i = 0; i < Ramu.gameObjs.length; ++i){
 		let obj = Ramu.gameObjs[i];
 		
@@ -52,7 +38,14 @@ Ramu.update = function(){
 
 /// Check all collisions in the game.
 Ramu.checkCollision = function(){
-	Ramu._sortCollision();
+	function _sortCollision(){
+		if (Ramu.callSortCollision){
+			Ramu.callSortCollision = false;
+			Collisor.sortPriority();
+		}
+	}
+	
+	_sortCollision();
 	for (var i = 0; i < Ramu.objsToCollide.length; ++i){
 		let obj = Ramu.objsToCollide[i];
 		
@@ -64,7 +57,14 @@ Ramu.checkCollision = function(){
 
 /// Executes all draw methods of all Ramu.gameObjs in the game.
 Ramu.draw = function(){
-	Ramu._sortDraw();
+	function _sortDraw (){
+		if (Ramu.callSortDraw){
+			Ramu.callSortDraw = false;
+			Drawable.sortPriority();
+		}
+	}
+	
+	_sortDraw();
 	Ramu.ctx.imageSmoothingEnabled = true; // reset the defaut value
 	Ramu.ctx.clearRect(0, 0, Ramu.width, Ramu.height);
 		

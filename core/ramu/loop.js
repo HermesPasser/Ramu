@@ -1,6 +1,5 @@
-// ============ RAMU GAME LOOP 0.7 - 2018-8-30 ============ //
+// ============ RAMU GAME LOOP 0.7 - 2018-11-13 ============ //
 
-// Cannot store the length of these lists to a variable because new itens are added in meantime and then the loop can try acess a yet not defined obj.
 Ramu.gameObjs	    = [];
 Ramu.objsToDraw 	= [];
 Ramu.objsToCollide  = [];
@@ -9,16 +8,6 @@ Ramu.updateLastPriority    = 0;
 Ramu.drawLastPriority	   = 0;
 Ramu.collisionLastPriority = 0;
 
-Ramu._clearInput = function(){	
-	for(const i in Ramu.pressedKeys) {
-		Ramu.pressedKeys[i].released = false;
-		
-		if (Ramu.pressedKeys[i].pressed)
-			Ramu.pressedKeys[i].repeated = true;
-	}
-	
-	Ramu.clickedPosition = {};
-}
 
 /// Game loop of Ramu.
 Ramu.loop = function(){	

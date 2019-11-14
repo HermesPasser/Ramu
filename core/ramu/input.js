@@ -100,3 +100,14 @@ Ramu.isPressed = function(key) {
 	
 	return false;
 }
+
+Ramu._clearInput = function(){	
+	for(const i in Ramu.pressedKeys) {
+		Ramu.pressedKeys[i].released = false;
+		
+		if (Ramu.pressedKeys[i].pressed)
+			Ramu.pressedKeys[i].repeated = true;
+	}
+	
+	Ramu.clickedPosition = {};
+}

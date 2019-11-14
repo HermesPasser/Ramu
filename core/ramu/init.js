@@ -1,5 +1,5 @@
 
-Ramu.callDestroy	   = false; //TODO
+Ramu.callDestroy	   = false;
 Ramu.callSortUpdate    = false;
 Ramu.callSortDraw 	   = false;
 Ramu.callSortCollision = false;
