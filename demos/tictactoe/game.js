@@ -8,7 +8,7 @@ class ButtonWText extends SimpleSpritesheetButton{
 						new Rect(118,0,60,60));
 		this.marginX = 15;
 		this.marginY = 45;
-		this.txt = new Text(txt, x + this.marginX, y + this.marginY, 60);
+		this.txt = new Ramu.Text(txt, x + this.marginX, y + this.marginY, 60);
 		this.txt.font = '60px sans-serif';
 		
 		this.setOnClick(function(){
@@ -42,7 +42,7 @@ class Game extends GameObj{
 			new ButtonWText(70, 130,''),
 			new ButtonWText(130,130,'')
 		];
-		this.infoDump = new Text('x turn.', 10, 210, 200);
+		this.infoDump = new Ramu.Text('x turn.', 10, 210, 200);
 		this.infoDump.font = '25px sans-serif';
 	}
 	

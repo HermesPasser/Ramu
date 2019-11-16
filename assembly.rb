@@ -18,11 +18,11 @@ $core = [
 	File.join('utils', 'utils.js'),
 	File.join('core', 'gameObject.js'),
 	File.join('core', 'drawable.js'),
-	File.join('core', 'collisor.js')
+	File.join('core', 'collider.js')
 ]
 
 $complete = [
-	File.join('collision', 'simpleRectCollisor.js'),
+	File.join('collision', 'simpleRectCollider.js'),
 	File.join('collision', 'raycast.js'),
 	File.join('sprite', 'sprite.js'),
 	File.join('sprite', 'spritesheet.js'),

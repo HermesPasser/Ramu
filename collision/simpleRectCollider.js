@@ -1,4 +1,4 @@
-class SimpleRectCollisor extends Collisor{	
+class SimpleRectCollider extends Collider{	
 	draw(){
 		if (Ramu.debugMode){
 			

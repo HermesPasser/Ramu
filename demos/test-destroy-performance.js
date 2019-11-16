@@ -21,7 +21,7 @@ class SuicideParticle extends SimpleParticle{
 class Game extends Clickable{
 	start(){
 		super.start();
-		this.txt = new Text('', 10, 10, 300);
+		this.txt = new Ramu.Text('', 10, 10, 300);
 		this.txt.fillStyle = '#ffffff';
 		
 		this.timeToInstantiate = 0.2;

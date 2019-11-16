@@ -1,4 +1,4 @@
-class Raycast extends Collisor{
+class Raycast extends Collider{
 	constructor(){
 		super(1, 1, 1, 1);
 		this.started = false;

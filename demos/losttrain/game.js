@@ -1,4 +1,6 @@
-class Train extends SimpleRectCollisor{
+const Text = Ramu.Text;
+
+class Train extends SimpleRectCollider{
 	constructor(x, y){
 		super(x, y, 32, 47);
 		this.sprite = new Sprite(Ramu.Utils.getImage('res/train.gif'), this.x, this.y, 32, 47);
@@ -33,7 +35,7 @@ class Train extends SimpleRectCollisor{
 	}
 }
 
-class EntranceTunnel extends SimpleRectCollisor{
+class EntranceTunnel extends SimpleRectCollider{
 	constructor(x, y){
 		super(x, y, 34, 17);
 		this.sprite = new Sprite(Ramu.Utils.getImage('res/entrance_tunnel.png'), this.x, this.y, 34, 97);
@@ -50,7 +52,7 @@ class EntranceTunnel extends SimpleRectCollisor{
 	}
 }
 
-class EntrancePortal extends SimpleRectCollisor{
+class EntrancePortal extends SimpleRectCollider{
 	constructor(x, y){
 		super(x, y, 26, 6);
 		this.sprite = new Sprite(Ramu.Utils.getImage('res/entrance_portal.gif'), this.x, this.y, 26, 18);

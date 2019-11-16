@@ -1,7 +1,8 @@
 const TOMATO_IMG = Ramu.Utils.getImage('res/tomato.gif');
 const CITIZEN_IMG = Ramu.Utils.getImage('res/citizen.gif');
+const Text = Ramu.Text;
 
-class Tomato extends SimpleRectCollisor{
+class Tomato extends SimpleRectCollider{
 	constructor(x){
 		super(x, 541, 41, 39);
 		this.sprite = new Sprite(TOMATO_IMG, x, 541, 41, 39);
@@ -27,7 +28,7 @@ class Tomato extends SimpleRectCollisor{
 	}
 }
 
-class Citizen extends SimpleRectCollisor{
+class Citizen extends SimpleRectCollider{
 	constructor(x){
 		super(x, 259, 58, 69);
 		this.sprite = new Sprite(CITIZEN_IMG, x, 259, 58, 69);

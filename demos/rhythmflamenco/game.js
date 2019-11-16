@@ -1,8 +1,9 @@
 // Add the music here
 const MUSIC = 'res/2AiresChoqueros.ogg'
 const DIRECTION = {TOP: 38, LEFT: 37, RIGHT: 39, BOTTOM: 40}; // arrows key code
+const Text = Ramu.Text;
 
-class Slot extends SimpleRectCollisor{
+class Slot extends SimpleRectCollider{
 	constructor(x, y, direction){
 		super(x + 25, y + 25, 25, 25);
 		this.sprite = new Sprite(Ramu.Utils.getImage('res/slot.png'), x, y, 50, 50);
@@ -49,7 +50,7 @@ class Arrow extends Sprite{
 	}
 	
 	start(){
-		this.collisor = new SimpleRectCollisor(this.x + 25, this.y - 25, 25, 25);
+		this.collisor = new SimpleRectCollider(this.x + 25, this.y - 25, 25, 25);
 		this.collisor.direction = this.direction;
 		this.collisor.parent = this;
 		this.collisor.tag = 'arrow';

@@ -11,8 +11,8 @@ Ramu.garbageCollector = function(){
 				if (obj instanceof Drawable)
 					Ramu._destroyDrawableIsNeed = true;
 				
-				if (obj instanceof Collisor)
-					Ramu._destroyCollisorIsNeed = true;
+				if (obj instanceof Collider)
+					Ramu._destroyColliderIsNeed = true;
 				
 				Ramu.gameObjs.splice(i, 1);
 			}		
@@ -30,8 +30,8 @@ Ramu.garbageCollector = function(){
 		}
 	}
 
-	function _destroyCollisor(){
-		if (!Ramu._destroyCollisorIsNeed)
+	function _destroyCollider(){
+		if (!Ramu._destroyColliderIsNeed)
 			return;
 
 		for (let i = Ramu.objsToCollide.length - 1; i >= 0; --i){
@@ -42,12 +42,12 @@ Ramu.garbageCollector = function(){
 	}
 	
 	Ramu._destroyDrawableIsNeed = false;
-	Ramu._destroyCollisorIsNeed = false;
+	Ramu._destroyColliderIsNeed = false;
 
 	if (Ramu.callDestroy){
 		Ramu.callDestroy = false;
 		_destroyGameObj();
 		_destroyDrawable();
-		_destroyCollisor();
+		_destroyCollider();
 	}
 }

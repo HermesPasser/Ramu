@@ -4,7 +4,7 @@ Ramu.Text = class extends Drawable {
 		super(x, y, 1, 1, true);
 		if (arguments.length < 4) throw new Error('ArgumentError: Wrong number of arguments');
 		this.text = text;
-		this.maxWidth = maxWidth;
+		this.maxWidth = maxWidth; // this don't break the line in the middle of a word
 		this.lineHeight = lineHeight;
 		
 		this.font = Ramu.ctx.font;
@@ -13,8 +13,12 @@ Ramu.Text = class extends Drawable {
 		this.drawOutOfCanvas = true;
 	}
 	
+	get textWidth() {
+		return Ramu.ctx.measureText(this.text).width;  // probably not work when _addLineBreak breaks the lines
+	}
+	
 	start(){
-		// this.setUp();
+		// this._addLineBreak();
 	}
 
 	// Adapted from www.html5canvastutorials.com/tutorials/html5-canvas-wrap-text-tutorial
@@ -56,7 +60,7 @@ Ramu.Text = class extends Drawable {
 		Ramu.ctx.fillStyle = oldStyle;
 	}
 	
-	// setUp(){ // break in apathy cloud
-		// this._words = this.text.replace(/\n/g, " \\n ").split(' ');
-	// }
+	_addLineBreak(){ // throwin exception in apathy cloud
+		this._words = this.text.replace(/\n/g, " \\n ").split(' ');
+	}
 }

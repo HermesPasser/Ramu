@@ -1,4 +1,4 @@
-class Collisor extends Drawable{
+class Collider extends Drawable{
 	constructor(x, y, width, height){
 		super(x, y, width, height);
 		if (arguments.length != 4) throw new Error('ArgumentError: Wrong number of arguments');
@@ -6,12 +6,12 @@ class Collisor extends Drawable{
 		this.collision = [];
 		this.collisionPriority = ++Ramu.collisionLastPriority;
 
-		Collisor.addObjt(this);
+		Collider.addObjt(this);
 	}
 	
 	static addObjt(colObj){
-		if (!colObj instanceof Collisor) 
-			throw new Error("'colObj' is not a Collisor instance.");
+		if (!colObj instanceof Collider) 
+			throw new Error("'colObj' is not a Collider instance.");
 		Ramu.objsToCollide.push(colObj);
 		Ramu.callSortCollision = true;
 	}

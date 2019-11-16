@@ -4,7 +4,7 @@ class Entity extends Drawable{
 	constructor(x, y, width, height, color = 'black'){
 		super(x, y, width, height, true);
 		this.color = color;
-		this.collisor = new SimpleRectCollisor(x, y, width, height);
+		this.collisor = new SimpleRectCollider(x, y, width, height);
 		this.velocity = 70;
 	}
 	
@@ -67,7 +67,7 @@ class Enemy extends Entity{
 		super(x, y, 50, 50, 'brown');
 		
 		this.enemyBack = new Entity()
-		this.collisorBack = new SimpleRectCollisor(x, y + 25, 50, 25);
+		this.collisorBack = new SimpleRectCollider(x, y + 25, 50, 25);
 	}
 	
 	start(){
@@ -190,8 +190,8 @@ class Game extends GameObj{
 	start(){
 		this.scorePlayer = 0;
 		this.scoreEnemy = 0;
-		this.score = new Text('', Ramu.width/2 - 25, 10, 300);
-		this.rules = new Text("Hit the darkest part to kill the bull. 'a/w/s/d' to move and 'space' to incite. The bull will make attacks while you \nincite him. \nHermes Passer, in 2018-06-21", 1, 20, 500);
+		this.score = new Ramu.Text('', Ramu.width/2 - 25, 10, 300);
+		this.rules = new Ramu.Text("Hit the darkest part to kill the bull. 'a/w/s/d' to move and 'space' to incite. The bull will make attacks while you \nincite him. \nHermes Passer, in 2018-06-21", 1, 20, 500);
 		
 		// if starts in same rect then the setRules will say that enemy has won
 		this.player = new Player(0,0);

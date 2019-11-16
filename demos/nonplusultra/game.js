@@ -1,6 +1,7 @@
 const ROCK_IMG = Ramu.Utils.getImage('res/rock.gif');
+const Text = Ramu.Text;
 
-class Rock extends SimpleRectCollisor{
+class Rock extends SimpleRectCollider{
 	constructor(x, y){
 		super(x, y, 39, 36);
 		this.velocity = 100;
@@ -38,7 +39,7 @@ class Rock extends SimpleRectCollisor{
 	}
 }
 
-class Player extends SimpleRectCollisor{
+class Player extends SimpleRectCollider{
 	constructor(x, y){
 		super(x, y, 100, 50);
 		this.velocity = 5;

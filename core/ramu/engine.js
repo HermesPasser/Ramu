@@ -41,7 +41,7 @@ Ramu.checkCollision = function(){
 	function _sortCollision(){
 		if (Ramu.callSortCollision){
 			Ramu.callSortCollision = false;
-			Collisor.sortPriority();
+			Collider.sortPriority();
 		}
 	}
 	
