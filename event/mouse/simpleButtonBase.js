@@ -77,15 +77,13 @@ class SimpleButtonBase extends Clickable{
 		this.onHoverExitFuncIsAdded = true;
 	}
 	
-	/// Private Setter
-	setToHoverImage(){
+	_setToHoverImage(){
 		this.clicked = false;
 		if (this.drawableHover)
 			this.drawableImage = this.drawableHover;
 	}
 	
-	/// Private Setter
-	setToClickImage(){
+	_setToClickImage(){
 		if (this.drawableClick){
 			this.clicked = true;
 			this.drawableBeforeClick = this.drawableImage;
@@ -100,7 +98,7 @@ class SimpleButtonBase extends Clickable{
 				this.onHoverEnterFunc.call(this);
 			}
 			
-			this.setToHoverImage();
+			this._setToHoverImage();
 		};
 		
 		this.onHoverExit = function(){
@@ -117,7 +115,7 @@ class SimpleButtonBase extends Clickable{
 				this.onClickFunc.call(this);
 			}
 			
-			this.setToClickImage();
+			this._setToClickImage();
 		};	
 	}
 	
@@ -137,19 +135,18 @@ class SimpleButtonBase extends Clickable{
 			}
 		}
 		
-		// Because if setOnClick was written before Ramu.init then this.onClickFunc will be null and will never be called
+		// Because if setOnClick/OnHoverEnter/Etc was written before Ramu.init then this.onClickFunc will be null and will never be called
+		
 		if (this.onClickFuncIsAdded){
 			this.updateEvents();
 			this.onClickFuncIsAdded = false;			
 		}
 		
-		// Because if setOnHoverEnter was written before Ramu.init then this.onClickFunc will be null and will never be called
 		if (this.onHoverEnterFuncIsAdded){
 			this.updateEvents();
 			this.onHoverEnterFuncIsAdded = false;			
 		}
 		
-		// Because if setOnHoverExit was written before Ramu.init then this.onClickFunc will be null and will never be called
 		if (this.onHoverEnterFuncIsAdded){
 			this.updateEvents();
 			this.onHoverEnterFuncIsAdded = false;			
