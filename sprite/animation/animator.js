@@ -67,7 +67,7 @@ class Animator extends GameObj{
 		for (const key in this.anim)
 			this.anim[key].canDraw = false;
 		
-		if (this.anim[key] != null)
+		if (this.anim[nameID] != null)
 			this.anim[nameID].canDraw = true;
 	}
 	
