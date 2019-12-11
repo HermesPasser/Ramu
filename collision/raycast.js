@@ -50,16 +50,13 @@ class Raycast extends Collider{
 	
 	draw(){
 		if (this.canCollide)
-			if (this.isInCollision)
-				Ramu.ctx.strokeStyle = "red";
-			else Ramu.ctx.strokeStyle = "blue";	
-		else Ramu.ctx.strokeStyle = "green";
+			Ramu.ctx.strokeStyle = this.isInCollision ? 'red' : 'blue';
+		else 
+			Ramu.ctx.strokeStyle = 'green';
 			
 		Ramu.ctx.beginPath();
 		Ramu.ctx.moveTo(this.x, this.y);
 		Ramu.ctx.lineTo(this.initX, this.initY);
 		Ramu.ctx.stroke();
-
-		Ramu.ctx.strokeStyle = "#000000"; // reset to default value
 	}
 }
