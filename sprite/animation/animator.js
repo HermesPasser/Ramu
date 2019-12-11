@@ -28,7 +28,7 @@ class Animator extends GameObj{
 		return this.y;
 	}
 
-	set X(num){
+	set Y(num){
 		// instead i can just set the this.y and leave to set the this.anim[key].y on the setCurrentAnimation
 		for (const key in this.anim)
 			this.anim[key].y = num
