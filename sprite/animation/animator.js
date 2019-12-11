@@ -36,10 +36,9 @@ class Animator extends GameObj{
 	}
 	
 	setCanDraw(bool){
-		if (!(typeof(bool) === 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
-		this.anim[this.currentID].canDraw = bool;
+		if (!(typeof(bool) === 'boolean')) throw new Error('TypeError: bool must be a Boolean instance');
 	}
-	
+	 
 	setDrawPriority(integer){
 		if (arguments.length != 1) throw new Error('ArgumentError: Wrong number of arguments');
 
@@ -49,9 +48,7 @@ class Animator extends GameObj{
 	
 	addAnimation(nameID, spritesheetAnimation){
 		if (arguments.length != 2) throw new Error('ArgumentError: Wrong number of arguments');
-		// if (!(nameID instanceof String)) throw Ramu.Utils.CustomTypeError(nameID, String);
-		if (!(spritesheetAnimation instanceof SpriteAnimation)) throw Ramu.Utils.CustomTypeError(spritesheetAnimation, SpritesheetAnimation);
-
+		if (!(spritesheetAnimation instanceof SpriteAnimation)) throw new Error('TypeError: spritesheetAnimation must be a SpritesheetAnimation instance');
 		spritesheetAnimation.x = this.x;
 		spritesheetAnimation.y = this.y;
 		spritesheetAnimation.canDraw = false;
@@ -83,14 +80,14 @@ class Animator extends GameObj{
 	}
 	
 	setFlipHorizontally(bool){
-		if (!(typeof(bool) === 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
+		if (!(typeof(bool) === 'boolean')) throw new Error('TypeError: bool must be a Boolean instance');
 
 		for (const key in this.anim)
 			this.anim[key].flipHorizontally = bool;
 	}
 	
 	setFlipVertically(bool){
-		if (!(typeof(bool) === 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
+		if (!(typeof(bool) === 'boolean')) throw new Error('TypeError: bool must be a Boolean instance');
 
 		for (const key in this.anim)
 			this.anim[key].flipVertically = bool;

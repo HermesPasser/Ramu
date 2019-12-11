@@ -14,7 +14,7 @@ class SimpleSpritesheetButton extends SimpleButtonBase{
 	}
 	
 	set drawableImage(rect){
-		if (!(rect instanceof Rect)) throw Ramu.Utils.CustomTypeError(rect, Rect);
+		if (!(rect instanceof Rect)) throw new Error('TypeError: rect must be a Rect instance');
 		this.spritesheet.setSheet(rect);
 	}
 	
@@ -35,7 +35,7 @@ class SimpleSpritesheetButton extends SimpleButtonBase{
 	}
 	
 	set drawableBeforeClick(rect){
-		if (!(rect instanceof Rect)) throw Ramu.Utils.CustomTypeError(rect, Rect);
+		if (!(rect instanceof Rect)) throw new Error('TypeError: rect must be a Rect instance');
 		this.rectBeforeClick = rect;
 	}
 	

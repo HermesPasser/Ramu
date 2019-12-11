@@ -2,7 +2,7 @@ class Panorama extends GameObj{
 	constructor(img, x, y, w, h, velocity = 20){
 		super(x, y, w, h);
 		if (arguments.length < 5) throw new Error('ArgumentError: Wrong number of arguments');
-		if (!(img instanceof Image)) throw Ramu.Utils.CustomTypeError(img, Image);
+		if (!(img instanceof Image)) throw new Error('TypeError: img must be a Image instance');
 
 		this.left   = new Sprite(img, x - w, y, w, h);
 		this.center = new Sprite(img, x  + w  , y, w, h);
@@ -12,7 +12,7 @@ class Panorama extends GameObj{
 	}
 	
 	canDraw(bool){
-		if (!(typeof(bool) === 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
+		if (!(typeof(bool) === 'boolean')) throw new Error('TypeError: bool must be a Boolean instance');
 
 		this.left.canDraw   = bool;
 		this.center.canDraw = bool;

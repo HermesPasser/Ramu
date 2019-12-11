@@ -14,7 +14,7 @@ class SimpleSpriteButton extends SimpleButtonBase{
 	}
 	
 	set drawableImage(img){
-		if (!(img instanceof Image)) throw Ramu.Utils.CustomTypeError(img, Image);
+		if (!(img instanceof Image)) throw new Error('TypeError: img must be a Image instance');
 		this.sprite.img = img;
 	}
 	
@@ -35,7 +35,7 @@ class SimpleSpriteButton extends SimpleButtonBase{
 	}
 	
 	set drawableBeforeClick(img){
-		if (!(img instanceof Image)) throw Ramu.Utils.CustomTypeError(img, Image);
+		if (!(img instanceof Image)) throw new Error('TypeError: img must be a Image instance');
 		this.rectBeforeClick = img;
 	}
 	

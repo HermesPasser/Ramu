@@ -38,7 +38,8 @@ class GameObj{
 	}
 	
 	setActive(bool){
-		if (!(typeof(bool) === 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
+		if (!(typeof(bool) === 'boolean')) 
+			throw new Error('TypeError: bool must be a Boolean instance');
 		this.canUpdate = bool;
 	}
 	
