@@ -2,7 +2,7 @@
 
 Ramu.pressedKeys	 = {};
 Ramu.clickedPosition = {};
-Ramu.mousePosition   = { X: 0, Y: 0};
+Ramu.mousePosition   = { X: -1, Y: -1};
 
 /// Start all input events listeners
 Ramu.input = function(){

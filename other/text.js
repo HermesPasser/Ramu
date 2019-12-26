@@ -25,10 +25,7 @@ Ramu.Text = class extends Drawable {
 	draw(){
 		let y = this.y, testWidth = 0;
 		let line = '', testLine = '', metrics = null;
-		
-		let oldFont = Ramu.ctx.font;
-		let oldStyle = Ramu.ctx.fillStyle;
-		
+				
 		Ramu.ctx.font = this.font;
 		Ramu.ctx.fillStyle = this.fillStyle;
 		
@@ -56,8 +53,6 @@ Ramu.Text = class extends Drawable {
 		}
 		
 		Ramu.ctx.fillText(line, this.x, y);
-		Ramu.ctx.font = oldFont;
-		Ramu.ctx.fillStyle = oldStyle;
 	}
 	
 	_addLineBreak(){ // throwin exception in apathy cloud

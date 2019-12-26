@@ -40,7 +40,7 @@ class SimpleButtonBase extends Clickable{
 	}
 	
 	setRect(rect){
-		if (!(rect instanceof Rect)) throw Ramu.Utils.CustomTypeError(rect, Rect);
+		if (!(rect instanceof Rect)) throw new Error('TypeError: rect must be a Rect instance');
 		
 		this.x = rect.x;
 		this.drawableObj.x = rect.x;
@@ -49,30 +49,31 @@ class SimpleButtonBase extends Clickable{
 	}
 	
 	setEnabled(bool){
-		if (!(typeof(bool) === 'boolean')) throw Ramu.Utils.CustomTypeError(bool, Boolean);
+		if (!(typeof(bool) === 'boolean')) throw new Error('TypeError: bool must be a Boolean instance');
+
 		this.enabled = bool;
 		this.drawableObj.enabled = bool;
 	}
 	
 	setOnClick(func){
-		if (!(typeof(func) === 'function')) throw Ramu.Utils.CustomTypeError(func, Function);
+		if (!(typeof(func) === 'function')) throw new Error('TypeError: func must be a function');
 		this.onClickFunc = func;
 		this.onClickFuncIsAdded = true;
 	}
 	
 	setOnHoverEnter(func){
-		if (!(typeof(func) === 'function')) throw Ramu.Utils.CustomTypeError(func, Function);
+		if (!(typeof(func) === 'function')) throw new Error('TypeError: func must be a function');
 		this.onHoverEnterFunc = func;
 		this.onHoverEnterFuncIsAdded = true;
 	}
 	
 	setOnHoverStay(func){
-		if (!(typeof(func) === 'function')) throw Ramu.Utils.CustomTypeError(func, Function);
+		if (!(typeof(func) === 'function')) throw new Error('TypeError: func must be a function');
 		this.onHoverStay = func;
 	}
 	
 	setOnHoverExit(func){
-		if (!(typeof(func) === 'function')) throw Ramu.Utils.CustomTypeError(func, Function);
+		if (!(typeof(func) === 'function')) throw new Error('TypeError: func must be a function');
 		this.onHoverExitFunc = func;
 		this.onHoverExitFuncIsAdded = true;
 	}

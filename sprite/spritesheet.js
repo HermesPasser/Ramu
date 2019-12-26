@@ -3,7 +3,7 @@ class Spritesheet extends Drawable{
 	constructor(image, sheetRect, x, y, w, h, canDraw = true){
 		super(x, y, w, h);
 		if (arguments.length < 6) throw new Error('ArgumentError: Wrong number of arguments');
-		if (!(image instanceof Image)) throw Ramu.Utils.CustomTypeError(image, Image);
+		if (!(image instanceof Image)) throw new Error('TypeError: image must be a Image instance');
 
 		this.img = image;
 		this.setSheet(sheetRect);
@@ -11,8 +11,7 @@ class Spritesheet extends Drawable{
 	}
 	
 	setSheet(sheetRect){
-		if (!(sheetRect instanceof Rect)) throw Ramu.Utils.CustomTypeError(sheetRect, Rect);
-
+		if (!(sheetRect instanceof Rect)) throw new Error('TypeError: sheetRect must be a Rect instance');
 		this.sheet = sheetRect;
 	}
 	

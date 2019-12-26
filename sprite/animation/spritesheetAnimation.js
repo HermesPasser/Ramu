@@ -8,7 +8,7 @@ class SpritesheetAnimation extends SpriteAnimation{
 	constructor(img, x, y, width, height){
 		super(x, y, width, height);
 		if (arguments.length != 5) throw new Error('ArgumentError: Wrong number of arguments');
-		if (!(img instanceof Image)) throw Ramu.Utils.CustomTypeError(img, Image);
+		if (!(img instanceof Image)) throw new Error('TypeError: img must be a Image instance');
 
 		this.img = img;
 	}
@@ -23,7 +23,7 @@ class SpritesheetAnimation extends SpriteAnimation{
 				const r = rect[i];
 				
 				if(!r instanceof Rect)
-					throw Ramu.Utils.CustomTypeError(rect, rect);
+					throw new Error('TypeError: rect must be a Rect instance');
 				
 				if (Rect.hasNegativeValueInXY(r))
 					throw new Error('ArgumentOutOfRangeError: The rect position cannot be negative.');
@@ -34,7 +34,7 @@ class SpritesheetAnimation extends SpriteAnimation{
 			return;
 		} else if(rect instanceof Rect){
 			if(!rect instanceof Rect)
-				throw Ramu.Utils.CustomTypeError(rect, rect);
+				throw new Error('TypeError: rect must be a Rect instance');
 			
 			if (Rect.hasNegativeValueInXY(rect))
 				throw new Error('ArgumentOutOfRangeError: The rect position cannot be negative.');
@@ -43,7 +43,7 @@ class SpritesheetAnimation extends SpriteAnimation{
 			return;
 		}
 
-		throw Ramu.Utils.CustomTypeError(rect, rect);
+		throw new Error('TypeError: rect must be a Rect instance');
 	}
 	
 	draw(){

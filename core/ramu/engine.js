@@ -1,4 +1,4 @@
-// ============ RAMU MAIN ENGINE 0.7 - 2018-8-30 ============ //
+// ============ RAMU MAIN ENGINE 0.8 - 2018-12-11 ============ //
 
 Ramu._canUpdate = function(gameobj){
 	return gameobj._start_was_called && gameobj.canUpdate && !gameobj.canDestroy;
@@ -73,7 +73,7 @@ Ramu.draw = function(){
 		
 		if (Ramu._canUpdate(obj)){
 			if (obj.drawOutOfCanvas || Ramu.Utils.isInsideOfCanvas(obj)){
-				obj.drawInCanvas();
+				Ramu.restoreAfter( () => { obj.drawInCanvas(); });
 			}
 		}
 	}

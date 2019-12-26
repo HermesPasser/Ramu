@@ -52,11 +52,4 @@ Ramu.Utils = class Utils{
 			return false;
 		return true;
 	}
-	
-	/// Used in ramu internal to throw erros
-	static CustomTypeError(instance, classToCompare){
-		// esse keys é inutil pois ele retorna a palavra instance e não o nome da variavel que passei no metodo
-		// criar um outro método só para converter para string e passar como parametro aqui
-		return new Error("TypeError: " + Object.keys({instance})[0] + ' must be a ' + classToCompare.name + ' instance.');
-	}
 }

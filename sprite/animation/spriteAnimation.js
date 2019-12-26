@@ -20,20 +20,20 @@ class SpriteAnimation extends Drawable{
 			for (let i = 0, len = img.length; i < len; ++i) {
 				const currImg = img[i];
 				if(!currImg instanceof Image)
-					throw Ramu.Utils.CustomTypeError(img, img);
+					throw new Error('TypeError: img must be a Image instance');
 				
 				this.frames.push(currImg);
 			}
 			return;
 		} else if(img instanceof Image){
 			if(!img instanceof Image)
-				throw Ramu.Utils.CustomTypeError(img, img);
+				throw new Error('TypeError: img must be a Image instance');
 			
 			this.frames.push(img);
 			return;
 		}
 
-		throw Ramu.Utils.CustomTypeError(img, Image);
+		throw new Error('TypeError: img must be a Image instance');
 	}
 	
 	reset(){

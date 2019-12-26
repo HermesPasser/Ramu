@@ -31,20 +31,15 @@ class Drawable extends GameObj{
 	}
 	
 	drawInCanvas(){	
-		if (this.canDraw){
+		if (this.canDraw) {
 
 			Ramu.ctx.globalAlpha = this.opacity;
 		
 			// To flip anything that is drawn (the position need be recalculated in draw() method).
-			if (this.flipHorizontally || this.flipVertically){
-				Ramu.ctx.save();
+			if (this.flipHorizontally || this.flipVertically)
 				Ramu.ctx.scale(this.flipHorizontally ? -1 : 1, this.flipVertically ? -1 : 1);
-			}
 			
 			this.draw();
-			
-			if (this.flipHorizontally || this.flipVertically)
-				Ramu.ctx.restore();
 		}
 	}
 	

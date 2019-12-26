@@ -3,8 +3,7 @@ class Sprite extends Drawable{
 	constructor(img, x, y, w, h, canDraw = true){
 		super(x, y, w, h);
 		if (arguments.length < 5) throw new Error('ArgumentError: Wrong number of arguments');
-		if (!(img instanceof Image)) throw Ramu.Utils.CustomTypeError(img, Image);
-
+		if (!(img instanceof Image)) throw new Error('TypeError: img must be a Image instance');
 		this.img = img;
 		this.canDraw = canDraw;	
 	}
