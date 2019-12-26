@@ -1,7 +1,7 @@
-[![N|Solid](https://4.bp.blogspot.com/-8v6Fmzza9Fo/WbvC_RBBR-I/AAAAAAAAHf8/tPWleibLTZ0ywbxuoO7gHmjJ_vAuWKgbQCLcBGAs/s1600/logo.png)](#)
-<br />
-
-A very simple game engine in javascript.
+<p align="center">
+  <img src="https://4.bp.blogspot.com/-8v6Fmzza9Fo/WbvC_RBBR-I/AAAAAAAAHf8/tPWleibLTZ0ywbxuoO7gHmjJ_vAuWKgbQCLcBGAs/s1600/logo.png">  
+</p>
+<p align="center">A very simple game engine in javascript.</p>
 
 ## Things done with
  - [ThatApathyCloud](https://github.com/HermesPasser/ThatApathyCloud)  
