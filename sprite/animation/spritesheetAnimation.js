@@ -48,16 +48,17 @@ class SpritesheetAnimation extends SpriteAnimation{
 	
 	draw(){
 		// o problema deve estar aqui
-		let originX = this.flipHorizontally ? -this.width - this.x : this.x;
-		let originY = this.flipVertically   ? -this.height - this.y : this.y;
-		let rect    = this.frames[this.currentFrame];
+		const originX = this.flipHorizontally ? -this.width - this.x : this.x;
+		const originY = this.flipVertically   ? -this.height - this.y : this.y;
+		const rect    = this.frames[this.currentFrame];
+		const loaded  = Ramu.Utils.imageIsLoaded(this.img);
 		
-		if (Ramu.Utils.imageIsLoaded(this.img) && (rect.width > this.img.width || rect.height > this.img.height))
-			throw new Error('The rect size cannot be greater than the image size.');
-
 		//Draw
 		if (this.frames.length > 0){
-			if (!Ramu.Utils.imageIsLoaded(this.img)){
+			if (loaded && (rect.width > this.img.width || rect.height > this.img.height))
+				throw new Error('The rect size cannot be greater than the image size.');
+			
+			if (!loaded){
 				Ramu.ctx.fillRect(originX, originY, this.width, this.height); // Draw a black rect instead of image
 				return;
 			}	

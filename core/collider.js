@@ -1,6 +1,6 @@
 class Collider extends Drawable{
 	constructor(x, y, width, height){
-		super(x, y, width, height);
+		super(x, y, width, height, true);
 		if (arguments.length != 4) throw new Error('ArgumentError: Wrong number of arguments');
 		this.canCollide = true;
 		this.collision = [];
