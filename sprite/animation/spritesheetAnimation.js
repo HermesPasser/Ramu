@@ -12,38 +12,36 @@ class SpritesheetAnimation extends SpriteAnimation{
 
 		this.img = img;
 	}
+
+	_addSingleFrame(rect) {		
+		if (Rect.hasNegativeValueInXY(rect))
+			throw new Error('ArgumentOutOfRangeError: rect position cannot be negative');
+		
+		this.frames.push(rect);
+	}
 	
-	addFrame(rect){
-		// multi frame support by github.com/Kawtmany
-		if(void 0 === rect || arguments.length != 1)
+	_addArrayOfFrames(frames) {
+		for (let i = 0, len = frames.length; i < len; ++i){
+			const r = frames[i];
+			
+			if(!r instanceof Rect)
+				throw new Error(`TypeError: Array item ${i} is not a Rect.`);
+			
+			this._addSingleFrame(r)
+		}	
+	}
+	
+	addFrame(obj) {
+		if(arguments.length !== 1)
 			throw new Error('ArgumentError: Wrong number of arguments');
 		
-		if(Array.isArray(rect)){
-			for (let i = 0, len = rect.length; i < len; ++i){
-				const r = rect[i];
-				
-				if(!r instanceof Rect)
-					throw new Error('TypeError: rect must be a Rect instance');
-				
-				if (Rect.hasNegativeValueInXY(r))
-					throw new Error('ArgumentOutOfRangeError: The rect position cannot be negative.');
-				
-				this.frames.push(r);			
-			}
-			
-			return;
-		} else if(rect instanceof Rect){
-			if(!rect instanceof Rect)
-				throw new Error('TypeError: rect must be a Rect instance');
-			
-			if (Rect.hasNegativeValueInXY(rect))
-				throw new Error('ArgumentOutOfRangeError: The rect position cannot be negative.');
-			
-			this.frames.push(rect);
-			return;
+		if(Array.isArray(obj)){
+			this._addArrayOfFrames(obj);
+		} else if(obj instanceof Rect){
+			this._addSingleFrame(obj);
+		} else {
+			throw new Error('TypeError: obj must be a Rect or an array of Rects.');
 		}
-
-		throw new Error('TypeError: rect must be a Rect instance');
 	}
 	
 	draw(){

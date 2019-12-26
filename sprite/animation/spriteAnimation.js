@@ -11,29 +11,28 @@ class SpriteAnimation extends Drawable{
 		this.animationIsOver = false;
 		this.playInLoop 	 = true;
 	}
+		
+	_addArrayOfFrames(images) {
+		for (let i = 0, len = images.length; i < len; ++i) {
+			const currImg = images[i];
+			if(!currImg instanceof Image)
+				throw new Error('TypeError: Array item ${i} is not an Image');
+			
+			this.frames.push(currImg);
+		}	
+	}
 	
-	addFrame(img){ 
-		if(void 0 === img || arguments.length != 1)
+	addFrame(obj) { 
+		if(arguments.length !== 1)
 			throw new Error('ArgumentError: Wrong number of arguments');
 		
-		if(Array.isArray(img)){
-			for (let i = 0, len = img.length; i < len; ++i) {
-				const currImg = img[i];
-				if(!currImg instanceof Image)
-					throw new Error('TypeError: img must be a Image instance');
-				
-				this.frames.push(currImg);
-			}
-			return;
-		} else if(img instanceof Image){
-			if(!img instanceof Image)
-				throw new Error('TypeError: img must be a Image instance');
-			
-			this.frames.push(img);
-			return;
+		if(Array.isArray(obj)){
+			this._addArrayOfFrames(obj);
+		} else if(obj instanceof Image){
+			this.frames.push(obj);
+		} else {
+			throw new Error('TypeError: obj must be an Image or an array of Images');
 		}
-
-		throw new Error('TypeError: img must be a Image instance');
 	}
 	
 	reset(){
