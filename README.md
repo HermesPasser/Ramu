@@ -1,7 +1,7 @@
 [![N|Solid](https://4.bp.blogspot.com/-8v6Fmzza9Fo/WbvC_RBBR-I/AAAAAAAAHf8/tPWleibLTZ0ywbxuoO7gHmjJ_vAuWKgbQCLcBGAs/s1600/logo.png)](#)
 <br />
 
-A very simple game engine in javascript that works in v8, see "demos" folder for code examples or the project site for examples running.
+A very simple game engine in javascript.
 
 ## Things done with
  - [ThatApathyCloud](https://github.com/HermesPasser/ThatApathyCloud)  
