@@ -1,18 +1,21 @@
 class Destroyer extends GameObj{
 	constructor(time, gameObj){
-		super(0,0,0,0);
-		if (arguments.length !== 2) throw new Error('ArgumentError: Wrong number of arguments');
-		this.timeToDestroy = time;
-		this.currentTime = 0;
-		this.objToBeDestroyed = gameObj;
+		super(-1, -1, -1, -1);
+		if (arguments.length !== 2) throw new Error('ArgumentError: Wrong number of arguments');	
+		this._destroyableObj = gameObj;
+		this._timer = new Timer(time, () => {
+			this._destroyableObj.destroy();
+			this.destroy();	
+		}, false);
 	}
 	
-	update(){
-		this.currentTime += Ramu.time.delta;
-		if(this.currentTime >= this.timeToDestroy){
-			if(this.objToBeDestroyed)
-				this.objToBeDestroyed.destroy();
-			this.destroy();
-		}
+	start() {
+		this._timer.start();
+	}
+	
+	destroy() {
+		this._destroyableObj = null;
+		this._timer.destroy();
+		super.destroy();
 	}
 }

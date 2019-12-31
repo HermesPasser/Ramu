@@ -7,7 +7,11 @@ class SimpleParticle extends GameObj{
 		this.particleNumber = particleNumber / 2;
 		this.particle = img;
 		this.destroyOnEnd = false;
-		this.lifeSpan = lifeSpan;
+		
+		this.lifespanTimer = new Timer(lifeSpan, () => {
+			for (let i = 0; i < this.particles.length ; i++)
+				this.particles[i].opacity -= 0.07;
+		});
 	}
 	
 	start(){
@@ -40,6 +44,14 @@ class SimpleParticle extends GameObj{
 		this.isOver = false;		
 	}
 	
+	set lifeSpan(num) {
+		this.lifespanTimer.time = num;
+	}
+
+	get lifeSpan() {
+		return this.lifespanTimer.time;
+	}
+
 	setDrawPriority(priority){
 		Ramu.callSortDraw = true;
 		this.drawPriority = priority;
@@ -75,13 +87,8 @@ class SimpleParticle extends GameObj{
 		if (this.isOver)
 			return;
 			
-		this.currentTimeToFall >= this.currentLife / 2 ? this.move(this.particleNumber) : this.move(this.particleNumber / 2);
-		this.currentLife += Ramu.time.delta;
-				
-		if (this.currentLife > this.lifeSpan){
-			for (let i = 0; i < this.particles.length ; i++)
-				this.particles[i].opacity -= 0.07;
-		}
+		this.currentTimeToFall >= this.lifespanTimer._currentTime / 2 ? this.move(this.particleNumber) : this.move(this.particleNumber / 2);
+		// this.currentLife += Ramu.time.delta;
 		
 		if (this.particles[0] && this.particles[0].opacity <= 0){ // first clausule because one time this throw an undefined error (even canUpdate of this obj being false it was called and try to access an already undefined position)
 			this.isOver = true;
@@ -106,6 +113,7 @@ class SimpleParticle extends GameObj{
 		for (let i = 0, len = this.particles.length; i < len ; ++i)
 			this.particles[i].destroy();
 		this.particles = []; // cleaning up the references
+		this.lifespanTimer.destroy();
 	}
 	
 	random(max, min){

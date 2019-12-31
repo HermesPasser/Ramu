@@ -3,22 +3,25 @@
 	<body>
 		<script type="text/javascript" src="../Ramu.js"></script>
 		<script type="text/javascript">
-			var sprite = new Sprite(Ramu.Utils.getImage("img/flying_ground.png"), 1, 1, 50, 50);
+			const timeToDestroy = 2;
+			const sprite = new Sprite(Ramu.Utils.getImage("img/flying_ground.png"), 1, 1, 50, 50);
 
-			let destroy = Destroyer.prototype.destroy;
-			new Destroyer(5, sprite).destroy = function(){
-				destroy.call(this);
+			new Destroyer(timeToDestroy, sprite);
+
+			Ramu.init();
+			alert('See the result in the console');
+			console.log(" == RAMU Destroyer TESTS ==");
+			
+			console.log('before Destroyer destroy the obj:');
+			console.log(Ramu.gameObjs, '\n');
+			
+			setTimeout(() => {
 				console.log('after Destroyer destroy the obj:');
 				console.log(Ramu.gameObjs);
 				if (Ramu.gameObjs.length != 0)
 					throw new Error('Must have no gameObjs after destroyer is called.');
-			};
-
-			Ramu.init();
-			alert('See the result in the console');
-			console.log(" == RAMU SETACTIVE(false) TESTS ==");
-			console.log('before Destroyer destroy the obj:');
-			console.log(Ramu.gameObjs);
+			}, timeToDestroy * 1500) // time + half of sec since i need to check one frame after the .destroy()
+			
 		</script>
 	</body>
 </html>

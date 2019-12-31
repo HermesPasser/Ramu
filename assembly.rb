@@ -33,6 +33,7 @@ $complete = [
 	File.join('event', 'mouse', 'simpleButtonBase.js'),
 	File.join('event', 'mouse', 'simpleSpriteButton.js'),
 	File.join('event', 'mouse', 'simpleSpritesheetButton.js'),
+	File.join('utils', 'timer.js'),
 	File.join('utils', 'destroyer.js')
 ]
 

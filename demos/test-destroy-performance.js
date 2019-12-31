@@ -1,9 +1,13 @@
-var img = Ramu.Utils.getImage("img/particleblue.png");
+"use strict"
+const img = Ramu.Utils.getImage("img/particleblue.png");
+
+console.warn("i think Timer is slowing this down, compare with 0.7b version")
 
 class SuicideParticle extends SimpleParticle{
 	start(){
 		super.start();
-		this.currentLifeTime = 0;
+		this.otherTimer = new Timer(this.lifeSpan, null, false);
+		this.otherTimer.start();
 	}
 	update() {
 		if (this.isOver)
@@ -11,10 +15,10 @@ class SuicideParticle extends SimpleParticle{
 
 		super.update();
 		
-		if (this.currentLifeTime >= this.lifeSpan){
+		if (this.otherTimer.timeOut){
+			console.log("...")
 			this.destroy();
 		}
-		this.currentLifeTime += Ramu.time.delta;	
 	}
 }
 
@@ -24,12 +28,19 @@ class Game extends Clickable{
 		this.txt = new Ramu.Text('', 10, 10, 300);
 		this.txt.fillStyle = '#ffffff';
 		
-		this.timeToInstantiate = 0.2;
-		this.currentTimeToInstantiate = 5;
+		// this.timeToInstantiate = 0.2;
+		// this.currentTimeToInstantiate = 5;
 		
-		this.timeToStop = 3;
-		this.currentTimeToStop = 0;
+		this.instantiateTimer = new Timer(0.2, null, false);
 		
+		this.instantiateTimer._currentTime = 5;
+		this.instantiateTimer.start();
+		
+		this.stopTimer = new Timer(3, null, false);
+		this.stopTimer.start();
+		
+		// this.timeToStop = 3;
+		// this.currentTimeToStop = 0;
 		this.started = false;
 	}
 	
@@ -41,21 +52,23 @@ class Game extends Clickable{
 			this.txt.text += " Click to start/restart the particles."
 			return;
 		}
-		
-		if(this.currentTimeToStop >= this.timeToStop){
-			this.currentTimeToStop = 0;
+
+		if(this.stopTimer.timeOut){
+			
+			// this.currentTimeToStop = 0;
 			this.started = false;
+			this.stopTimer.restart();
 			return;
 		}
-		this.currentTimeToStop += Ramu.time.delta;	
+		// this.currentTimeToStop += Ramu.time.delta;	
 		
-		if (this.currentTimeToInstantiate >= this.timeToInstantiate){
-			this.currentTimeToInstantiate = 0;
-			
+		if (this.instantiateTimer.timeOut){
+			// this.currentTimeToInstantiate = 0;
 			let r = new Rect(Math.random() * Ramu.width, Math.random() * Ramu.height, 1, 1);
 			let p = new SuicideParticle(img, r, 1, 1000);	
+			this.stopTimer.restart();
 		}
-		this.currentTimeToInstantiate += Ramu.time.delta;
+		// this.currentTimeToInstantiate += Ramu.time.delta;
 	}
 	
 	onClick(){
