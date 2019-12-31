@@ -16,7 +16,6 @@ class SuicideParticle extends SimpleParticle{
 		super.update();
 		
 		if (this.otherTimer.timeOut){
-			console.log("...")
 			this.destroy();
 		}
 	}
